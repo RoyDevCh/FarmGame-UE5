@@ -64,5 +64,6 @@ protected:
 	FName ProductItem() const;
 	UPROPERTY() class UAnimSequence* IdleAnim = nullptr;
 	UPROPERTY() class UAnimSequence* WalkAnim = nullptr;
+	UPROPERTY() class UAnimSequence* AttackAnim = nullptr;
 	bool bWalkingAnim = false;
 };

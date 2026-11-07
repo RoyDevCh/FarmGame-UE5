@@ -19,6 +19,8 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/PointLight.h"
+#include "Landscape.h"
+#include "EngineUtils.h"
 #include "Engine/PostProcessVolume.h"
 #include "Engine/ExponentialHeightFog.h"
 #include "Components/ExponentialHeightFogComponent.h"
@@ -189,12 +191,19 @@ void AFarmGameMode::BuildWorld()
 	UWorld* World = GetWorld();
 	if (!World) return;
 
+	bool bHasLandscape = false;
+	for (TActorIterator<ALandscape> It(World); It; ++It)
+	{
+		bHasLandscape = true;
+		break;
+	}
+
 	UStaticMesh* PlaneMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
 	UStaticMesh* CubeMesh = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
 	UMaterialInterface* BaseMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 
-	// Ground
-	if (PlaneMesh)
+	// Ground (skip when the map has a landscape)
+	if (PlaneMesh && !bHasLandscape)
 	{
 		AStaticMeshActor* Ground = World->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
 		if (Ground)
@@ -342,7 +351,9 @@ void AFarmGameMode::BuildWorld()
 	};
 	for (const FVector& Spot : FlowerSpots) SpawnProp(TEXT("/Game/Art/Environment/Flower.Flower"), Spot, 40.f);
 
-	// Scatter grass clumps outside the farm plot area for ground detail.
+	// Scatter grass clumps outside the farm plot area (only without a landscape;
+	// the landscape uses painted foliage instead).
+	if (!bHasLandscape)
 	{
 		FRandomStream Rng(1337);
 		for (int32 i = 0; i < 220; ++i)

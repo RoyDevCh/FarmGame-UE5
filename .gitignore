@@ -13,3 +13,6 @@ Saved/
 *.VC.opendb
 *.user
 *.log
+
+# Local-only MCP backend, not part of the game
+Plugins/EngineWire/

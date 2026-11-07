@@ -71,11 +71,17 @@ void AFarmAnimal::Configure(EAnimalType InType, const FVector& InHome)
 		Head->SetVisibility(false);
 
 		const TCHAR* IdlePath = Type == EAnimalType::Chicken ? TEXT("/Game/Art/Animals/chicken_idle.chicken_idle")
-			: Type == EAnimalType::Cow ? TEXT("/Game/Art/Animals/cow_idle.cow_idle") : nullptr;
+			: Type == EAnimalType::Cow ? TEXT("/Game/Art/Animals/cow_idle.cow_idle")
+			: TEXT("/Game/Art/Animals/bear_idle.bear_idle");
 		const TCHAR* WalkPath = Type == EAnimalType::Chicken ? TEXT("/Game/Art/Animals/chicken_walk.chicken_walk")
-			: Type == EAnimalType::Cow ? TEXT("/Game/Art/Animals/cow_walk.cow_walk") : nullptr;
+			: Type == EAnimalType::Cow ? TEXT("/Game/Art/Animals/cow_walk.cow_walk")
+			: TEXT("/Game/Art/Animals/bear_run.bear_run");
 		if (IdlePath) IdleAnim = LoadObject<UAnimSequence>(nullptr, IdlePath);
 		if (WalkPath) WalkAnim = LoadObject<UAnimSequence>(nullptr, WalkPath);
+		if (Type == EAnimalType::Boar)
+		{
+			AttackAnim = LoadObject<UAnimSequence>(nullptr, TEXT("/Game/Art/Animals/bear_attack.bear_attack"));
+		}
 		if (IdleAnim) SkelBody->PlayAnimation(IdleAnim, true);
 	}
 }
@@ -269,6 +275,10 @@ void AFarmAnimal::ApplyDamage(int32 Amount, AFarmCharacter* Attacker)
 {
 	if (Health <= 0) return;
 	Health -= Amount;
+	if (AttackAnim && SkelBody && SkelBody->GetSkeletalMeshAsset())
+	{
+		SkelBody->PlayAnimation(AttackAnim, false);
+	}
 	FarmAudio::Play(this, TEXT("/Game/Art/Audio/flesh_hit.flesh_hit"), 0.7f);
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: animal hit for %d (hp %d)"), Amount, Health);
 	if (Health > 0) return;
