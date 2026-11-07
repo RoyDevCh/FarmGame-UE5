@@ -56,13 +56,15 @@ void AFarmPlot::BeginPlay()
 
 	// Prefer the imported Unity soil mesh; keep the cube when it is unavailable.
 	bArtSoil = FarmArt::Apply(SoilMesh, TEXT("/Game/Art/Farming/soil_hoed.soil_hoed"), 120.f);
-	if (bArtSoil && SoilMaterial)
+	if (bArtSoil)
 	{
-		// Replace every material slot so the imported soil texture cannot leak through.
+		// Use the generated soil material on every slot (imported textures are inconsistent).
+		UMaterialInterface* SoilArtMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Art/Materials/M_FarmSoil.M_FarmSoil"));
+		UMaterialInterface* UseMaterial = SoilArtMaterial ? SoilArtMaterial : SoilMaterial;
 		const int32 NumMats = SoilMesh->GetNumMaterials();
 		for (int32 MatIndex = 0; MatIndex < NumMats; ++MatIndex)
 		{
-			SoilMesh->SetMaterial(MatIndex, SoilMaterial);
+			SoilMesh->SetMaterial(MatIndex, UseMaterial);
 		}
 	}
 	RefreshVisuals();

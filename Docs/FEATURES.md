@@ -418,6 +418,16 @@ Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后�
 | 底部 | 制作菜单（按 `C` 展开，逐条列出配方、材料、能否制作） |
 | 顶部中央 | Toast（3.5 秒，最后 1.2 秒淡出） |
 
+## 13.4 动画
+
+角色与动物使用导入的 SkeletalMesh + AnimSequence，由代码直接 `PlayAnimation`（无 AnimBP）：
+
+| 对象 | 动画 | 触发 |
+|---|---|---|
+| 角色 | `character_idle` / `character_run` / `character_attack` | 静止 / 移动 / 左键攻击 |
+| 鸡 | `chicken_idle` / `chicken_walk` | 站立 / 行走 |
+| 牛 | `cow_idle` / `cow_walk` | 站立 / 行走 |
+
 ## 13.5 音效
 
 7 个原版 WAV 位于 `Content/Art/Audio`，由 `FarmAudio::Play` 在以下时机 2D 播放：

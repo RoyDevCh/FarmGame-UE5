@@ -47,6 +47,7 @@ public:
 protected:
 	UPROPERTY(VisibleAnywhere) USceneComponent* SceneRoot;
 	UPROPERTY(VisibleAnywhere) UStaticMeshComponent* Body;
+	UPROPERTY(VisibleAnywhere) class USkeletalMeshComponent* SkelBody;
 	UPROPERTY(VisibleAnywhere) UStaticMeshComponent* Head;
 
 	EAnimalType Type = EAnimalType::Chicken;
@@ -59,5 +60,9 @@ protected:
 	FVector WanderDir = FVector::ZeroVector;
 
 	void ApplyVisual();
+	void AdvanceAnimation();
 	FName ProductItem() const;
+	UPROPERTY() class UAnimSequence* IdleAnim = nullptr;
+	UPROPERTY() class UAnimSequence* WalkAnim = nullptr;
+	bool bWalkingAnim = false;
 };

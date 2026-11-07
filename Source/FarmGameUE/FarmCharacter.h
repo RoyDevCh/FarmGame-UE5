@@ -24,6 +24,8 @@ public:
 	UFarmInventoryComponent* GetInventory() const { return Inventory; }
 
 	void ApplyDamage(int32 Amount, AActor* Source);
+	void PlayAttackAnim();
+	virtual void Tick(float DeltaSeconds) override;
 	void SetHealth(int32 InHealth) { Health = FMath::Clamp(InHealth, 0, MaxHealth); }
 	void Respawn();
 	int32 GetHealth() const { return Health; }
@@ -39,6 +41,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Farm") int32 Health = 100;
 	UPROPERTY(VisibleAnywhere, Category = "Farm") int32 MaxHealth = 100;
 	FVector HomeLocation = FVector::ZeroVector;
+	UPROPERTY() class UAnimSequence* IdleAnim = nullptr;
+	UPROPERTY() class UAnimSequence* RunAnim = nullptr;
+	UPROPERTY() class UAnimSequence* AttackAnim = nullptr;
+	bool bRunningAnim = false;
+	float AttackAnimUntil = 0.f;
 
 	void MoveForward(float Value);
 	void MoveRight(float Value);

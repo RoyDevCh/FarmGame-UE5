@@ -5,7 +5,10 @@
 #include "FarmInventoryComponent.h"
 #include "FarmItems.h"
 #include "FarmPlayerController.h"
+#include "Animation/AnimSequence.h"
+#include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
 #include "UObject/ConstructorHelpers.h"
@@ -22,6 +25,10 @@ AFarmAnimal::AFarmAnimal()
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cube(TEXT("/Engine/BasicShapes/Cube.Cube"));
 	if (Cube.Succeeded()) Body->SetStaticMesh(Cube.Object);
 	Body->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
+	SkelBody = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("SkelBody"));
+	SkelBody->SetupAttachment(SceneRoot);
+	SkelBody->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Head = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Head"));
 	Head->SetupAttachment(Body);
@@ -48,6 +55,29 @@ void AFarmAnimal::Configure(EAnimalType InType, const FVector& InHome)
 	Health = MaxHealth;
 	SetActorLocation(InHome);
 	ApplyVisual();
+
+	const TCHAR* SkelPath = Type == EAnimalType::Chicken ? TEXT("/Game/Art/Animals/ChickenSkel.ChickenSkel")
+		: Type == EAnimalType::Cow ? TEXT("/Game/Art/Animals/CowSkel.CowSkel")
+		: TEXT("/Game/Art/Animals/BearSkel.BearSkel");
+	const float AnimalHeight = Type == EAnimalType::Chicken ? 55.f : Type == EAnimalType::Cow ? 140.f : 120.f;
+	if (USkeletalMesh* Skel = LoadObject<USkeletalMesh>(nullptr, SkelPath))
+	{
+		SkelBody->SetSkeletalMesh(Skel);
+		const float MeshHeight = Skel->GetBounds().BoxExtent.Z * 2.f;
+		const float SkelScale = MeshHeight > 1.f ? AnimalHeight / MeshHeight : 1.f;
+		SkelBody->SetRelativeScale3D(FVector(SkelScale));
+		SkelBody->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+		Body->SetVisibility(false);
+		Head->SetVisibility(false);
+
+		const TCHAR* IdlePath = Type == EAnimalType::Chicken ? TEXT("/Game/Art/Animals/chicken_idle.chicken_idle")
+			: Type == EAnimalType::Cow ? TEXT("/Game/Art/Animals/cow_idle.cow_idle") : nullptr;
+		const TCHAR* WalkPath = Type == EAnimalType::Chicken ? TEXT("/Game/Art/Animals/chicken_walk.chicken_walk")
+			: Type == EAnimalType::Cow ? TEXT("/Game/Art/Animals/cow_walk.cow_walk") : nullptr;
+		if (IdlePath) IdleAnim = LoadObject<UAnimSequence>(nullptr, IdlePath);
+		if (WalkPath) WalkAnim = LoadObject<UAnimSequence>(nullptr, WalkPath);
+		if (IdleAnim) SkelBody->PlayAnimation(IdleAnim, true);
+	}
 }
 
 void AFarmAnimal::ApplyVisual()
@@ -152,6 +182,7 @@ void AFarmAnimal::Tick(float DeltaSeconds)
 		Next = HomeLocation + (Next - HomeLocation).GetSafeNormal() * 450.f;
 	}
 	SetActorLocation(Next);
+	AdvanceAnimation();
 }
 
 FName AFarmAnimal::ProductItem() const
@@ -222,6 +253,16 @@ void AFarmAnimal::AdvanceDay()
 		bProductReady = true;
 		bFed = false;
 	}
+}
+
+void AFarmAnimal::AdvanceAnimation()
+{
+	if (!SkelBody || !SkelBody->GetSkeletalMeshAsset()) return;
+	const bool bMoving = GetVelocity().Size2D() > 5.f;
+	if (bMoving == bWalkingAnim && SkelBody->IsPlaying()) return;
+	bWalkingAnim = bMoving;
+	if (bWalkingAnim && WalkAnim) SkelBody->PlayAnimation(WalkAnim, true);
+	else if (!bWalkingAnim && IdleAnim) SkelBody->PlayAnimation(IdleAnim, true);
 }
 
 void AFarmAnimal::ApplyDamage(int32 Amount, AFarmCharacter* Attacker)

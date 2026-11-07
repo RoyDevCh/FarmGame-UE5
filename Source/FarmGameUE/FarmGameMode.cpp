@@ -19,6 +19,9 @@
 #include "Components/StaticMeshComponent.h"
 #include "Engine/DirectionalLight.h"
 #include "Engine/PointLight.h"
+#include "Engine/PostProcessVolume.h"
+#include "Engine/ExponentialHeightFog.h"
+#include "Components/ExponentialHeightFogComponent.h"
 #include "Engine/SkyLight.h"
 #include "Engine/StaticMesh.h"
 #include "Engine/StaticMeshActor.h"
@@ -182,7 +185,11 @@ void AFarmGameMode::BuildWorld()
 			Mesh->SetStaticMesh(PlaneMesh);
 			Mesh->SetMobility(EComponentMobility::Movable);
 			Ground->SetActorScale3D(FVector(140.f, 140.f, 1.f));
-			if (BaseMaterial)
+			if (UMaterialInterface* GrassMat = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Art/Materials/M_FarmGrass.M_FarmGrass")))
+			{
+				Mesh->SetMaterial(0, GrassMat);
+			}
+			else if (BaseMaterial)
 			{
 				UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(BaseMaterial, Ground);
 				MID->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.07f, 0.17f, 0.06f));
@@ -330,6 +337,8 @@ void AFarmGameMode::BuildWorld()
 
 	SpawnProp(TEXT("/Game/Art/Environment/metal_rock.metal_rock"), FVector(2400.f, 2300.f, 0.f), 120.f);
 	SpawnProp(TEXT("/Game/Art/Environment/rock2.rock2"), FVector(-2100.f, 2100.f, 0.f), 90.f);
+
+
 }
 
 void AFarmGameMode::SpawnProp(const TCHAR* Path, const FVector& Location, float Size, float Yaw)
@@ -382,6 +391,34 @@ void AFarmGameMode::SpawnEnvironment()
 			PointComp->SetAttenuationRadius(9000.f);
 			PointComp->SetCastShadows(false);
 			PointComp->SetLightColor(FLinearColor(0.8f, 0.86f, 1.f));
+		}
+	}
+
+	if (APostProcessVolume* PPV = World->SpawnActor<APostProcessVolume>(APostProcessVolume::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator))
+	{
+		PPV->bUnbound = true;
+		FPostProcessSettings& S = PPV->Settings;
+		S.bOverride_AutoExposureBias = true;
+		S.AutoExposureBias = -0.35f;
+		S.bOverride_ColorSaturation = true;
+		S.ColorSaturation = FVector4(1.12f, 1.12f, 1.12f, 1.f);
+		S.bOverride_ColorContrast = true;
+		S.ColorContrast = FVector4(1.06f, 1.06f, 1.06f, 1.f);
+		S.bOverride_VignetteIntensity = true;
+		S.VignetteIntensity = 0.32f;
+		S.bOverride_AmbientOcclusionIntensity = true;
+		S.AmbientOcclusionIntensity = 0.7f;
+		S.bOverride_BloomIntensity = true;
+		S.BloomIntensity = 0.12f;
+	}
+
+	if (AExponentialHeightFog* Fog = World->SpawnActor<AExponentialHeightFog>(AExponentialHeightFog::StaticClass(), FVector(0.f, 0.f, -200.f), FRotator::ZeroRotator))
+	{
+		if (UExponentialHeightFogComponent* FogComp = Fog->GetComponent())
+		{
+			FogComp->SetFogDensity(0.015f);
+			FogComp->SetFogHeightFalloff(0.2f);
+			FogComp->SetFogInscatteringColor(FLinearColor(0.55f, 0.7f, 0.85f));
 		}
 	}
 

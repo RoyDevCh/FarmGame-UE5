@@ -303,6 +303,7 @@ void AFarmPlayerController::Attack()
 	}
 
 	FarmAudio::Play(this, TEXT("/Game/Art/Audio/fast_woosh.fast_woosh"), 0.8f);
+	Farmer->PlayAttackAnim();
 	if (Best)
 	{
 		Best->ApplyDamage(34, Farmer);

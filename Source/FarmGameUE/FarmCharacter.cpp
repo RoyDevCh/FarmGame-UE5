@@ -1,4 +1,7 @@
 #include "FarmCharacter.h"
+#include "Animation/AnimSequence.h"
+#include "Components/SkeletalMeshComponent.h"
+#include "Engine/SkeletalMesh.h"
 #include "FarmArt.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
@@ -11,7 +14,7 @@
 
 AFarmCharacter::AFarmCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	GetCapsuleComponent()->InitCapsuleSize(42.f, 88.f);
 	bUseControllerRotationYaw = false;
@@ -30,8 +33,8 @@ AFarmCharacter::AFarmCharacter()
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 1500.f;
-	SpringArm->SetRelativeRotation(FRotator(-62.f, 0.f, 0.f));
+	SpringArm->TargetArmLength = 1600.f;
+	SpringArm->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->bUsePawnControlRotation = false;
 	SpringArm->bInheritPitch = false;
@@ -51,9 +54,28 @@ void AFarmCharacter::BeginPlay()
 	HomeLocation = GetActorLocation();
 	Health = MaxHealth;
 
-	if (FarmArt::ApplyHeight(BodyMesh, TEXT("/Game/Art/Character/FarmerBoy.FarmerBoy"), 170.f))
+	if (USkeletalMeshComponent* Skel = GetMesh())
 	{
-		BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, -88.f));
+		if (USkeletalMesh* SkelAsset = LoadObject<USkeletalMesh>(nullptr, TEXT("/Game/Art/Character/FarmerBoySkel.FarmerBoySkel")))
+		{
+			Skel->SetSkeletalMesh(SkelAsset);
+			const float MeshHeight = SkelAsset->GetBounds().BoxExtent.Z * 2.f;
+			const float SkelScale = MeshHeight > 1.f ? 170.f / MeshHeight : 1.f;
+			Skel->SetRelativeScale3D(FVector(SkelScale));
+			Skel->SetRelativeLocation(FVector(0.f, 0.f, -88.f));
+			Skel->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+			Skel->SetVisibility(true, true);
+			if (BodyMesh) BodyMesh->SetVisibility(false);
+
+			IdleAnim = LoadObject<UAnimSequence>(nullptr, TEXT("/Game/Art/Character/character_idle.character_idle"));
+			RunAnim = LoadObject<UAnimSequence>(nullptr, TEXT("/Game/Art/Character/character_run.character_run"));
+			AttackAnim = LoadObject<UAnimSequence>(nullptr, TEXT("/Game/Art/Character/character_attack.character_attack"));
+			if (IdleAnim) Skel->PlayAnimation(IdleAnim, true);
+		}
+		else if (FarmArt::ApplyHeight(BodyMesh, TEXT("/Game/Art/Character/FarmerBoy.FarmerBoy"), 170.f))
+		{
+			BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, -88.f));
+		}
 	}
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: player spawned at %s"), *HomeLocation.ToCompactString());
 
@@ -68,6 +90,40 @@ void AFarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AFarmCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AFarmCharacter::MoveRight);
+}
+
+void AFarmCharacter::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	USkeletalMeshComponent* Skel = GetMesh();
+	if (!Skel || !Skel->GetSkeletalMeshAsset()) return;
+
+	const float Now = GetWorld() ? GetWorld()->GetTimeSeconds() : 0.f;
+	if (Now < AttackAnimUntil) return;
+
+	const bool bMoving = GetVelocity().Size2D() > 20.f;
+	if (bMoving == bRunningAnim && Skel->IsPlaying()) return;
+
+	bRunningAnim = bMoving;
+	if (bRunningAnim && RunAnim)
+	{
+		Skel->PlayAnimation(RunAnim, true);
+	}
+	else if (!bRunningAnim && IdleAnim)
+	{
+		Skel->PlayAnimation(IdleAnim, true);
+	}
+}
+
+void AFarmCharacter::PlayAttackAnim()
+{
+	if (!AttackAnim) return;
+	if (USkeletalMeshComponent* Skel = GetMesh())
+	{
+		Skel->PlayAnimation(AttackAnim, false);
+		AttackAnimUntil = GetWorld() ? GetWorld()->GetTimeSeconds() + 0.7f : 0.f;
+	}
 }
 
 void AFarmCharacter::ApplyDamage(int32 Amount, AActor* Source)
