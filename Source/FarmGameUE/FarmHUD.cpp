@@ -39,7 +39,7 @@ void AFarmHUD::DrawHUD()
 		Y += 22.f;
 	}
 
-	const FString Help = TEXT("WASD move | E interact | Q seed | B buy at bin | T sleep | F5 save | F9 load");
+	const FString Help = TEXT("WASD move | E interact | Q seed | B buy at bin | T sleep | Ctrl+S save | Ctrl+L load");
 	DrawText(Help, FLinearColor(0.55f, 0.6f, 0.65f), Margin, H - Margin - 22.f, Small, 1.0f);
 
 	const FString Prompt = PC->GetPromptText();

@@ -152,7 +152,7 @@ void AFarmPlayerController::SaveGame()
 	if (Farmer && GM)
 	{
 		GM->SaveGame(Farmer->GetInventory());
-		ShowToast(TEXT("Game saved (F9 to load)"));
+		ShowToast(TEXT("Game saved (Ctrl+L to load)"));
 	}
 }
 
