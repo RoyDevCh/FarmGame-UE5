@@ -7,7 +7,7 @@
 美术仍然用 `/Engine/BasicShapes` 的基础几何体 + 动态材质染色占位。
 
 **当前版本 v2**：在 v1 的种田闭环（锄地 → 播种 → 浇水 → 过夜生长 → 收获 → 卖钱）之上，补齐了采集、制作、建造、
-冶炼、养殖、战斗、传送、天气与昼夜光照；存档从"天数 + 金币 + 地块"扩展到建筑、动物、天气、HP；自动化测试从 5 条增加到 17 条。
+冶炼、养殖、战斗、传送、天气与昼夜光照；存档从"天数 + 金币 + 地块"扩展到建筑、动物、天气、HP；自动化测试从 5 条增加到 24 条。
 
 ![Gameplay](Docs/screenshots/01_start.png)
 
@@ -17,12 +17,20 @@
 
 <sub>`C` 制作菜单：栅栏套件、熔炉套件、铁锭（需熔炉）、干草。</sub>
 
+![Inventory](Docs/screenshots/07_inventory.png)
+
+<sub>`Tab` 背包总览：按种子 / 收成 / 动物产品 / 资源 / 材料分组，显示数量与售价。</sub>
+
+![Packaged](Docs/screenshots/08_packaged.png)
+
+<sub>打包版 `Saved/Archive/Windows/FarmGameUE.exe` 实机启动：5 种作物、时间/天气、HP 与操作栏。</sub>
+
 ## 功能（v2）
 
 | 系统 | 内容 |
 |---|---|
 | 农田网格 | 6×6 = 36 块，间距 150；`Untilled → Tilled → Planted → Harvestable`，收获后回到 `Tilled` |
-| 作物 | 胡萝卜 / 土豆 / 玉米；阶段数 3/3/4，每阶段 1/2/1 天，种子价 3/5/6 金，售价 8/14/12 金，单次收获 1/2/2 个 |
+| 作物 | 5 种：胡萝卜 / 土豆 / 玉米 / 番茄 / 南瓜；阶段 3/3/4/3/4，每阶段 1/2/1/2/2 天，种子 3/5/6/7/10 金，售价 8/14/12/18/26 金，收获 1/2/2/2/1 个 |
 | 生长规则 | 只有"浇过水"的 `Planted` 地块才会推进；每天结算一次；成熟后停在最后阶段等收获 |
 | 时间 | 每天 180 秒，HUD 时钟 06:00 → 24:00（第 1 天从 09:00 开局，之后每天从 06:00 起）；`T` 睡觉立刻进入下一天 |
 | 天气 | 每天切换时 1/4 概率下雨；雨天所有 `Planted` 地块自动浇水，阳光变暗、色温变冷 |
@@ -37,7 +45,8 @@
 | 传送 | 农场 (700, 700) ↔ 矿洞 (2600, 2600)，同一张地图上的两个传送点 |
 | 存档 | `Ctrl+S` / `Ctrl+L`：天数、当日进度、天气、金币、全部物品、HP、36 块地、建筑、动物 |
 | HUD | Canvas 立即模式绘制：天数/金币、时间 + 天气、HP 条、种子与收成、材料、套件、交互提示、制作菜单、Toast |
-| 测试 | 17 条 UE Automation（基础 11 条 + 补充 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
+| 测试 | 24 条 UE Automation（`FarmGameTests.cpp` 18 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
+| 打包 | `Scripts/package.ps1` 跑通 BuildCookRun，产出 `Saved/Archive/Windows/FarmGameUE.exe`（本机已实测可启动） |
 
 ### 明确没做的（避免误读）
 
@@ -58,6 +67,7 @@
 | `C` | 打开 / 关闭制作菜单 |
 | `1`–`5` | 结算第 1–5 条配方（实际只有 4 条配方，`5` 无效） |
 | `G` | 建造模式：关闭 → 栅栏 → 熔炉 |
+| `Tab` | 打开 / 关闭背包总览（分类、数量、售价、金币、HP） |
 | `T` | 睡觉，天数 +1 |
 | `Esc` | 关闭制作菜单 / 退出建造模式 |
 | `Ctrl+S` / `Ctrl+L` | 存档 / 读档（槽位 `FarmSlot`） |
@@ -67,7 +77,8 @@
 1. 安装 **UE 5.8**（本机验证版本 5.8.4 / CL 58902052）。
 2. 右键 `FarmGameUE.uproject` → Generate Visual Studio project files（或直接双击打开）。
 3. 首次打开会编译 `FarmGameUE` 模块；打开地图 **/Game/Maps/Farm**，点 Play。
-4. 或者直接跑独立游戏：
+4. 打包版（本机已验证）：`powershell -File Scripts/package.ps1` → `Saved/Archive/Windows/FarmGameUE.exe`。
+5. 或者直接跑独立游戏：
 
        UnrealEditor.exe FarmGameUE.uproject -game -windowed -ResX=1280 -ResY=800
 
@@ -81,7 +92,7 @@
 
 ## 测试
 
-共 17 条 UE Automation 测试，统一挂在 `FarmGame.*` 前缀下：基础 11 条在 `FarmGameTests.cpp`，补充 6 条在 `FarmGameExtraTests.cpp`。
+共 24 条 UE Automation 测试，统一挂在 `FarmGame.*` 前缀下：`FarmGameTests.cpp` 18 条，`FarmGameExtraTests.cpp` 6 条。
 
 最省事的跑法（自动定位引擎、跑完打印通过/失败数量）：
 
@@ -98,15 +109,17 @@
 | 分组 | 测试 |
 |---|---|
 | `FarmGame.CropGrowth`（3） | `AdvancesWithWater` / `BlockedWithoutWater` / `MaturesAndStops` |
-| `FarmGame.Inventory`（3） | `BuyAndSell` / `CannotBuyWithoutGold` / `SellSkipsSeedsAndResources` |
-| `FarmGame.Crafting`（3） | `ConsumesIngredientsAndOutputs` / `HayFromCorn` / `FurnaceSmeltsOneOrePerInterval` |
-| `FarmGame.Items`（1） | `CatalogIsConsistent` |
-| `FarmGame.Recipes`（1） | `CatalogReferencesKnownItems` |
+| `FarmGame.Crops`（1） | `CatalogSanity`（5 种作物、唯一 Id、正收益、种子/产物在目录中） |
+| `FarmGame.Inventory`（5） | `BuyAndSell` / `CannotBuyWithoutGold` / `SellSkipsSeedsAndResources` / `UnknownItemRejected` / `EmptySaleIsNoop` |
+| `FarmGame.Crafting`（4） | `ConsumesIngredientsAndOutputs` / `HayFromCorn` / `FurnaceSmeltsOneOrePerInterval` / `ExactMaterialsConsumeAll` |
+| `FarmGame.Items`（2） | `CatalogIsConsistent` / `IdsAreUnique` |
+| `FarmGame.Recipes`（2） | `CatalogReferencesKnownItems` / `IdsAreUnique` |
+| `FarmGame.Save`（1） | `DefaultsAreSane` |
 | `FarmGame.Extra`（6） | `CropMultiStageContinuous` / `SmeltTwoStepsInARow` / `SellIncludesIngotKeepsSeedsAndResources` / `CraftFailureKeepsMaterials` / `SeedIdsForThreeCrops` / `RecipeOutputsInCatalog` |
 
 测试全部是纯逻辑 / 组件级：生长与冶炼直接调 `FarmLogic` 的静态函数，库存与制作直接 `NewObject<UFarmInventoryComponent>()`，
 不创建 `UWorld`、不启动 PIE，所以能在 `-nullrhi` 下跑。
-本机最近一次全量运行 17/17 Success，日志见 `Saved/Logs/FarmGameUE-backup-2026.11.07-18.02.48.log`；
+本机最近一次全量运行 24/24 Success，日志见 `Saved/Logs/FarmGameUE-backup-2026.11.07-18.02.48.log`；
 测试逐条说明与排错见 [Docs/TESTING.md](Docs/TESTING.md)。
 
 ## 代码结构

@@ -71,7 +71,7 @@
 
 | Unity 原版 | UE5 实现 | 差异 |
 |---|---|---|
-| `Data/ItemData.cs`（ScriptableObject）、`Data/GroupData.cs` 分组、`Gameplay/Item.cs` | `FItemDef` + `FarmItems::All()`（16 项，`FName` 字符串 Id） | 原版是资产引用与分组过滤；本版是静态表 + 字符串 Id |
+| `Data/ItemData.cs`（ScriptableObject）、`Data/GroupData.cs` 分组、`Gameplay/Item.cs` | `FItemDef` + `FarmItems::All()`（18 项，`FName` 字符串 Id） | 原版是资产引用与分组过滤；本版是静态表 + 字符串 Id |
 | `Data/PlayerData.cs` / `Data/InventoryData.cs` / `Player/PlayerCharacterInventory.cs` | `UFarmInventoryComponent`（`Gold` + `TMap<FName, int32>`） | 原版有格子、堆叠（`ItemStack`）与拖拽；本版是无容量字典 |
 | `Gameplay/ShopNPC.cs` + `Actions/ActionShop.cs` + `UI/ShopPanel.cs` | `AFarmBin`（`E` 卖全部）+ `B` 买当前种子 | 没有商店 NPC、没有分类定价界面 |
 
@@ -133,7 +133,7 @@
 ### 4.2 纯函数规则层 FarmLogic
 
 - **做法**：`AdvanceCrop` / `IsMature` / `SmeltStep` 都是 `FarmTypes.h` 里的 inline 纯函数，不碰 UObject 与 World。
-- **理由**：17 条测试里有 6 条直接调这些函数，不需要起世界、不需要 Tick，跑得快且稳定。
+- **理由**：24 条测试里有 6 条直接调这些函数，不需要起世界、不需要 Tick，跑得快且稳定。
 - **代价**：状态仍然分散在 `AFarmPlot` / `AFarmBuilding` 成员上，规则函数只是"算一次"，Actor 负责搬运。
 
 ### 4.3 数据是 C++ 静态表

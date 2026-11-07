@@ -38,6 +38,8 @@ public:
 	void Sleep();
 
 	void Attack();
+	void ToggleInventory();
+	bool IsInventoryOpen() const { return bInventoryOpen; }
 	void ToggleBuildMode();
 	void ToggleCraftMenu();
 	void CancelMode();
@@ -63,6 +65,7 @@ protected:
 
 	int32 BuildModeIndex = -1;
 	bool bCraftMenuOpen = false;
+	bool bInventoryOpen = false;
 	float AttackCooldown = 0.f;
 	UPROPERTY() AFarmBuilding* Ghost = nullptr;
 

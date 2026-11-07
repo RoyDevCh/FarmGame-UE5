@@ -37,6 +37,7 @@ void AFarmPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AFarmPlayerController::Attack);
 	InputComponent->BindAction(TEXT("Build"), IE_Pressed, this, &AFarmPlayerController::ToggleBuildMode);
 	InputComponent->BindAction(TEXT("CraftMenu"), IE_Pressed, this, &AFarmPlayerController::ToggleCraftMenu);
+	InputComponent->BindAction(TEXT("Inventory"), IE_Pressed, this, &AFarmPlayerController::ToggleInventory);
 	InputComponent->BindAction(TEXT("Cancel"), IE_Pressed, this, &AFarmPlayerController::CancelMode);
 
 	InputComponent->BindAction(TEXT("Craft1"), IE_Pressed, this, &AFarmPlayerController::Craft1);
@@ -350,13 +351,31 @@ void AFarmPlayerController::PlaceBuilding()
 	ShowToast(FString::Printf(TEXT("Placed %s"), *GetBuildLabel()));
 }
 
+void AFarmPlayerController::ToggleInventory()
+{
+	bInventoryOpen = !bInventoryOpen;
+	if (bInventoryOpen)
+	{
+		bCraftMenuOpen = false;
+	}
+}
+
 void AFarmPlayerController::ToggleCraftMenu()
 {
 	bCraftMenuOpen = !bCraftMenuOpen;
+	if (bCraftMenuOpen)
+	{
+		bInventoryOpen = false;
+	}
 }
 
 void AFarmPlayerController::CancelMode()
 {
+	if (bInventoryOpen)
+	{
+		bInventoryOpen = false;
+		return;
+	}
 	if (bCraftMenuOpen)
 	{
 		bCraftMenuOpen = false;

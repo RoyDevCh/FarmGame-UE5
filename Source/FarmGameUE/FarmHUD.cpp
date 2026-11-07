@@ -67,7 +67,7 @@ void AFarmHUD::DrawHUD()
 		Character->GetInventory()->GetCount(TEXT("furnace_kit"))),
 		FLinearColor(0.72f, 0.78f, 0.7f), Margin, Y, Small, 1.0f);
 
-	const FString Help = TEXT("WASD move | E interact/place | Q seed | B buy | C craft | G build | T sleep | Ctrl+S/Ctrl+L");
+	const FString Help = TEXT("WASD move | E interact/place | F attack | Q seed | B buy | C craft | G build | Tab bag | T sleep | Ctrl+S/Ctrl+L");
 	DrawText(Help, FLinearColor(0.55f, 0.6f, 0.65f), Margin, H - Margin - 22.f, Small, 1.0f);
 
 	if (PC->IsBuildMode())
@@ -106,6 +106,52 @@ void AFarmHUD::DrawHUD()
 			DrawText(Line, bCanCraft ? FLinearColor(0.55f, 1.f, 0.55f) : FLinearColor(0.55f, 0.55f, 0.55f), Margin, RY, Small, 1.05f);
 			RY += 24.f;
 		}
+	}
+
+	if (PC->IsInventoryOpen())
+	{
+		const float PX = W * 0.18f;
+		const float PY = H * 0.10f;
+		const float PW = W * 0.64f;
+		const float PH = H * 0.76f;
+		DrawRect(FLinearColor(0.02f, 0.03f, 0.02f, 0.88f), PX, PY, PW, PH);
+		DrawText(TEXT("INVENTORY   (Tab or Esc to close)"), FLinearColor(1.f, 0.9f, 0.55f), PX + 18.f, PY + 14.f, Medium, 1.2f);
+
+		struct FInventoryGroup
+		{
+			EItemKind Kind;
+			const TCHAR* Title;
+		};
+		const FInventoryGroup Groups[] = {
+			{ EItemKind::Seed, TEXT("Seeds") },
+			{ EItemKind::Produce, TEXT("Harvest") },
+			{ EItemKind::AnimalProduct, TEXT("Animal goods") },
+			{ EItemKind::Resource, TEXT("Resources") },
+			{ EItemKind::Material, TEXT("Materials / kits") }
+		};
+
+		float ColY = PY + 56.f;
+		for (const FInventoryGroup& Group : Groups)
+		{
+			DrawText(Group.Title, FLinearColor(0.65f, 0.85f, 0.65f), PX + 18.f, ColY, Small, 1.1f);
+			ColY += 24.f;
+			for (const FItemDef& Def : FarmItems::All())
+			{
+				if (Def.Kind != Group.Kind) continue;
+				const int32 Count = Character->GetInventory()->GetCount(Def.Id);
+				if (Count <= 0) continue;
+				const int32 UnitPrice = Def.SellPrice;
+				const FString Line = UnitPrice > 0
+					? FString::Printf(TEXT("  %-16s x%-3d   sell %dg"), Def.Label, Count, UnitPrice)
+					: FString::Printf(TEXT("  %-16s x%d"), Def.Label, Count);
+				DrawText(Line, FLinearColor(0.88f, 0.9f, 0.86f), PX + 24.f, ColY, Small, 1.0f);
+				ColY += 20.f;
+			}
+			ColY += 8.f;
+		}
+
+		DrawText(FString::Printf(TEXT("Gold %d      HP %d/%d"), Character->GetInventory()->Gold, Character->GetHealth(), Character->GetMaxHealth()),
+			FLinearColor(1.f, 0.92f, 0.7f), PX + 18.f, PY + PH - 34.f, Small, 1.1f);
 	}
 
 	const float ToastAlpha = PC->GetToastAlpha();

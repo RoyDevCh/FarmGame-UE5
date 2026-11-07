@@ -4,6 +4,8 @@
 #include "FarmInventoryComponent.h"
 #include "FarmItems.h"
 #include "FarmRecipes.h"
+#include "FarmCropCatalog.h"
+#include "FarmSaveGame.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
@@ -239,6 +241,128 @@ bool FFarmSmeltTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("one ore consumed"), Ore, 1);
 	TestEqual(TEXT("one ingot produced"), Ingots, 1);
 	TestFalse(TEXT("no smelt with empty furnace"), FarmLogic::SmeltStep(Ore, Ingots, Timer, 100.f, 8.f) && Ore < 0);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmCropCatalogTest, "FarmGame.Crops.CatalogSanity",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmCropCatalogTest::RunTest(const FString& Parameters)
+{
+	const TArray<FCropDef> Crops = FarmCrops::MakeDefaults();
+	TestEqual(TEXT("five crops"), Crops.Num(), 5);
+
+	TSet<FName> Ids;
+	for (const FCropDef& Crop : Crops)
+	{
+		TestFalse(TEXT("crop id set"), Crop.Id.IsNone());
+		TestFalse(TEXT("crop id unique"), Ids.Contains(Crop.Id));
+		Ids.Add(Crop.Id);
+		TestTrue(TEXT("at least two stages"), Crop.Stages >= 2);
+		TestTrue(TEXT("at least one day per stage"), Crop.DaysPerStage >= 1);
+		TestTrue(TEXT("harvest yields something"), Crop.YieldPerHarvest >= 1);
+		TestTrue(FString::Printf(TEXT("%s is profitable"), *Crop.Id.ToString()), FarmCrops::ProfitPerHarvest(Crop) > 0);
+		TestNotNull(FString::Printf(TEXT("%s seed in item catalog"), *Crop.Id.ToString()), FarmItems::Find(FarmItems::SeedId(Crop.Id)));
+		TestNotNull(FString::Printf(TEXT("%s produce in item catalog"), *Crop.Id.ToString()), FarmItems::Find(Crop.Id));
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmItemIdsTest, "FarmGame.Items.IdsAreUnique",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmItemIdsTest::RunTest(const FString& Parameters)
+{
+	TSet<FName> Ids;
+	for (const FItemDef& Def : FarmItems::All())
+	{
+		TestFalse(TEXT("item id set"), Def.Id.IsNone());
+		TestFalse(FString::Printf(TEXT("item id %s unique"), *Def.Id.ToString()), Ids.Contains(Def.Id));
+		TestNotNull(TEXT("label set"), Def.Label);
+		Ids.Add(Def.Id);
+	}
+	TestTrue(TEXT("at least 18 items"), FarmItems::All().Num() >= 18);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmRecipeIdsTest, "FarmGame.Recipes.IdsAreUnique",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmRecipeIdsTest::RunTest(const FString& Parameters)
+{
+	TSet<FName> Ids;
+	for (const FCraftRecipe& Recipe : FarmRecipes::All())
+	{
+		TestFalse(TEXT("recipe id unique"), Ids.Contains(Recipe.Id));
+		Ids.Add(Recipe.Id);
+		TestTrue(TEXT("output count positive"), Recipe.OutputCount > 0);
+	}
+	TestTrue(TEXT("at least four recipes"), FarmRecipes::All().Num() >= 4);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmUnknownItemTest, "FarmGame.Inventory.UnknownItemRejected",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmUnknownItemTest::RunTest(const FString& Parameters)
+{
+	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
+	Inventory->ResetForNewGame();
+	const int32 GoldBefore = Inventory->Gold;
+	TestFalse(TEXT("unknown item cannot be bought"), Inventory->BuyItem(TEXT("not_an_item"), 1));
+	TestEqual(TEXT("gold unchanged"), Inventory->Gold, GoldBefore);
+	TestEqual(TEXT("bag unchanged"), Inventory->GetCount(TEXT("not_an_item")), 0);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmEmptySaleTest, "FarmGame.Inventory.EmptySaleIsNoop",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmEmptySaleTest::RunTest(const FString& Parameters)
+{
+	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
+	Inventory->ResetForNewGame();
+	Inventory->Items.Reset();
+	const int32 GoldBefore = Inventory->Gold;
+	TestEqual(TEXT("nothing earned"), Inventory->SellEverything(), 0);
+	TestEqual(TEXT("gold unchanged"), Inventory->Gold, GoldBefore);
+	TestEqual(TEXT("sellable count zero"), Inventory->GetSellableCount(), 0);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmExactCraftTest, "FarmGame.Crafting.ExactMaterialsConsumeAll",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmExactCraftTest::RunTest(const FString& Parameters)
+{
+	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
+	Inventory->ResetForNewGame();
+	Inventory->Items.Reset();
+	Inventory->AddItem(TEXT("stone"), 10);
+	Inventory->AddItem(TEXT("wood"), 5);
+
+	const FCraftRecipe* Furnace = FarmRecipes::Find(TEXT("furnace_kit"));
+	TestNotNull(TEXT("furnace recipe exists"), Furnace);
+	TestTrue(TEXT("can craft with exact materials"), Inventory->Craft(*Furnace));
+	TestEqual(TEXT("stone consumed exactly"), Inventory->GetCount(TEXT("stone")), 0);
+	TestEqual(TEXT("wood consumed exactly"), Inventory->GetCount(TEXT("wood")), 0);
+	TestEqual(TEXT("furnace kit produced"), Inventory->GetCount(TEXT("furnace_kit")), 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmSaveDefaultsTest, "FarmGame.Save.DefaultsAreSane",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmSaveDefaultsTest::RunTest(const FString& Parameters)
+{
+	UFarmSaveGame* Save = NewObject<UFarmSaveGame>();
+	TestNotNull(TEXT("save object created"), Save);
+	TestEqual(TEXT("default day"), Save->Day, 1);
+	TestEqual(TEXT("default gold"), Save->Gold, 20);
+	TestEqual(TEXT("default health"), Save->PlayerHealth, 100);
+	TestEqual(TEXT("no plots by default"), Save->Plots.Num(), 0);
+	TestEqual(TEXT("no buildings by default"), Save->Buildings.Num(), 0);
+	TestEqual(TEXT("no animals by default"), Save->Animals.Num(), 0);
 	return true;
 }
 

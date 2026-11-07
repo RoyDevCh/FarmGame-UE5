@@ -19,7 +19,7 @@
 | 建筑与熔炉 | `AFarmBuilding` |
 | 传送门 | `AFarmPortal` |
 | HUD | `AFarmHUD::DrawHUD` |
-| 数据表 | `FarmItems::All`（16 项）、`FarmRecipes::All`（4 条）、`AFarmGameMode` 构造函数（3 种作物） |
+| 数据表 | `FarmItems::All`（18 项）、`FarmRecipes::All`（4 条）、`FarmCrops::MakeDefaults()`（5 种作物） |
 
 ## 1. 地图与初始布局
 
@@ -91,6 +91,8 @@
 | 胡萝卜 | `carrot` | 3 | 1 | 3 | 8 | 1 | 2 天 | (0.95, 0.45, 0.08) 橙 |
 | 土豆 | `potato` | 3 | 2 | 5 | 14 | 2 | 4 天 | (0.75, 0.62, 0.35) 土黄 |
 | 玉米 | `corn` | 4 | 1 | 6 | 12 | 2 | 3 天 | (0.95, 0.85, 0.2) 黄 |
+| 番茄 | `tomato` | 3 | 2 | 7 | 18 | 2 | 4 天 | (0.85, 0.18, 0.12) 红 |
+| 南瓜 | `pumpkin` | 4 | 2 | 10 | 26 | 1 | 6 天 | (0.9, 0.55, 0.1) 橙 |
 
 "从播种到成熟" = `(Stages - 1) × DaysPerStage`，即需要跨几次天。
 
@@ -151,7 +153,7 @@
 
 新档只会初始化一次（`AFarmGameMode::bPlayerInitialized`）；之后读档会用存档覆盖。
 
-### 4.2 物品表（`FarmItems::All`，16 项）
+### 4.2 物品表（`FarmItems::All`，18 项）
 
 类别 `EItemKind`：Seed / Produce / Resource / AnimalProduct / Material。
 
@@ -160,6 +162,8 @@
 | `carrot_seed` | Carrot Seed | Seed | 3 | 1 | 发货箱 `B` → 种胡萝卜 |
 | `potato_seed` | Potato Seed | Seed | 5 | 2 | 发货箱 `B` → 种土豆 |
 | `corn_seed` | Corn Seed | Seed | 6 | 2 | 发货箱 `B` → 种玉米 |
+| `tomato_seed` | Tomato Seed | Seed | 7 | 3 | 发货箱 `B` → 种番茄 |
+| `pumpkin_seed` | Pumpkin Seed | Seed | 10 | 4 | 发货箱 `B` → 种南瓜 |
 | `carrot` | Carrot | Produce | — | 8 | 收获 → 卖 |
 | `potato` | Potato | Produce | — | 14 | 收获 → 卖 |
 | `corn` | Corn | Produce | — | 12 | 收获 → 卖 / 做干草 |
@@ -186,7 +190,7 @@ wood / stone / hay 的买价目前是不可达数据。
 
 `UFarmInventoryComponent::SellEverything()` 一次清空所有可卖物品：
 
-- 卖：`Produce`、`AnimalProduct`、`Material`（且 `SellPrice > 0`）—— 即胡萝卜/土豆/玉米、蛋/奶/肉、铁锭。
+- 卖：`Produce`、`AnimalProduct`、`Material`（且 `SellPrice > 0`）—— 即 5 种作物、蛋/奶/肉、铁锭。
 - 不卖：`Seed`（种子留着下次种）、`Resource`（木/石/矿/干草是建材与燃料）。
 - 价格为 0 的 `fence_kit` / `furnace_kit` 不会被卖掉。
 - 返回本次总收入，Toast `Sold goods for +N gold`；没东西可卖时提示 `Nothing to sell`。
@@ -414,7 +418,7 @@ Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后�
 | 底部 | 制作菜单（按 `C` 展开，逐条列出配方、材料、能否制作） |
 | 顶部中央 | Toast（3.5 秒，最后 1.2 秒淡出） |
 
-## 14. 自动化测试（17 条）
+## 14. 自动化测试（24 条）
 
 全部是 `EAutomationTestFlags::EditorContext | EngineFilter` 的简单测试，前缀 `FarmGame.`。
 基础 11 条在 `FarmGameTests.cpp`，补充 6 条在 `FarmGameExtraTests.cpp`，都包在 `#if WITH_DEV_AUTOMATION_TESTS` 里。

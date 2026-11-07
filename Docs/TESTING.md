@@ -3,7 +3,7 @@
 本工程使用 UE 自带的 **Automation Test** 框架（`IMPLEMENT_SIMPLE_AUTOMATION_TEST`）验证纯逻辑。
 测试不创建 `UWorld`、不启动 PIE，因此可以在 `UnrealEditor-Cmd.exe` 中以 `-nullrhi` 无界面运行。
 
-当前共 **17 条**测试：
+当前共 **24 条**测试（`FarmGameTests.cpp` 18 条 + `FarmGameExtraTests.cpp` 6 条）：
 
 - 基础测试 11 条：`Source/FarmGameUE/FarmGameTests.cpp`
 - 补充测试 6 条：`Source/FarmGameUE/FarmGameExtraTests.cpp`

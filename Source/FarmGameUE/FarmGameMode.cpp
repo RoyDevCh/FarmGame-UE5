@@ -1,6 +1,7 @@
 #include "FarmGameMode.h"
 #include "FarmBin.h"
 #include "FarmCharacter.h"
+#include "FarmCropCatalog.h"
 #include "FarmHUD.h"
 #include "FarmInventoryComponent.h"
 #include "FarmPlayerController.h"
@@ -32,37 +33,7 @@ AFarmGameMode::AFarmGameMode()
 	PlayerControllerClass = AFarmPlayerController::StaticClass();
 	HUDClass = AFarmHUD::StaticClass();
 
-	FCropDef Carrot;
-	Carrot.Id = TEXT("carrot");
-	Carrot.DisplayName = FText::FromString(TEXT("Carrot"));
-	Carrot.Stages = 3;
-	Carrot.DaysPerStage = 1;
-	Carrot.SeedCost = 3;
-	Carrot.SellPrice = 8;
-	Carrot.YieldPerHarvest = 1;
-	Carrot.Color = FLinearColor(0.95f, 0.45f, 0.08f);
-
-	FCropDef Potato;
-	Potato.Id = TEXT("potato");
-	Potato.DisplayName = FText::FromString(TEXT("Potato"));
-	Potato.Stages = 3;
-	Potato.DaysPerStage = 2;
-	Potato.SeedCost = 5;
-	Potato.SellPrice = 14;
-	Potato.YieldPerHarvest = 2;
-	Potato.Color = FLinearColor(0.75f, 0.62f, 0.35f);
-
-	FCropDef Corn;
-	Corn.Id = TEXT("corn");
-	Corn.DisplayName = FText::FromString(TEXT("Corn"));
-	Corn.Stages = 4;
-	Corn.DaysPerStage = 1;
-	Corn.SeedCost = 6;
-	Corn.SellPrice = 12;
-	Corn.YieldPerHarvest = 2;
-	Corn.Color = FLinearColor(0.95f, 0.85f, 0.2f);
-
-	Crops = { Carrot, Potato, Corn };
+	Crops = FarmCrops::MakeDefaults();
 }
 
 void AFarmGameMode::BeginPlay()
