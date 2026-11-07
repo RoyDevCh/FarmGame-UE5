@@ -204,20 +204,36 @@ if (-not (Test-Path -LiteralPath $LogPath -PathType Leaf)) {
 # Each finished test logs: Test Completed. Result={Success} Name={FarmGame....} Path={...}
 $Results = @{}
 $Order = New-Object System.Collections.Generic.List[string]
-foreach ($Line in [System.IO.File]::ReadLines($LogPath)) {
-    if ($Line -notmatch 'Test Completed\.') {
-        continue
+
+# The editor may exit on "queue empty" before the last line reaches -abslog,
+# so also scan its normal log and merge results by test name.
+$CandidateLogs = New-Object System.Collections.Generic.List[string]
+$CandidateLogs.Add($LogPath)
+$FallbackLog = Join-Path $ProjectRoot 'Saved\Logs\FarmGameUE.log'
+if (Test-Path -LiteralPath $FallbackLog -PathType Leaf) {
+    $CandidateLogs.Add($FallbackLog)
+}
+
+foreach ($CandidateLog in $CandidateLogs) {
+    foreach ($Line in [System.IO.File]::ReadLines($CandidateLog)) {
+        if ($Line -notmatch 'Test Completed\.') {
+            continue
+        }
+        $ResultMatch = [regex]::Match($Line, 'Result=\{(?<Value>[^}]+)\}')
+        # Key by full Path: short names repeat across namespaces (e.g. two IdsAreUnique).
+        $NameMatch = [regex]::Match($Line, 'Path=\{(?<Value>[^}]+)\}')
+        if (-not $NameMatch.Success) {
+            $NameMatch = [regex]::Match($Line, 'Name=\{(?<Value>[^}]+)\}')
+        }
+        if (-not $ResultMatch.Success -or -not $NameMatch.Success) {
+            continue
+        }
+        $Name = $NameMatch.Groups['Value'].Value
+        if (-not $Results.ContainsKey($Name)) {
+            $Order.Add($Name)
+        }
+        $Results[$Name] = $ResultMatch.Groups['Value'].Value
     }
-    $ResultMatch = [regex]::Match($Line, 'Result=\{(?<Value>[^}]+)\}')
-    $NameMatch = [regex]::Match($Line, 'Name=\{(?<Value>[^}]+)\}')
-    if (-not $ResultMatch.Success -or -not $NameMatch.Success) {
-        continue
-    }
-    $Name = $NameMatch.Groups['Value'].Value
-    if (-not $Results.ContainsKey($Name)) {
-        $Order.Add($Name)
-    }
-    $Results[$Name] = $ResultMatch.Groups['Value'].Value
 }
 
 $Success = 0
