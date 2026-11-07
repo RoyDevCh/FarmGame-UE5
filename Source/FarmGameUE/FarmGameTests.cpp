@@ -5,6 +5,7 @@
 #include "FarmItems.h"
 #include "FarmRecipes.h"
 #include "FarmCropCatalog.h"
+#include "FarmQuests.h"
 #include "FarmSaveGame.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
@@ -428,6 +429,39 @@ bool FFarmChestRecipeTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("input is wood"), Chest->Inputs[0].ItemId, FName(TEXT("wood")));
 	TestEqual(TEXT("costs 12 wood"), Chest->Inputs[0].Count, 12);
 	TestNotNull(TEXT("chest kit in catalog"), FarmItems::Find(TEXT("chest_kit")));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmQuestAdvanceTest, "FarmGame.Quests.AdvanceToCompletion",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmQuestAdvanceTest::RunTest(const FString& Parameters)
+{
+	TArray<FQuestState> Quests = FarmQuests::MakeDefault();
+	TestEqual(TEXT("three objectives"), Quests.Num(), 3);
+
+	FQuestState& Quest = Quests[0];
+	TestFalse(TEXT("no completion before target"), FarmQuests::Advance(Quest, 1));
+	TestEqual(TEXT("progress tracked"), Quest.Progress, 1);
+	TestFalse(TEXT("still short"), FarmQuests::Advance(Quest, 1));
+	TestTrue(TEXT("completes on target"), FarmQuests::Advance(Quest, 1));
+	TestEqual(TEXT("progress capped"), Quest.Progress, Quest.Target);
+	TestFalse(TEXT("no double completion"), FarmQuests::Advance(Quest, 5));
+	TestEqual(TEXT("progress stays capped"), Quest.Progress, Quest.Target);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmQuestDefaultsTest, "FarmGame.Quests.DefaultsReferenceItems",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmQuestDefaultsTest::RunTest(const FString& Parameters)
+{
+	for (const FQuestState& Quest : FarmQuests::MakeDefault())
+	{
+		TestTrue(TEXT("title set"), !Quest.Title.IsEmpty());
+		TestTrue(TEXT("target positive"), Quest.Target > 0);
+		TestNotNull(FString::Printf(TEXT("%s exists in item catalog"), *Quest.ItemId.ToString()), FarmItems::Find(Quest.ItemId));
+	}
 	return true;
 }
 

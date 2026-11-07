@@ -242,6 +242,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 			const int32 Yield = CropDef ? CropDef->YieldPerHarvest : 1;
 			Inventory->AddItem(CropId, Yield);
 			FarmAudio::Play(this, TEXT("/Game/Art/Audio/pop.pop"));
+			if (GM) GM->NotifyProduced(CropId, Yield);
 			UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d harvested %s x%d"), Index, *CropId.ToString(), Yield);
 			if (PC)
 			{

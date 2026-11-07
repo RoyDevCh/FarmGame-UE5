@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
+#include "FarmQuests.h"
 #include "FarmTypes.h"
 #include "FarmBuilding.h"
 #include "FarmGameMode.generated.h"
@@ -37,6 +38,11 @@ public:
 
 	const FCropDef* FindCrop(FName Id) const;
 	int32 GetDay() const { return Day; }
+
+	/** Advances the active objective when the player produces the requested item. */
+	void NotifyProduced(FName ItemId, int32 Amount);
+	const TArray<FQuestState>& GetQuests() const { return Quests; }
+	int32 GetActiveQuestIndex() const { return ActiveQuestIndex; }
 	AFarmBin* GetBin() const { return Bin; }
 	float GetDayLengthSeconds() const { return DayLengthSeconds; }
 	/** 0..1 progress through the current day. */
@@ -58,6 +64,8 @@ protected:
 	UPROPERTY() int32 Day = 1;
 	UPROPERTY() float DayLengthSeconds = 180.f;
 	float DayTimer = 0.f;
+	UPROPERTY() TArray<FQuestState> Quests;
+	int32 ActiveQuestIndex = 0;
 	UPROPERTY() AFarmBin* Bin = nullptr;
 	UPROPERTY() class ADirectionalLight* SunLight = nullptr;
 	bool bRaining = false;

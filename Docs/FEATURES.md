@@ -446,7 +446,11 @@ Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后�
 | 装填熔炉 | `hit_stone` |
 | 命中动物 | `flesh_hit` |
 
-## 14. 自动化测试（27 条）
+## 13.6 目标链
+
+`AFarmGameMode::NotifyProduced` 接收产出事件，按顺序推进 3 条目标（胡萝卜 x3 → 熔炉套件 x1 → 铁锭 x1）；HUD 显示当前目标与进度，完成后自动切换下一条。状态由 `FarmQuests::Advance` 驱动，可单独测试。
+
+## 14. 自动化测试（29 条）
 
 全部是 `EAutomationTestFlags::EditorContext | EngineFilter` 的简单测试，前缀 `FarmGame.`。
 基础 11 条在 `FarmGameTests.cpp`，补充 6 条在 `FarmGameExtraTests.cpp`，都包在 `#if WITH_DEV_AUTOMATION_TESTS` 里。

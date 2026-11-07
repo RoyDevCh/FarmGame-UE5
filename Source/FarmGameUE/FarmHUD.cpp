@@ -154,6 +154,18 @@ void AFarmHUD::DrawHUD()
 			FLinearColor(1.f, 0.92f, 0.7f), PX + 18.f, PY + PH - 34.f, Small, 1.1f);
 	}
 
+	if (const AFarmGameMode* QuestGM = PC->GetWorld() ? PC->GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		const TArray<FQuestState>& Quests = QuestGM->GetQuests();
+		const int32 Index = QuestGM->GetActiveQuestIndex();
+		FString Line = TEXT("Objective: all complete");
+		if (Quests.IsValidIndex(Index))
+		{
+			Line = FString::Printf(TEXT("Objective: %s  (%d/%d)"), *Quests[Index].Title, Quests[Index].Progress, Quests[Index].Target);
+		}
+		DrawText(Line, FLinearColor(1.f, 0.85f, 0.45f), W * 0.02f, H * 0.34f, Small, 1.05f);
+	}
+
 	const float ToastAlpha = PC->GetToastAlpha();
 	if (ToastAlpha > 0.f)
 	{

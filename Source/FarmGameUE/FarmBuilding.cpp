@@ -1,6 +1,7 @@
 #include "FarmBuilding.h"
 #include "FarmArt.h"
 #include "FarmAudio.h"
+#include "FarmGameMode.h"
 #include "FarmTypes.h"
 #include "FarmCharacter.h"
 #include "FarmInventoryComponent.h"
@@ -158,6 +159,7 @@ void AFarmBuilding::Interact(AFarmCharacter* Character)
 	{
 		Inventory->AddItem(TEXT("ingot"), IngotCount);
 		FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"));
+		if (AFarmGameMode* Gm = GetWorld()->GetAuthGameMode<AFarmGameMode>()) Gm->NotifyProduced(TEXT("ingot"), IngotCount);
 		UE_LOG(LogTemp, Log, TEXT("FarmGame: furnace collected %d ingot"), IngotCount);
 		if (PC) PC->ShowToast(FString::Printf(TEXT("+%d iron ingot"), IngotCount));
 		IngotCount = 0;

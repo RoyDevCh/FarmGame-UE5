@@ -4,10 +4,10 @@
 用 **Unreal Engine 5.8 + C++** 重做的一个可玩版本。
 
 这不是 1:1 移植：先把"能玩、可验证、可继续扩展"的骨架立起来。规则、数据、存档、自动化测试都是 UE 原生 C++ 实现；
-美术：导入 30 个 FBX、4 套骨骼动画与 7 个音效；地面/土壤用程序生成的可平铺贴图（`Content/Art/Textures`）（角色、鸡、牛、熊、五种作物、土壤、栅栏、熔炉、箱子、树、石头，以及谷仓/房屋/风车/棕榈/松树/灌木/花/草丛），运行时按包围盒自动归一化缩放；缺失时回退到 `/Engine/BasicShapes` 几何体。
+美术：导入 120+ 个原版模型（建筑/道具/树木/动物）、4 套骨骼动画与 7 个音效；地面/土壤用程序生成的可平铺贴图（`Content/Art/Textures`）（角色、鸡、牛、熊、五种作物、土壤、栅栏、熔炉、箱子、树、石头，以及谷仓/房屋/风车/棕榈/松树/灌木/花/草丛），运行时按包围盒自动归一化缩放；缺失时回退到 `/Engine/BasicShapes` 几何体。
 
 **当前版本 v2**：在 v1 的种田闭环（锄地 → 播种 → 浇水 → 过夜生长 → 收获 → 卖钱）之上，补齐了采集、制作、建造、
-冶炼、养殖、战斗、传送、天气与昼夜光照；存档从"天数 + 金币 + 地块"扩展到建筑、动物、天气、HP；自动化测试从 5 条增加到 27 条。
+冶炼、养殖、战斗、传送、天气与昼夜光照；存档从"天数 + 金币 + 地块"扩展到建筑、动物、天气、HP；自动化测试从 5 条增加到 29 条。
 
 ![Gameplay](Docs/screenshots/01_start.png)
 
@@ -58,9 +58,11 @@
 | HUD | Canvas 立即模式绘制：天数/金币、时间 + 天气、HP 条、种子与收成、材料、套件、交互提示、Toast |
 | 背包 UI | `Tab` 打开 Slate 面板 `SFarmInventoryWidget`：分组物品列表 + 4 个可点击制作按钮；游戏内鼠标可用 |
 | 动画 | 角色 idle/run/attack、鸡 idle/walk、牛 idle/walk（SkeletalMesh + AnimSequence，运行时按速度切换）；野猪暂为静态姿态 |
+| 村庄道具 | 水井、售卖亭、长椅、路灯、喷泉、木箱、水槽、告示牌、铁砧、大锅、石砖、土堆、池塘、树/枯树/仙人掌 |
 | 材质/贴图 | `M_FarmGrassTiled` / `M_FarmSoilTiled` / `M_FarmWoodTiled`：噪声生成的可平铺贴图 + 材质；地表不再纯色 |
+| 目标 | 3 段线性任务：收获 3 胡萝卜 → 制作熔炉套件 → 冶炼铁锭；HUD 显示进度，完成自动推进 |
 | 音效 | 7 个原版 WAV：锄地 / 播种 / 浇水 / 收获 / 制作 / 建造 / 挥击 / 命中；2D 播放，缺失静默 |
-| 测试 | 27 条 UE Automation（`FarmGameTests.cpp` 21 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
+| 测试 | 29 条 UE Automation（`FarmGameTests.cpp` 23 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
 | 打包 | `Scripts/package.ps1` 跑通 BuildCookRun，产出 `Saved/Archive/Windows/FarmGameUE.exe`（本机已实测可启动） |
 
 ### 明确没做的（避免误读）
@@ -107,7 +109,7 @@
 
 ## 测试
 
-共 27 条 UE Automation 测试，统一挂在 `FarmGame.*` 前缀下：`FarmGameTests.cpp` 21 条，`FarmGameExtraTests.cpp` 6 条。
+共 29 条 UE Automation 测试，统一挂在 `FarmGame.*` 前缀下：`FarmGameTests.cpp` 21 条，`FarmGameExtraTests.cpp` 6 条。
 
 最省事的跑法（自动定位引擎、跑完打印通过/失败数量）：
 
@@ -130,12 +132,13 @@
 | `FarmGame.Items`（2） | `CatalogIsConsistent` / `IdsAreUnique` |
 | `FarmGame.Recipes`（2） | `CatalogReferencesKnownItems` / `IdsAreUnique` |
 | `FarmGame.Save`（1） | `DefaultsAreSane` |
+| `FarmGame.Quests`（2） | `AdvanceToCompletion` / `DefaultsReferenceItems` |
 | 其它（3） | `Crops.RegrowAfterHarvest` / `Inventory.ChestDepositWithdraw` / `Crafting.ChestRecipeCostsWood` |
 | `FarmGame.Extra`（6） | `CropMultiStageContinuous` / `SmeltTwoStepsInARow` / `SellIncludesIngotKeepsSeedsAndResources` / `CraftFailureKeepsMaterials` / `SeedIdsForThreeCrops` / `RecipeOutputsInCatalog` |
 
 测试全部是纯逻辑 / 组件级：生长与冶炼直接调 `FarmLogic` 的静态函数，库存与制作直接 `NewObject<UFarmInventoryComponent>()`，
 不创建 `UWorld`、不启动 PIE，所以能在 `-nullrhi` 下跑。
-本机最近一次全量运行 27/27 Success，日志见 `Saved/Logs/FarmGameUE-backup-2026.11.07-18.02.48.log`；
+本机最近一次全量运行 29/29 Success，日志见 `Saved/Logs/FarmGameUE-backup-2026.11.07-18.02.48.log`；
 测试逐条说明与排错见 [Docs/TESTING.md](Docs/TESTING.md)。
 
 ## 代码结构

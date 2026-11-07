@@ -466,6 +466,7 @@ void AFarmPlayerController::CraftRecipe(int32 Index)
 	if (Farmer->GetInventory()->Craft(Recipe))
 	{
 		FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"));
+		if (AFarmGameMode* Gm = GetWorld()->GetAuthGameMode<AFarmGameMode>()) Gm->NotifyProduced(Recipe.OutputId, Recipe.OutputCount);
 		UE_LOG(LogTemp, Log, TEXT("FarmGame: crafted %s"), *Recipe.OutputId.ToString());
 		ShowToast(FString::Printf(TEXT("Crafted %s"), *FarmItems::LabelOf(Recipe.OutputId)));
 	}

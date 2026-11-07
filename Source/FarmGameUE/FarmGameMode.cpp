@@ -38,6 +38,7 @@ AFarmGameMode::AFarmGameMode()
 	HUDClass = AFarmHUD::StaticClass();
 
 	Crops = FarmCrops::MakeDefaults();
+	Quests = FarmQuests::MakeDefault();
 }
 
 void AFarmGameMode::BeginPlay()
@@ -161,6 +162,23 @@ AFarmBuilding* AFarmGameMode::SpawnBuilding(EBuildingType Type, const FVector& L
 		Buildings.Add(Building);
 	}
 	return Building;
+}
+
+void AFarmGameMode::NotifyProduced(FName ItemId, int32 Amount)
+{
+	if (!Quests.IsValidIndex(ActiveQuestIndex)) return;
+	FQuestState& Quest = Quests[ActiveQuestIndex];
+	if (Quest.ItemId != ItemId) return;
+
+	if (FarmQuests::Advance(Quest, Amount))
+	{
+		UE_LOG(LogTemp, Log, TEXT("FarmGame: quest complete %s"), *Quest.Title);
+		ActiveQuestIndex++;
+		if (Quests.IsValidIndex(ActiveQuestIndex))
+		{
+			UE_LOG(LogTemp, Log, TEXT("FarmGame: quest next %s"), *Quests[ActiveQuestIndex].Title);
+		}
+	}
 }
 
 void AFarmGameMode::BuildWorld()
@@ -334,6 +352,28 @@ void AFarmGameMode::BuildWorld()
 			SpawnProp(TEXT("/Game/Art/Environment/grass.grass"), P, Rng.FRandRange(30.f, 70.f), Rng.FRandRange(0.f, 360.f));
 		}
 	}
+
+	// Village props imported from the original project.
+	SpawnProp(TEXT("/Game/Art/Props/Well.Well"), FVector(700.f, 1000.f, 0.f), 240.f, 15.f);
+	SpawnProp(TEXT("/Game/Art/Props/Selling_Kiosk.Selling_Kiosk"), FVector(320.f, 1000.f, 0.f), 260.f, 100.f);
+	SpawnProp(TEXT("/Game/Art/Props/Bench.Bench"), FVector(950.f, 820.f, 0.f), 130.f, -35.f);
+	SpawnProp(TEXT("/Game/Art/Props/LampPost.LampPost"), FVector(240.f, 760.f, 0.f), 280.f);
+	SpawnProp(TEXT("/Game/Art/Props/LampPost.LampPost"), FVector(1080.f, 760.f, 0.f), 280.f);
+	SpawnProp(TEXT("/Game/Art/Props/Fountain.Fountain"), FVector(1420.f, 1250.f, 0.f), 420.f);
+	SpawnProp(TEXT("/Game/Art/Environment/Pond.Pond"), FVector(-1050.f, 1450.f, 0.f), 720.f);
+	SpawnProp(TEXT("/Game/Art/Props/WoodenCrate.WoodenCrate"), FVector(-1280.f, 980.f, 0.f), 90.f, 12.f);
+	SpawnProp(TEXT("/Game/Art/Props/WoodenCrate.WoodenCrate"), FVector(-1210.f, 1030.f, 0.f), 80.f, -20.f);
+	SpawnProp(TEXT("/Game/Art/Props/trough.trough"), FVector(1500.f, -380.f, 0.f), 130.f);
+	SpawnProp(TEXT("/Game/Art/Props/Sign.Sign"), FVector(220.f, 640.f, 0.f), 100.f, -20.f);
+	SpawnProp(TEXT("/Game/Art/Props/anvil.anvil"), FVector(900.f, 320.f, 0.f), 110.f);
+	SpawnProp(TEXT("/Game/Art/Props/cauldron.cauldron"), FVector(1180.f, 940.f, 0.f), 130.f);
+	SpawnProp(TEXT("/Game/Art/Props/StoneTile1.StoneTile1"), FVector(520.f, 860.f, 0.f), 300.f);
+	SpawnProp(TEXT("/Game/Art/Environment/soil_pile.soil_pile"), FVector(470.f, 420.f, 0.f), 110.f);
+	SpawnProp(TEXT("/Game/Art/Props/Tree1.Tree1"), FVector(-2000.f, -300.f, 0.f), 820.f);
+	SpawnProp(TEXT("/Game/Art/Props/Tree2.Tree2"), FVector(2100.f, 600.f, 0.f), 760.f, 40.f);
+	SpawnProp(TEXT("/Game/Art/Props/Tree3.Tree3"), FVector(-1800.f, 2050.f, 0.f), 880.f, 80.f);
+	SpawnProp(TEXT("/Game/Art/Props/TreeDead.TreeDead"), FVector(2550.f, 2650.f, 0.f), 700.f, 30.f);
+	SpawnProp(TEXT("/Game/Art/Props/Cactus.Cactus"), FVector(2150.f, 2850.f, 0.f), 220.f);
 
 	SpawnProp(TEXT("/Game/Art/Environment/metal_rock.metal_rock"), FVector(2400.f, 2300.f, 0.f), 120.f);
 	SpawnProp(TEXT("/Game/Art/Environment/rock2.rock2"), FVector(-2100.f, 2100.f, 0.f), 90.f);
