@@ -208,3 +208,11 @@
 - 这是**可玩的垂直切片**：核心循环、经济、制作、建造、战斗、存档、测试都已打通，方便继续往上堆系统。
 - 存档位置：`Saved/SaveGames/FarmSlot.sav`；删掉它即可重新开始（新档 = 20 金 + 若干初始物资）。
 - 灵感与玩法来源：[RoyDevCh/FarmGame](https://github.com/RoyDevCh/FarmGame)。
+
+## 地形与植被（MCP 工作流）
+
+- 地形：`/Game/Maps/Farm` 内的 `FarmLandscape`，5×5 组件、316×316、extent 15750；高度图在 `Saved/Heightmaps/farm.raw`（导入/导出字节一致）。
+- 植被：`/Game/Foliage/GrassType`（草模型），4 条带共 480 个实例；`get_foliage_instances` 回读通过。
+- 生成方式：ue-control-mcp v0.3.0 的 EngineWire `create_landscape` / `edit_landscape(import_heightmap)` / `create_foliage_type` / `paint_foliage_instances`。
+- `batch_import`（带 options）导入了 8 个作物生长阶段模型；`import_animation` 重新导入了 `bear_idle`（长度 6.21s，Skeleton 校验通过）。
+- EngineWire 是本地开发插件，**不随仓库提交**；换机器后用 `project_setup` 重新接入。
