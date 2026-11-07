@@ -418,6 +418,20 @@ Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后�
 | 底部 | 制作菜单（按 `C` 展开，逐条列出配方、材料、能否制作） |
 | 顶部中央 | Toast（3.5 秒，最后 1.2 秒淡出） |
 
+## 13.5 音效
+
+7 个原版 WAV 位于 `Content/Art/Audio`，由 `FarmAudio::Play` 在以下时机 2D 播放：
+
+| 动作 | 资源 |
+|---|---|
+| 锄地 | `hit_wood` |
+| 播种 / 收获 | `pop` |
+| 浇水 / 挥击 | `fast_woosh` |
+| 制作 / 卖货 / 收铁锭 | `craft` |
+| 建造 | `build` |
+| 装填熔炉 | `hit_stone` |
+| 命中动物 | `flesh_hit` |
+
 ## 14. 自动化测试（27 条）
 
 全部是 `EAutomationTestFlags::EditorContext | EngineFilter` 的简单测试，前缀 `FarmGame.`。

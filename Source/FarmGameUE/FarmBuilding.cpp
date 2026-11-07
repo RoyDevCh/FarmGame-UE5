@@ -1,5 +1,6 @@
 #include "FarmBuilding.h"
 #include "FarmArt.h"
+#include "FarmAudio.h"
 #include "FarmTypes.h"
 #include "FarmCharacter.h"
 #include "FarmInventoryComponent.h"
@@ -156,6 +157,7 @@ void AFarmBuilding::Interact(AFarmCharacter* Character)
 	if (IngotCount > 0)
 	{
 		Inventory->AddItem(TEXT("ingot"), IngotCount);
+		FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"));
 		UE_LOG(LogTemp, Log, TEXT("FarmGame: furnace collected %d ingot"), IngotCount);
 		if (PC) PC->ShowToast(FString::Printf(TEXT("+%d iron ingot"), IngotCount));
 		IngotCount = 0;
@@ -171,6 +173,7 @@ void AFarmBuilding::Interact(AFarmCharacter* Character)
 	if (Inventory->RemoveItem(TEXT("ore"), 1) && Inventory->RemoveItem(TEXT("wood"), 1))
 	{
 		OreCount++;
+		FarmAudio::Play(this, TEXT("/Game/Art/Audio/hit_stone.hit_stone"), 0.6f);
 		UE_LOG(LogTemp, Log, TEXT("FarmGame: furnace loaded ore (%d)"), OreCount);
 		if (PC) PC->ShowToast(TEXT("Loaded 1 ore (burns 1 wood)"));
 	}

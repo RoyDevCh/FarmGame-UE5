@@ -1,5 +1,6 @@
 #include "FarmAnimal.h"
 #include "FarmArt.h"
+#include "FarmAudio.h"
 #include "FarmCharacter.h"
 #include "FarmInventoryComponent.h"
 #include "FarmItems.h"
@@ -227,6 +228,7 @@ void AFarmAnimal::ApplyDamage(int32 Amount, AFarmCharacter* Attacker)
 {
 	if (Health <= 0) return;
 	Health -= Amount;
+	FarmAudio::Play(this, TEXT("/Game/Art/Audio/flesh_hit.flesh_hit"), 0.7f);
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: animal hit for %d (hp %d)"), Amount, Health);
 	if (Health > 0) return;
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: animal died"));

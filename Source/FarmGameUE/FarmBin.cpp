@@ -1,5 +1,6 @@
 #include "FarmBin.h"
 #include "FarmArt.h"
+#include "FarmAudio.h"
 #include "FarmCharacter.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
@@ -51,5 +52,6 @@ void AFarmBin::Interact(AFarmCharacter* Character)
 	if (!PC || !GM || !Inv) return;
 
 	const int32 Earned = Inv->SellEverything();
+	FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"), 0.8f);
 	PC->ShowToast(Earned > 0 ? FString::Printf(TEXT("Sold goods for +%d gold"), Earned) : TEXT("Nothing to sell"));
 }

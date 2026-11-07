@@ -4,6 +4,7 @@
 #include "FarmAnimal.h"
 #include "FarmCharacter.h"
 #include "FarmGameMode.h"
+#include "FarmAudio.h"
 #include "FarmInventoryComponent.h"
 #include "FarmInventoryWidget.h"
 #include "FarmItems.h"
@@ -301,6 +302,7 @@ void AFarmPlayerController::Attack()
 		BestDist = Dist;
 	}
 
+	FarmAudio::Play(this, TEXT("/Game/Art/Audio/fast_woosh.fast_woosh"), 0.8f);
 	if (Best)
 	{
 		Best->ApplyDamage(34, Farmer);
@@ -366,6 +368,7 @@ void AFarmPlayerController::PlaceBuilding()
 		: BuildModeIndex == 1 ? EBuildingType::Furnace
 		: EBuildingType::Chest;
 	GM->SpawnBuilding(Type, Location);
+	FarmAudio::Play(this, TEXT("/Game/Art/Audio/build.build"));
 	ShowToast(FString::Printf(TEXT("Placed %s"), *GetBuildLabel()));
 }
 
@@ -461,6 +464,7 @@ void AFarmPlayerController::CraftRecipe(int32 Index)
 	}
 	if (Farmer->GetInventory()->Craft(Recipe))
 	{
+		FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"));
 		UE_LOG(LogTemp, Log, TEXT("FarmGame: crafted %s"), *Recipe.OutputId.ToString());
 		ShowToast(FString::Printf(TEXT("Crafted %s"), *FarmItems::LabelOf(Recipe.OutputId)));
 	}

@@ -1,5 +1,6 @@
 #include "FarmPlot.h"
 #include "FarmArt.h"
+#include "FarmAudio.h"
 #include "FarmCharacter.h"
 #include "FarmPlayerController.h"
 #include "FarmGameMode.h"
@@ -192,6 +193,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 	case EFarmPlotState::Untilled:
 		State = EFarmPlotState::Tilled;
 		RefreshVisuals();
+		FarmAudio::Play(this, TEXT("/Game/Art/Audio/hit_wood.hit_wood"));
 		UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d tilled"), Index);
 		break;
 
@@ -211,6 +213,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 			LastGrowthDay = GM->GetDay();
 			State = EFarmPlotState::Planted;
 			RefreshVisuals();
+			FarmAudio::Play(this, TEXT("/Game/Art/Audio/pop.pop"), 0.7f);
 			UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d planted %s"), Index, *CropId.ToString());
 		}
 		else
@@ -225,6 +228,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 		{
 			bWatered = true;
 			RefreshVisuals();
+			FarmAudio::Play(this, TEXT("/Game/Art/Audio/fast_woosh.fast_woosh"), 0.5f);
 			UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d watered"), Index);
 		}
 		break;
@@ -235,6 +239,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 		{
 			const int32 Yield = CropDef ? CropDef->YieldPerHarvest : 1;
 			Inventory->AddItem(CropId, Yield);
+			FarmAudio::Play(this, TEXT("/Game/Art/Audio/pop.pop"));
 			UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d harvested %s x%d"), Index, *CropId.ToString(), Yield);
 			if (PC)
 			{
