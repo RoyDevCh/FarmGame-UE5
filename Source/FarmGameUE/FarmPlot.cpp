@@ -1,4 +1,5 @@
 #include "FarmPlot.h"
+#include "FarmArt.h"
 #include "FarmCharacter.h"
 #include "FarmPlayerController.h"
 #include "FarmGameMode.h"
@@ -29,7 +30,11 @@ AFarmPlot::AFarmPlot()
 
 	CropMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Crop"));
 	CropMesh->SetupAttachment(SceneRoot);
-	if (CylinderMesh.Succeeded()) CropMesh->SetStaticMesh(CylinderMesh.Object);
+	if (CylinderMesh.Succeeded())
+	{
+		CropMesh->SetStaticMesh(CylinderMesh.Object);
+		FallbackCropMesh = CylinderMesh.Object;
+	}
 	CropMesh->SetRelativeLocation(FVector(0.f, 0.f, 20.f));
 	CropMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 	CropMesh->SetVisibility(false);
@@ -46,6 +51,14 @@ void AFarmPlot::BeginPlay()
 		CropMaterial = UMaterialInstanceDynamic::Create(BaseMaterial, this);
 		if (SoilMaterial) SoilMesh->SetMaterial(0, SoilMaterial);
 		if (CropMaterial) CropMesh->SetMaterial(0, CropMaterial);
+	}
+
+	// Prefer the imported Unity soil mesh; keep the cube when it is unavailable.
+	bArtSoil = FarmArt::Apply(SoilMesh, TEXT("/Game/Art/Farming/soil_hoed.soil_hoed"), 120.f);
+	if (bArtSoil && SoilMaterial)
+	{
+		// The imported soil material is unlit white; keep the shape, use the farm palette.
+		SoilMesh->SetMaterial(0, SoilMaterial);
 	}
 	RefreshVisuals();
 }
@@ -93,6 +106,16 @@ void AFarmPlot::RefreshVisuals()
 
 	const int32 MaxStage = CropDef ? FMath::Max(1, CropDef->Stages) - 1 : 1;
 	const float StageAlpha = MaxStage > 0 ? static_cast<float>(Stage) / static_cast<float>(MaxStage) : 0.f;
+
+	const TCHAR* ArtPath = FarmArt::CropMeshPath(CropId);
+	const float ArtHeight = FMath::Lerp(16.f, 72.f, StageAlpha);
+	if (ArtPath && FarmArt::ApplyHeight(CropMesh, ArtPath, ArtHeight))
+	{
+		return;
+	}
+
+	// Fallback: tinted cylinder scaled by stage.
+	if (FallbackCropMesh) CropMesh->SetStaticMesh(FallbackCropMesh);
 	const float Height = FMath::Lerp(0.18f, 1.15f, StageAlpha);
 	const float Width = FMath::Lerp(0.22f, 0.75f, StageAlpha);
 	CropMesh->SetRelativeScale3D(FVector(Width, Width, Height));

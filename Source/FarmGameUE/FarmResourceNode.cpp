@@ -1,4 +1,5 @@
 #include "FarmResourceNode.h"
+#include "FarmArt.h"
 #include "FarmCharacter.h"
 #include "FarmItems.h"
 #include "FarmInventoryComponent.h"
@@ -39,6 +40,16 @@ void AFarmResourceNode::ApplyVisual()
 {
 	UMaterialInterface* BaseMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	UMaterialInstanceDynamic* MID = BaseMaterial ? UMaterialInstanceDynamic::Create(BaseMaterial, this) : nullptr;
+
+	const TCHAR* ArtPath = Type == EResourceType::Tree ? TEXT("/Game/Art/Environment/TreeFruitL2.TreeFruitL2")
+		: Type == EResourceType::Rock ? TEXT("/Game/Art/Environment/rock1.rock1")
+		: TEXT("/Game/Art/Environment/Boulder.Boulder");
+	const float ArtHeight = Type == EResourceType::Tree ? 600.f : Type == EResourceType::Rock ? 80.f : 90.f;
+	if (FarmArt::ApplyHeight(Mesh, ArtPath, ArtHeight))
+	{
+		Detail->SetVisibility(false);
+		return;
+	}
 
 	FLinearColor Color = FLinearColor(0.3f, 0.2f, 0.1f);
 	FVector Scale(0.5f, 0.5f, 3.2f);

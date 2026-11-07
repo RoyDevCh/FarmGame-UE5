@@ -16,10 +16,12 @@ class FARMGAMEUE_API AFarmBin : public AActor
 
 public:
 	AFarmBin();
+	virtual void BeginPlay() override;
 
 	void Interact(AFarmCharacter* Character);
 	FString GetPrompt(const AFarmPlayerController* PC) const;
 
 protected:
+	UPROPERTY(VisibleAnywhere) USceneComponent* SceneRoot;
 	UPROPERTY(VisibleAnywhere) UStaticMeshComponent* Mesh;
 };

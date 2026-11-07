@@ -1,4 +1,5 @@
 #include "FarmCharacter.h"
+#include "FarmArt.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
 #include "FarmPlayerController.h"
@@ -49,6 +50,11 @@ void AFarmCharacter::BeginPlay()
 	Super::BeginPlay();
 	HomeLocation = GetActorLocation();
 	Health = MaxHealth;
+
+	if (FarmArt::ApplyHeight(BodyMesh, TEXT("/Game/Art/Character/FarmerBoy.FarmerBoy"), 170.f))
+	{
+		BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, -88.f));
+	}
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: player spawned at %s"), *HomeLocation.ToCompactString());
 
 	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)

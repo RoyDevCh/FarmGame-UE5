@@ -5,12 +5,15 @@
 #include "FarmCharacter.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
+#include "FarmInventoryWidget.h"
 #include "FarmItems.h"
 #include "FarmPlot.h"
 #include "FarmPortal.h"
 #include "FarmRecipes.h"
 #include "FarmResourceNode.h"
 #include "EngineUtils.h"
+#include "Engine/Engine.h"
+#include "Engine/GameViewportClient.h"
 
 AFarmPlayerController::AFarmPlayerController()
 {
@@ -22,6 +25,13 @@ void AFarmPlayerController::BeginPlay()
 	Super::BeginPlay();
 	bShowMouseCursor = false;
 	SetInputMode(FInputModeGameOnly());
+
+	if (GEngine && GEngine->GameViewport)
+	{
+		SAssignNew(InventoryWidget, SFarmInventoryWidget).PlayerController(this);
+		GEngine->GameViewport->AddViewportWidgetContent(InventoryWidget.ToSharedRef());
+		InventoryWidget->SetVisibility(EVisibility::Collapsed);
+	}
 }
 
 void AFarmPlayerController::SetupInputComponent()
@@ -358,6 +368,23 @@ void AFarmPlayerController::ToggleInventory()
 	{
 		bCraftMenuOpen = false;
 	}
+
+	if (InventoryWidget.IsValid())
+	{
+		if (bInventoryOpen)
+		{
+			InventoryWidget->Refresh();
+			InventoryWidget->SetVisibility(EVisibility::Visible);
+			bShowMouseCursor = true;
+			SetInputMode(FInputModeGameAndUI().SetHideCursorDuringCapture(false));
+		}
+		else
+		{
+			InventoryWidget->SetVisibility(EVisibility::Collapsed);
+			bShowMouseCursor = false;
+			SetInputMode(FInputModeGameOnly());
+		}
+	}
 }
 
 void AFarmPlayerController::ToggleCraftMenu()
@@ -373,7 +400,7 @@ void AFarmPlayerController::CancelMode()
 {
 	if (bInventoryOpen)
 	{
-		bInventoryOpen = false;
+		ToggleInventory();
 		return;
 	}
 	if (bCraftMenuOpen)
@@ -426,6 +453,7 @@ void AFarmPlayerController::CraftRecipe(int32 Index)
 	}
 	if (Farmer->GetInventory()->Craft(Recipe))
 	{
+		UE_LOG(LogTemp, Log, TEXT("FarmGame: crafted %s"), *Recipe.OutputId.ToString());
 		ShowToast(FString::Printf(TEXT("Crafted %s"), *FarmItems::LabelOf(Recipe.OutputId)));
 	}
 	else

@@ -1,4 +1,5 @@
 #include "FarmBin.h"
+#include "FarmArt.h"
 #include "FarmCharacter.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
@@ -12,13 +13,22 @@ AFarmBin::AFarmBin()
 {
 	PrimaryActorTick.bCanEverTick = false;
 
+	SceneRoot = CreateDefaultSubobject<USceneComponent>(TEXT("SceneRoot"));
+	SetRootComponent(SceneRoot);
+
 	Mesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Bin"));
-	SetRootComponent(Mesh);
+	Mesh->SetupAttachment(SceneRoot);
 	static ConstructorHelpers::FObjectFinder<UStaticMesh> Cube(TEXT("/Engine/BasicShapes/Cube.Cube"));
 	if (Cube.Succeeded()) Mesh->SetStaticMesh(Cube.Object);
 	Mesh->SetRelativeScale3D(FVector(1.6f, 1.1f, 0.9f));
 	Mesh->SetRelativeLocation(FVector(0.f, 0.f, 45.f));
 	Mesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+}
+
+void AFarmBin::BeginPlay()
+{
+	Super::BeginPlay();
+	FarmArt::ApplyHeight(Mesh, TEXT("/Game/Art/Buildings/Chest.Chest"), 90.f);
 }
 
 FString AFarmBin::GetPrompt(const AFarmPlayerController* PC) const

@@ -1,4 +1,5 @@
 #include "FarmAnimal.h"
+#include "FarmArt.h"
 #include "FarmCharacter.h"
 #include "FarmInventoryComponent.h"
 #include "FarmItems.h"
@@ -52,6 +53,16 @@ void AFarmAnimal::ApplyVisual()
 {
 	UMaterialInterface* BaseMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	UMaterialInstanceDynamic* MID = BaseMaterial ? UMaterialInstanceDynamic::Create(BaseMaterial, this) : nullptr;
+
+	const TCHAR* ArtPath = Type == EAnimalType::Chicken ? TEXT("/Game/Art/Animals/Chicken.Chicken")
+		: Type == EAnimalType::Cow ? TEXT("/Game/Art/Animals/Cow.Cow")
+		: TEXT("/Game/Art/Animals/bear.bear");
+	const float ArtHeight = Type == EAnimalType::Chicken ? 55.f : Type == EAnimalType::Cow ? 140.f : 120.f;
+	if (FarmArt::ApplyHeight(Body, ArtPath, ArtHeight))
+	{
+		Head->SetVisibility(false);
+		return;
+	}
 
 	FVector Scale(0.6f, 0.9f, 0.6f);
 	FLinearColor Color(0.95f, 0.95f, 0.9f);

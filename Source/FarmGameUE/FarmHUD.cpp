@@ -108,7 +108,7 @@ void AFarmHUD::DrawHUD()
 		}
 	}
 
-	if (PC->IsInventoryOpen())
+	if (PC->IsInventoryOpen() && !PC->IsSlateInventoryActive())
 	{
 		const float PX = W * 0.18f;
 		const float PY = H * 0.10f;

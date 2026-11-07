@@ -7,6 +7,7 @@
 class AFarmPlot;
 class AFarmBin;
 class AFarmBuilding;
+class SFarmInventoryWidget;
 
 UCLASS()
 class FARMGAMEUE_API AFarmPlayerController : public APlayerController
@@ -40,6 +41,7 @@ public:
 	void Attack();
 	void ToggleInventory();
 	bool IsInventoryOpen() const { return bInventoryOpen; }
+	bool IsSlateInventoryActive() const { return InventoryWidget.IsValid(); }
 	void ToggleBuildMode();
 	void ToggleCraftMenu();
 	void CancelMode();
@@ -66,6 +68,7 @@ protected:
 	int32 BuildModeIndex = -1;
 	bool bCraftMenuOpen = false;
 	bool bInventoryOpen = false;
+	TSharedPtr<SFarmInventoryWidget> InventoryWidget;
 	float AttackCooldown = 0.f;
 	UPROPERTY() AFarmBuilding* Ghost = nullptr;
 

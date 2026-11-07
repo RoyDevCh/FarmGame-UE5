@@ -402,7 +402,7 @@ Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后�
 
 ## 13. HUD
 
-全部由 `AFarmHUD::DrawHUD` 用 Canvas 立即模式绘制，没有 UMG / Widget 资产：
+常驻 HUD 由 `AFarmHUD::DrawHUD` 用 Canvas 立即模式绘制；`Tab` 背包/制作面板是运行时构建的 Slate 控件 `SFarmInventoryWidget`（无 Widget 资产）：
 
 | 位置 | 内容 |
 |---|---|

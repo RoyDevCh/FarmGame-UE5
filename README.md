@@ -4,14 +4,14 @@
 用 **Unreal Engine 5.8 + C++** 重做的一个可玩版本。
 
 这不是 1:1 移植：先把"能玩、可验证、可继续扩展"的骨架立起来。规则、数据、存档、自动化测试都是 UE 原生 C++ 实现；
-美术仍然用 `/Engine/BasicShapes` 的基础几何体 + 动态材质染色占位。
+美术已从原版 Unity 工程导入 17 个 FBX（角色、鸡、牛、熊、四种作物、土壤、栅栏、熔炉、箱子、树、石头），运行时按包围盒自动归一化缩放；缺失时回退到 `/Engine/BasicShapes` 几何体。
 
 **当前版本 v2**：在 v1 的种田闭环（锄地 → 播种 → 浇水 → 过夜生长 → 收获 → 卖钱）之上，补齐了采集、制作、建造、
 冶炼、养殖、战斗、传送、天气与昼夜光照；存档从"天数 + 金币 + 地块"扩展到建筑、动物、天气、HP；自动化测试从 5 条增加到 24 条。
 
 ![Gameplay](Docs/screenshots/01_start.png)
 
-<sub>截图摄于 v2：6×6 地块 + Canvas HUD；右上角时间与天气、左下角 HP，底部操作栏为 `Ctrl+S` / `Ctrl+L`。</sub>
+<sub>截图摄于 v3：导入的原版美术 + Canvas HUD；右上角时间与天气、左下角 HP。</sub>
 
 ![Crafting](Docs/screenshots/05_crafting.png)
 
@@ -24,6 +24,14 @@
 ![Packaged](Docs/screenshots/08_packaged.png)
 
 <sub>打包版 `Saved/Archive/Windows/FarmGameUE.exe` 实机启动：5 种作物、时间/天气、HP 与操作栏。</sub>
+
+![Imported art](Docs/screenshots/09_art.png)
+
+<sub>导入原版 FBX 后的农场：角色、牛、鸡、土壤、树、箱子（发货箱）。</sub>
+
+![Slate UI](Docs/screenshots/10_slate_ui.png)
+
+<sub>`Tab` 背包/制作面板（Slate）：分组物品 + 可点击配方按钮，禁用项灰显。</sub>
 
 ## 功能（v2）
 
@@ -44,16 +52,17 @@
 | 战斗 | 玩家 100 HP；左键近战 34 伤害（0.45 秒冷却、自动锁定 320 内最近的动物）；野猪 60 HP，近身每 1.6 秒咬 8 点 |
 | 传送 | 农场 (700, 700) ↔ 矿洞 (2600, 2600)，同一张地图上的两个传送点 |
 | 存档 | `Ctrl+S` / `Ctrl+L`：天数、当日进度、天气、金币、全部物品、HP、36 块地、建筑、动物 |
-| HUD | Canvas 立即模式绘制：天数/金币、时间 + 天气、HP 条、种子与收成、材料、套件、交互提示、制作菜单、Toast |
+| HUD | Canvas 立即模式绘制：天数/金币、时间 + 天气、HP 条、种子与收成、材料、套件、交互提示、Toast |
+| 背包 UI | `Tab` 打开 Slate 面板 `SFarmInventoryWidget`：分组物品列表 + 4 个可点击制作按钮；游戏内鼠标可用 |
 | 测试 | 24 条 UE Automation（`FarmGameTests.cpp` 18 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
 | 打包 | `Scripts/package.ps1` 跑通 BuildCookRun，产出 `Saved/Archive/Windows/FarmGameUE.exe`（本机已实测可启动） |
 
 ### 明确没做的（避免误读）
 
-- **没有 UMG**：HUD 全部是 `AHUD::DrawHUD` 的 Canvas 绘制。`UMG` / `Slate` 只在 `FarmGameUE.Build.cs` 里声明了依赖，代码里没有 `CreateWidget`，工程里也没有 Widget 资产。
+- **没有 UMG 资产**：背包/制作面板是运行时构建的 **Slate** 控件（`SFarmInventoryWidget`），不依赖 Widget 蓝图；常驻 HUD 仍是 `AHUD::DrawHUD` 的 Canvas 绘制。
 - **没有独立 House 场景**：全工程只有 `/Game/Maps/Farm` 一张图，矿洞是同一张图东侧的一块空地，靠两个 `AFarmPortal` 往返。
 - **没有宠物、塔防、陷阱、洒水器、箱子/仓库、商店 NPC、混合锅、体力/饥饿/XP、音效、手柄与触屏输入。**
-- 美术仍是占位几何体：原版 337 个 FBX / 325 张贴图没有导入。
+- 美术只导入了 17 个 FBX（角色/动物/作物/道具），其余（贴图、动画、建筑套装）仍是几何体占位，未做动画与材质细化。
 
 ## 操作
 
@@ -133,6 +142,8 @@
       FarmCharacter.*             俯视角色：胶囊 + 弹簧臂相机、HP、受伤与回农场
       FarmPlayerController.*      输入、就近目标、建造模式、制作、攻击、存读档、睡觉
       FarmHUD.*                   Canvas HUD
+      FarmArt.*                   原版 FBX 加载 + 包围盒归一化
+      FarmInventoryWidget.*       Slate 背包/制作面板
       FarmGameMode.*              作物目录、世界生成、昼夜与天气、每日推进、存读档
       FarmBin.*                   发货箱（卖货）
       FarmAnimal.*                鸡 / 牛 / 野猪
@@ -162,7 +173,7 @@
 | `AnimalLivestock` / `AnimalWild` | `AFarmAnimal`（`EAnimalType`：Chicken / Cow / Boar） |
 | `ExitZone` / `SceneNav`（Farm / House / Mine / Test 四场景） | `AFarmPortal`（单地图传送，无 House） |
 | `SaveSystem` / `SaveTool`（JSON） | `USaveGame`（槽位 `FarmSlot`，存 `Saved/SaveGames/FarmSlot.sav`） |
-| `TheUI` / `ItemSlotPanel` / `CraftPanel` / `TimeClockUI` / `HPBar` | `AFarmHUD::DrawHUD`（Canvas，未用 UMG） |
+| `TheUI` / `ItemSlotPanel` / `CraftPanel` / `TimeClockUI` / `HPBar` | `AFarmHUD::DrawHUD`（Canvas）+ `SFarmInventoryWidget`（Slate 背包/制作） |
 
 完整对照表（含"差异"与"未实现原因"）在 [Docs/DESIGN.md](Docs/DESIGN.md)。
 
@@ -175,15 +186,15 @@
 - 天气系统化：多种天气资产、按游戏小时切换（原版 `WeatherSystem.weather_change_time` = 6 游戏小时）
 - 角色属性：体力 / 饥饿 / XP / 等级（`PlayerCharacterAttribute`、`XPBar`、`AttributeBar`）
 - 洒水器（`Sprinkler`）等自动浇水物件
-- UMG 背包与制作面板（`BagPanel` / `CraftPanel` / `InventoryPanel`）、手柄与触屏输入
+- 背包面板的拖拽/使用/装备交互（当前只读 + 制作）、手柄与触屏输入
 - 音频（原版 `TheAudio`：脚步、收获、建造音效）
 - 数据资产化：把 `FCropDef` / `FItemDef` / `FCraftRecipe` 换成 DataAsset 或 DataTable；背包容量与堆叠上限（`ItemStack`）
-- 美术替换：原版 FBX / PNG（需处理导入与授权）
+- 美术继续替换：剩余建筑/树木/贴图与动画
 
 ## 说明
 
-- 原版美术资源（337 个 FBX、325 张贴图、203 个材质）没有导入：一是体积，二是许可边界。
-  当前所有物体都是 `/Engine/BasicShapes` + 动态材质染色。
+- 原版美术只导入了 17 个 FBX（`Content/Art`），用于角色、动物、作物、土壤、栅栏、熔炉、箱子、树和石头；
+  其余资源（贴图、动画、建筑套装）未导入，仍回退到 `/Engine/BasicShapes` + 动态材质。
 - 这是**可玩的垂直切片**：核心循环、经济、制作、建造、战斗、存档、测试都已打通，方便继续往上堆系统。
 - 存档位置：`Saved/SaveGames/FarmSlot.sav`；删掉它即可重新开始（新档 = 20 金 + 若干初始物资）。
 - 灵感与玩法来源：[RoyDevCh/FarmGame](https://github.com/RoyDevCh/FarmGame)。

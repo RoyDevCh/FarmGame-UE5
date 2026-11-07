@@ -1,4 +1,5 @@
 #include "FarmBuilding.h"
+#include "FarmArt.h"
 #include "FarmTypes.h"
 #include "FarmCharacter.h"
 #include "FarmInventoryComponent.h"
@@ -35,6 +36,15 @@ void AFarmBuilding::Configure(EBuildingType InType)
 
 void AFarmBuilding::ApplyVisual()
 {
+	const TCHAR* ArtPath = Type == EBuildingType::Fence ? TEXT("/Game/Art/Buildings/fence_long.fence_long") : TEXT("/Game/Art/Buildings/furnace.furnace");
+	const float ArtHeight = Type == EBuildingType::Fence ? 110.f : 170.f;
+	const bool bArtApplied = Type == EBuildingType::Fence ? FarmArt::Apply(Mesh, ArtPath, ArtHeight) : FarmArt::ApplyHeight(Mesh, ArtPath, ArtHeight);
+	if (bArtApplied)
+	{
+		Detail->SetVisibility(false);
+		return;
+	}
+
 	UMaterialInterface* BaseMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Engine/BasicShapes/BasicShapeMaterial.BasicShapeMaterial"));
 	UMaterialInstanceDynamic* MID = BaseMaterial ? UMaterialInstanceDynamic::Create(BaseMaterial, this) : nullptr;
 

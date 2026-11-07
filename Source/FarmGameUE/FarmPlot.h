@@ -55,7 +55,9 @@ protected:
 
 	UPROPERTY(Transient) UMaterialInstanceDynamic* SoilMaterial = nullptr;
 	UPROPERTY(Transient) UMaterialInstanceDynamic* CropMaterial = nullptr;
+	UPROPERTY(Transient) UStaticMesh* FallbackCropMesh = nullptr;
 	const FCropDef* CropDef = nullptr;
+	bool bArtSoil = false;
 
 	void RefreshVisuals();
 	void ApplyColor(UMaterialInstanceDynamic* Material, const FLinearColor& Color) const;
