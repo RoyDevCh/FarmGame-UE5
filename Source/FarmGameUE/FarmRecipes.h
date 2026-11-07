@@ -1,0 +1,40 @@
+#pragma once
+
+#include "CoreMinimal.h"
+#include "FarmItems.h"
+
+struct FCraftIngredient
+{
+	FName ItemId = NAME_None;
+	int32 Count = 1;
+};
+
+struct FCraftRecipe
+{
+	FName Id;
+	const TCHAR* Label;
+	TArray<FCraftIngredient> Inputs;
+	FName OutputId;
+	int32 OutputCount;
+	/** Requires standing near a furnace. */
+	bool bNeedsFurnace;
+};
+
+namespace FarmRecipes
+{
+	inline const TArray<FCraftRecipe>& All()
+	{
+		static const TArray<FCraftRecipe> Recipes = {
+			{ TEXT("fence_kit"), TEXT("Fence Kit (build with G)"), { { TEXT("wood"), 5 } }, TEXT("fence_kit"), 1, false },
+			{ TEXT("furnace_kit"), TEXT("Furnace Kit (build with G)"), { { TEXT("stone"), 10 }, { TEXT("wood"), 5 } }, TEXT("furnace_kit"), 1, false },
+			{ TEXT("ingot"), TEXT("Smelt Iron Ingot (at furnace)"), { { TEXT("ore"), 2 } }, TEXT("ingot"), 1, true },
+			{ TEXT("hay_bundle"), TEXT("Hay Bundle (animal feed)"), { { TEXT("corn"), 2 } }, TEXT("hay"), 2, false }
+		};
+		return Recipes;
+	}
+
+	inline const FCraftRecipe* Find(FName Id)
+	{
+		return All().FindByPredicate([Id](const FCraftRecipe& Recipe) { return Recipe.Id == Id; });
+	}
+}

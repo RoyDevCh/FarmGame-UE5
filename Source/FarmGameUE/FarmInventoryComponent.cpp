@@ -8,73 +8,118 @@ UFarmInventoryComponent::UFarmInventoryComponent()
 void UFarmInventoryComponent::ResetForNewGame()
 {
 	Gold = 20;
-	Seeds.Reset();
-	Produce.Reset();
-	Seeds.Add(TEXT("carrot"), 3);
+	Items.Reset();
+	Items.Add(TEXT("carrot_seed"), 3);
+	Items.Add(TEXT("corn_seed"), 1);
+	Items.Add(TEXT("wood"), 6);
+	Items.Add(TEXT("hay"), 1);
 }
 
-bool UFarmInventoryComponent::BuySeed(FName CropId, int32 SeedCost, int32 Amount)
+int32 UFarmInventoryComponent::GetCount(FName ItemId) const
 {
-	if (CropId.IsNone() || Amount <= 0) return false;
-	const int32 Total = FMath::Max(0, SeedCost) * Amount;
-	if (Gold < Total) return false;
-	Gold -= Total;
-	AddSeed(CropId, Amount);
-	return true;
+	const int32* Count = Items.Find(ItemId);
+	return Count ? *Count : 0;
 }
 
-bool UFarmInventoryComponent::ConsumeSeed(FName CropId, int32 Amount)
+void UFarmInventoryComponent::AddItem(FName ItemId, int32 Amount)
 {
-	int32* Count = Seeds.Find(CropId);
+	if (ItemId.IsNone() || Amount <= 0) return;
+	Items.FindOrAdd(ItemId) += Amount;
+}
+
+bool UFarmInventoryComponent::RemoveItem(FName ItemId, int32 Amount)
+{
+	if (Amount <= 0) return true;
+	int32* Count = Items.Find(ItemId);
 	if (!Count || *Count < Amount) return false;
 	*Count -= Amount;
-	if (*Count <= 0) Seeds.Remove(CropId);
+	if (*Count <= 0) Items.Remove(ItemId);
 	return true;
 }
 
-void UFarmInventoryComponent::AddSeed(FName CropId, int32 Amount)
+bool UFarmInventoryComponent::SpendGold(int32 Cost)
 {
-	if (CropId.IsNone() || Amount <= 0) return;
-	Seeds.FindOrAdd(CropId) += Amount;
+	if (Cost < 0 || Gold < Cost) return false;
+	Gold -= Cost;
+	return true;
 }
 
-void UFarmInventoryComponent::AddProduce(FName CropId, int32 Amount)
+void UFarmInventoryComponent::AddGold(int32 Amount)
 {
-	if (CropId.IsNone() || Amount <= 0) return;
-	Produce.FindOrAdd(CropId) += Amount;
+	if (Amount > 0) Gold += Amount;
 }
 
-int32 UFarmInventoryComponent::GetSeedCount(FName CropId) const
+bool UFarmInventoryComponent::BuyItem(FName ItemId, int32 Amount)
 {
-	const int32* Count = Seeds.Find(CropId);
-	return Count ? *Count : 0;
+	const FItemDef* Def = FarmItems::Find(ItemId);
+	if (!Def || Def->BuyPrice <= 0 || Amount <= 0) return false;
+	const int32 Total = Def->BuyPrice * Amount;
+	if (!SpendGold(Total)) return false;
+	AddItem(ItemId, Amount);
+	return true;
 }
 
-int32 UFarmInventoryComponent::GetProduceCount(FName CropId) const
-{
-	const int32* Count = Produce.Find(CropId);
-	return Count ? *Count : 0;
-}
-
-int32 UFarmInventoryComponent::SellAllProduce(const TArray<FCropDef>& Crops)
+int32 UFarmInventoryComponent::SellEverything()
 {
 	int32 Earned = 0;
-	for (const TPair<FName, int32>& Pair : Produce)
+	TArray<FName> Sold;
+	for (const TPair<FName, int32>& Pair : Items)
 	{
-		const FCropDef* Def = Crops.FindByPredicate([&Pair](const FCropDef& C) { return C.Id == Pair.Key; });
-		if (Def)
+		const FItemDef* Def = FarmItems::Find(Pair.Key);
+		if (!Def || Pair.Value <= 0) continue;
+		// Seeds and raw resources stay in the bag; produce, animal goods and ingots sell.
+		if (Def->Kind == EItemKind::Seed || Def->Kind == EItemKind::Resource) continue;
+		if (Def->SellPrice > 0)
 		{
 			Earned += Def->SellPrice * Pair.Value;
+			Sold.Add(Pair.Key);
 		}
 	}
-	Gold += Earned;
-	Produce.Reset();
+	for (const FName& Id : Sold)
+	{
+		Items.Remove(Id);
+	}
+	AddGold(Earned);
 	return Earned;
 }
 
-int32 UFarmInventoryComponent::GetTotalProduce() const
+bool UFarmInventoryComponent::CanCraft(const FCraftRecipe& Recipe) const
+{
+	for (const FCraftIngredient& Ingredient : Recipe.Inputs)
+	{
+		if (GetCount(Ingredient.ItemId) < Ingredient.Count) return false;
+	}
+	return true;
+}
+
+bool UFarmInventoryComponent::Craft(const FCraftRecipe& Recipe)
+{
+	if (!CanCraft(Recipe)) return false;
+	for (const FCraftIngredient& Ingredient : Recipe.Inputs)
+	{
+		RemoveItem(Ingredient.ItemId, Ingredient.Count);
+	}
+	AddItem(Recipe.OutputId, Recipe.OutputCount);
+	return true;
+}
+
+int32 UFarmInventoryComponent::GetTotalItemCount() const
 {
 	int32 Total = 0;
-	for (const TPair<FName, int32>& Pair : Produce) Total += Pair.Value;
+	for (const TPair<FName, int32>& Pair : Items) Total += Pair.Value;
+	return Total;
+}
+
+int32 UFarmInventoryComponent::GetSellableCount() const
+{
+	int32 Total = 0;
+	for (const TPair<FName, int32>& Pair : Items)
+	{
+		const FItemDef* Def = FarmItems::Find(Pair.Key);
+		if (Def && Def->SellPrice > 0 && Def->Kind != EItemKind::Seed && Def->Kind != EItemKind::Resource)
+		{
+			Total += Pair.Value;
+		}
+	}
 	return Total;
 }

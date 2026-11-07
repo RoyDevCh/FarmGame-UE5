@@ -23,13 +23,14 @@ AFarmBin::AFarmBin()
 
 FString AFarmBin::GetPrompt(const AFarmPlayerController* PC) const
 {
-	const UFarmInventoryComponent* Inv = PC && PC->GetPawn() ? Cast<AFarmCharacter>(PC->GetPawn())->GetInventory() : nullptr;
-	const int32 Count = Inv ? Inv->GetTotalProduce() : 0;
+	const AFarmCharacter* Farmer = PC ? Cast<AFarmCharacter>(PC->GetPawn()) : nullptr;
+	const UFarmInventoryComponent* Inv = Farmer ? Farmer->GetInventory() : nullptr;
+	const int32 Count = Inv ? Inv->GetSellableCount() : 0;
 	if (Count <= 0)
 	{
-		return TEXT("Shipping bin: nothing to sell yet");
+		return TEXT("Shipping bin: nothing to sell yet (B buys the selected seed)");
 	}
-	return FString::Printf(TEXT("E: Sell all produce (%d items)    B: Buy 1 seed"), Count);
+	return FString::Printf(TEXT("E: Sell all goods (%d items)    B: Buy 1 seed"), Count);
 }
 
 void AFarmBin::Interact(AFarmCharacter* Character)
@@ -39,6 +40,6 @@ void AFarmBin::Interact(AFarmCharacter* Character)
 	UFarmInventoryComponent* Inv = Character ? Character->GetInventory() : nullptr;
 	if (!PC || !GM || !Inv) return;
 
-	const int32 Earned = Inv->SellAllProduce(GM->Crops);
-	PC->ShowToast(Earned > 0 ? FString::Printf(TEXT("Sold produce for +%d gold"), Earned) : TEXT("Nothing to sell"));
+	const int32 Earned = Inv->SellEverything();
+	PC->ShowToast(Earned > 0 ? FString::Printf(TEXT("Sold goods for +%d gold"), Earned) : TEXT("Nothing to sell"));
 }

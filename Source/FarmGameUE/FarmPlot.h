@@ -38,6 +38,8 @@ public:
 
 	/** Called by the game mode when a new day starts. */
 	void AdvanceDay(int32 Today);
+	/** Rain waters the plot for free. */
+	void WaterFromRain();
 
 	bool IsHarvestable() const { return State == EFarmPlotState::Harvestable; }
 

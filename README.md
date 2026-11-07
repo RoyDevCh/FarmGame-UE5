@@ -1,92 +1,176 @@
 # FarmGame UE5（垂直切片 / Vertical Slice）
 
-把 [RoyDevCh/FarmGame](https://github.com/RoyDevCh/FarmGame)（Unity 2021.3 + Farming Engine 框架）
-的核心种田循环，用 **Unreal Engine 5.8 + C++** 重做的一个可玩版本。
+把 [RoyDevCh/FarmGame](https://github.com/RoyDevCh/FarmGame)（Unity 2021.3 + Farming Engine 框架）的核心玩法，
+用 **Unreal Engine 5.8 + C++** 重做的一个可玩版本。
 
-这不是 1:1 完整移植，而是先把"能玩、可验证、可继续扩展"的骨架立起来：
-数据、规则、存档、自动化测试都是 UE 原生实现，美术暂时用引擎基础几何体占位。
+这不是 1:1 移植：先把"能玩、可验证、可继续扩展"的骨架立起来。规则、数据、存档、自动化测试都是 UE 原生 C++ 实现；
+美术仍然用 `/Engine/BasicShapes` 的基础几何体 + 动态材质染色占位。
+
+**当前版本 v2**：在 v1 的种田闭环（锄地 → 播种 → 浇水 → 过夜生长 → 收获 → 卖钱）之上，补齐了采集、制作、建造、
+冶炼、养殖、战斗、传送、天气与昼夜光照；存档从"天数 + 金币 + 地块"扩展到建筑、动物、天气、HP；自动化测试从 5 条增加到 17 条。
 
 ![Gameplay](Docs/screenshots/01_start.png)
 
-## 已实现
+<sub>截图摄于 v2：6×6 地块 + Canvas HUD；右上角时间与天气、左下角 HP，底部操作栏为 `Ctrl+S` / `Ctrl+L`。</sub>
 
-| 系统 | 说明 |
+![Crafting](Docs/screenshots/05_crafting.png)
+
+<sub>`C` 制作菜单：栅栏套件、熔炉套件、铁锭（需熔炉）、干草。</sub>
+
+## 功能（v2）
+
+| 系统 | 内容 |
 |---|---|
-| 农田网格 | 6×6 地块，锄地 → 播种 → 浇水 → 过夜生长 → 收获 → 回到可耕种 |
-| 作物 | 胡萝卜 / 土豆 / 玉米；阶段数、每阶段天数、种子价、售价、产量均为数据 |
-| 生长规则 | 浇水后才生长；跨天推进；未浇水不增长；成熟后停在最后阶段 |
-| 经济 | 初始 20 金币 + 3 颗胡萝卜种子；种子按价格购买；收获物到发货箱出售 |
-| 时间 | 每天 180 秒自动推进；T 键睡觉直接跳到下一天 |
-| HUD | 天数 / 金币 / 每种作物的种子与收成 / 当前种子 / 交互提示 / 操作帮助 |
-| 存档 | Ctrl+S 保存、Ctrl+L 读取（USaveGame：天数、金币、背包、全部地块状态） |
-| 测试 | 5 条 UE Automation 测试（生长 3 条 + 经济 2 条），全部通过 |
+| 农田网格 | 6×6 = 36 块，间距 150；`Untilled → Tilled → Planted → Harvestable`，收获后回到 `Tilled` |
+| 作物 | 胡萝卜 / 土豆 / 玉米；阶段数 3/3/4，每阶段 1/2/1 天，种子价 3/5/6 金，售价 8/14/12 金，单次收获 1/2/2 个 |
+| 生长规则 | 只有"浇过水"的 `Planted` 地块才会推进；每天结算一次；成熟后停在最后阶段等收获 |
+| 时间 | 每天 180 秒，HUD 时钟 06:00 → 24:00（第 1 天从 09:00 开局，之后每天从 06:00 起）；`T` 睡觉立刻进入下一天 |
+| 天气 | 每天切换时 1/4 概率下雨；雨天所有 `Planted` 地块自动浇水，阳光变暗、色温变冷 |
+| 昼夜光照 | 定向光俯仰角按 `sin` 曲线走完一天；最后 20% 的白天亮度衰减到 35%，下限 1.1 |
+| 经济 | 初始 20 金 / 3 胡萝卜种子 / 1 玉米种子 / 6 木头 / 1 干草；`B` 在发货箱旁买种子；发货箱 `E` 卖货 |
+| 制作 | `C` 打开菜单，4 条配方：栅栏套件 / 熔炉套件 / 铁锭 / 干草；`1`–`5` 结算 |
+| 建造 | `G` 循环 关闭 → 栅栏 → 熔炉；预览落在身前 220、吸附 100 网格；`E` 放置并消耗套件 |
+| 熔炉 | 装填"1 矿石 + 1 木头"，每 8 秒出 1 铁锭，最多同时堆 5 块矿石 |
+| 采集 | 树 ×5（木）、石头 ×5（石）、矿脉 ×6（矿，在矿洞）；每个采集点每天复活 |
+| 养殖 | 鸡 ×2、牛 ×1；喂 1 干草 → 次日产出 → `E` 收 1 蛋 / 1 奶 |
+| 战斗 | 玩家 100 HP；左键近战 34 伤害（0.45 秒冷却、自动锁定 320 内最近的动物）；野猪 60 HP，近身每 1.6 秒咬 8 点 |
+| 传送 | 农场 (700, 700) ↔ 矿洞 (2600, 2600)，同一张地图上的两个传送点 |
+| 存档 | `Ctrl+S` / `Ctrl+L`：天数、当日进度、天气、金币、全部物品、HP、36 块地、建筑、动物 |
+| HUD | Canvas 立即模式绘制：天数/金币、时间 + 天气、HP 条、种子与收成、材料、套件、交互提示、制作菜单、Toast |
+| 测试 | 17 条 UE Automation（基础 11 条 + 补充 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
 
-<img src="Docs/screenshots/03_mature_day3.png" width="640" alt="Mature crop on day 3">
+### 明确没做的（避免误读）
+
+- **没有 UMG**：HUD 全部是 `AHUD::DrawHUD` 的 Canvas 绘制。`UMG` / `Slate` 只在 `FarmGameUE.Build.cs` 里声明了依赖，代码里没有 `CreateWidget`，工程里也没有 Widget 资产。
+- **没有独立 House 场景**：全工程只有 `/Game/Maps/Farm` 一张图，矿洞是同一张图东侧的一块空地，靠两个 `AFarmPortal` 往返。
+- **没有宠物、塔防、陷阱、洒水器、箱子/仓库、商店 NPC、混合锅、体力/饥饿/XP、音效、手柄与触屏输入。**
+- 美术仍是占位几何体：原版 337 个 FBX / 325 张贴图没有导入。
 
 ## 操作
 
-    WASD   移动（固定俯视相机）
-    E      交互：锄地 / 播种 / 浇水 / 收获 / 卖货
-    Q      切换种子
-    B      在发货箱旁买 1 颗当前种子
-    T      睡觉（天数 +1）
-    Ctrl+S 保存
-    Ctrl+L 读取
+| 按键 | 作用 |
+|---|---|
+| `W` `A` `S` `D` | 移动（固定俯视相机，无鼠标视角） |
+| `E` | 交互：锄地 / 播种 / 浇水 / 收获 / 卖货 / 喂动物 / 收产物 / 装填熔炉 / 砍树采矿 / 传送 / 放置建筑 |
+| 鼠标左键 | 攻击身前的动物（野猪） |
+| `Q` | 切换当前种子 |
+| `B` | 在发货箱旁买 1 颗当前种子 |
+| `C` | 打开 / 关闭制作菜单 |
+| `1`–`5` | 结算第 1–5 条配方（实际只有 4 条配方，`5` 无效） |
+| `G` | 建造模式：关闭 → 栅栏 → 熔炉 |
+| `T` | 睡觉，天数 +1 |
+| `Esc` | 关闭制作菜单 / 退出建造模式 |
+| `Ctrl+S` / `Ctrl+L` | 存档 / 读档（槽位 `FarmSlot`） |
 
 ## 运行
 
-1. 安装 **UE 5.8**（本机为 5.8.4 / CL 58902052）。
+1. 安装 **UE 5.8**（本机验证版本 5.8.4 / CL 58902052）。
 2. 右键 `FarmGameUE.uproject` → Generate Visual Studio project files（或直接双击打开）。
 3. 首次打开会编译 `FarmGameUE` 模块；打开地图 **/Game/Maps/Farm**，点 Play。
 4. 或者直接跑独立游戏：
 
        UnrealEditor.exe FarmGameUE.uproject -game -windowed -ResX=1280 -ResY=800
 
+几点补充：
+
+- `/Game/Maps/Farm` 是空关卡（由 `Scripts/create_map.py` 新建后保存）。地面、地块、发货箱、动物、采集点、
+  传送门、太阳 / 天空球全部由 `AFarmGameMode::BuildWorld()` 在 BeginPlay 里程序化生成，不需要手摆场景。
+- GameMode 在 `Config/DefaultEngine.ini` 里全局指定为 `/Script/FarmGameUE.FarmGameMode`，不依赖蓝图；输入映射在 `Config/DefaultInput.ini`。
+- 仓库里另有 `Scripts/package.ps1`（UBT 编译 + 可选 BuildCookRun 打包）、`Scripts/run-tests.ps1`（无头跑自动化测试并汇总）
+  与 `.github/workflows/build.yml`（Windows self-hosted runner 上编译 + 测试 + 上传日志）；细节见 [Docs/BUILD.md](Docs/BUILD.md)。
+
 ## 测试
 
-    UnrealEditor-Cmd.exe FarmGameUE.uproject -ExecCmds="Automation RunTests FarmGame;Quit" -unattended -nullrhi -log
+共 17 条 UE Automation 测试，统一挂在 `FarmGame.*` 前缀下：基础 11 条在 `FarmGameTests.cpp`，补充 6 条在 `FarmGameExtraTests.cpp`。
 
-结果：`FarmGame.CropGrowth.*`（3 条）与 `FarmGame.Inventory.*`（2 条）共 5 条全部 Success。
+最省事的跑法（自动定位引擎、跑完打印通过/失败数量）：
+
+    powershell -NoProfile -ExecutionPolicy Bypass -File .\Scripts\run-tests.ps1
+    powershell -NoProfile -ExecutionPolicy Bypass -File .\Scripts\run-tests.ps1 -TestFilter FarmGame.Extra
+
+等价的命令行：
+
+    UnrealEditor-Cmd.exe FarmGameUE.uproject -ExecCmds="Automation RunTests FarmGame" -TestExit="Automation Test Queue Empty" -unattended -nopause -nosplash -nullrhi -log -stdout
+
+`-TestExit="Automation Test Queue Empty"` 让编辑器在测试跑完后自己退出。不要在 `-ExecCmds` 里追加 `;Quit`：
+那会在测试排队阶段就把编辑器关掉，一条测试都跑不完（CI 里也踩过这个坑）。
+
+| 分组 | 测试 |
+|---|---|
+| `FarmGame.CropGrowth`（3） | `AdvancesWithWater` / `BlockedWithoutWater` / `MaturesAndStops` |
+| `FarmGame.Inventory`（3） | `BuyAndSell` / `CannotBuyWithoutGold` / `SellSkipsSeedsAndResources` |
+| `FarmGame.Crafting`（3） | `ConsumesIngredientsAndOutputs` / `HayFromCorn` / `FurnaceSmeltsOneOrePerInterval` |
+| `FarmGame.Items`（1） | `CatalogIsConsistent` |
+| `FarmGame.Recipes`（1） | `CatalogReferencesKnownItems` |
+| `FarmGame.Extra`（6） | `CropMultiStageContinuous` / `SmeltTwoStepsInARow` / `SellIncludesIngotKeepsSeedsAndResources` / `CraftFailureKeepsMaterials` / `SeedIdsForThreeCrops` / `RecipeOutputsInCatalog` |
+
+测试全部是纯逻辑 / 组件级：生长与冶炼直接调 `FarmLogic` 的静态函数，库存与制作直接 `NewObject<UFarmInventoryComponent>()`，
+不创建 `UWorld`、不启动 PIE，所以能在 `-nullrhi` 下跑。
+本机最近一次全量运行 17/17 Success，日志见 `Saved/Logs/FarmGameUE-backup-2026.11.07-18.02.48.log`；
+测试逐条说明与排错见 [Docs/TESTING.md](Docs/TESTING.md)。
 
 ## 代码结构
 
     Source/FarmGameUE/
-      FarmTypes.h                 作物定义 FCropDef、地块状态、纯规则 FarmLogic
-      FarmPlot.*                  地块 Actor：状态机、生长推进、交互、存档快照
-      FarmInventoryComponent.*    金币 / 种子 / 收成，买卖与结算
-      FarmCharacter.*             俯视角色（胶囊 + 弹簧臂相机）
-      FarmPlayerController.*      输入、就近交互目标、存档/读档/睡觉
+      FarmTypes.h                 FCropDef、EFarmPlotState、存档结构体、纯规则 FarmLogic
+      FarmItems.h                 物品表（16 项）：类别 / 买价 / 卖价
+      FarmRecipes.h               配方表（4 条）+ 熔炉前置标记
+      FarmPlot.*                  地块 Actor：状态机、生长推进、交互、视觉、存档快照
+      FarmInventoryComponent.*    金币 / 物品背包：买卖、制作、结算
+      FarmCharacter.*             俯视角色：胶囊 + 弹簧臂相机、HP、受伤与回农场
+      FarmPlayerController.*      输入、就近目标、建造模式、制作、攻击、存读档、睡觉
       FarmHUD.*                   Canvas HUD
-      FarmGameMode.*              作物目录、世界生成、昼夜、存读档
+      FarmGameMode.*              作物目录、世界生成、昼夜与天气、每日推进、存读档
       FarmBin.*                   发货箱（卖货）
-      FarmSaveGame.h              USaveGame 数据
-      FarmGameTests.cpp           5 条自动化测试
+      FarmAnimal.*                鸡 / 牛 / 野猪
+      FarmResourceNode.*          树 / 石头 / 矿脉
+      FarmBuilding.*              栅栏 / 熔炉（含冶炼 Tick）
+      FarmPortal.*                农场 ↔ 矿洞传送点
+      FarmSaveGame.h              USaveGame 存档数据
+      FarmGameTests.cpp           基础自动化测试（11 条）
+      FarmGameExtraTests.cpp      补充自动化测试（6 条）
+
+更细的逐系统说明见 [Docs/FEATURES.md](Docs/FEATURES.md)，与原版（Unity）的逐项对照见 [Docs/DESIGN.md](Docs/DESIGN.md)。
 
 ## 从 Unity 到 UE5 的映射
 
 | 原版（Unity / Farming Engine） | 本版（UE5） |
 |---|---|
-| Plant.cs + PlantData.asset | `AFarmPlot` + `FCropDef`（C++ 结构，后续可换 DataAsset） |
-| Plant.grow_time / growth_stage | `FCropDef::DaysPerStage` / `Stages`，`FarmLogic::AdvanceCrop` |
-| ActionHoe / ActionPlant / ActionWaterPlant / ActionHarvest | `AFarmPlot::Interact` 按状态分派 |
-| PlayerData / InventoryData / 存档 | `UFarmSaveGame`（USaveGame）+ `UFarmInventoryComponent` |
-| TheGame.cs 时间与天数 | `AFarmGameMode::Day` / `DayLengthSeconds` / `AdvanceDay` |
-| Canvas UI（ItemSlotPanel 等） | `AFarmHUD::DrawHUD`（后续可换 UMG） |
-| 四个场景 Farm/House/Mine/Test | 暂只有 Farm 一张图（程序化生成） |
+| `PlantData`（ScriptableObject）+ `Plant.cs` | `FCropDef`（USTRUCT，在 `AFarmGameMode` 构造函数里硬编码）+ `AFarmPlot` |
+| `Plant.grow_time` / `growth_stage` / `grow_require_water` | `FCropDef::DaysPerStage` / `Stages`，`FarmLogic::AdvanceCrop` |
+| `Soil.cs`（浇水 + 雨天自动浇） | `AFarmPlot::bWatered` + `AFarmPlot::WaterFromRain` |
+| `ActionHoe` / `ActionPlant` / `ActionWaterPlant` / `ActionHarvest` | `AFarmPlot::Interact` 按 `EFarmPlotState` 分派 |
+| `PlayerData` / `InventoryData` | `UFarmSaveGame` + `UFarmInventoryComponent` |
+| `TheGame.cs` 的天数与 `onNewDay` | `AFarmGameMode::Day` / `DayLengthSeconds` / `AdvanceDay` |
+| `WeatherSystem.cs` | `AFarmGameMode::bRaining`（1/4 概率；没有 WeatherData 资产，只有晴/雨两态） |
+| `Furnace.cs` | `AFarmBuilding`（`EBuildingType::Furnace`）+ `FarmLogic::SmeltStep` |
+| `CraftData` / `CraftPanel` | `FCraftRecipe` + `FarmRecipes::All` + `C` 菜单 |
+| `Buildable` / `ActionBuild` | 建造模式（`AFarmPlayerController::ToggleBuildMode`）+ `AFarmBuilding` |
+| `AnimalLivestock` / `AnimalWild` | `AFarmAnimal`（`EAnimalType`：Chicken / Cow / Boar） |
+| `ExitZone` / `SceneNav`（Farm / House / Mine / Test 四场景） | `AFarmPortal`（单地图传送，无 House） |
+| `SaveSystem` / `SaveTool`（JSON） | `USaveGame`（槽位 `FarmSlot`，存 `Saved/SaveGames/FarmSlot.sav`） |
+| `TheUI` / `ItemSlotPanel` / `CraftPanel` / `TimeClockUI` / `HPBar` | `AFarmHUD::DrawHUD`（Canvas，未用 UMG） |
+
+完整对照表（含"差异"与"未实现原因"）在 [Docs/DESIGN.md](Docs/DESIGN.md)。
 
 ## 路线图（原版还有的内容）
 
-- 建造与制作：围栏/熔炉/箱子、配方分类、冶炼与混合锅
-- 动物与宠物：喂养、产出、驯服、协助
-- 战斗与野生动物 AI、陷阱、塔防
-- 多场景：House / Mine，以及场景间无缝切换
-- 天气、昼夜光照曲线、体力/饥饿等角色属性
-- UMG 背包与制作面板、手柄与移动端输入
-- 把美术从占位几何体替换为原版 FBX/PNG（需要处理导入与授权）
+- 制作与建造的收尾：箱子 / 仓库、商店 NPC、混合锅与烹饪、配方前置（原版 `CraftData.craft_requirements`）
+- 动物与宠物：驯服、跟随、骑乘（`Pet.cs`、`ActionPetTame`、`AnimalRide`）
+- 战斗扩展：陷阱、投射物、塔防（`Trap` / `Projectile` / `TowerAttack`）、武器与耐久
+- 多场景：House（室内与家具）、真正的 Mine 关卡，以及场景切换（`ExitZone` / `SceneNav`）
+- 天气系统化：多种天气资产、按游戏小时切换（原版 `WeatherSystem.weather_change_time` = 6 游戏小时）
+- 角色属性：体力 / 饥饿 / XP / 等级（`PlayerCharacterAttribute`、`XPBar`、`AttributeBar`）
+- 洒水器（`Sprinkler`）等自动浇水物件
+- UMG 背包与制作面板（`BagPanel` / `CraftPanel` / `InventoryPanel`）、手柄与触屏输入
+- 音频（原版 `TheAudio`：脚步、收获、建造音效）
+- 数据资产化：把 `FCropDef` / `FItemDef` / `FCraftRecipe` 换成 DataAsset 或 DataTable；背包容量与堆叠上限（`ItemStack`）
+- 美术替换：原版 FBX / PNG（需处理导入与授权）
 
 ## 说明
 
-- 原版美术资源（337 个 FBX、325 张贴图）没有导入：一是体积，二是许可边界。
+- 原版美术资源（337 个 FBX、325 张贴图、203 个材质）没有导入：一是体积，二是许可边界。
   当前所有物体都是 `/Engine/BasicShapes` + 动态材质染色。
-- 这是**可玩的垂直切片**：核心循环、经济、存档、测试都已打通，方便继续往上堆系统。
+- 这是**可玩的垂直切片**：核心循环、经济、制作、建造、战斗、存档、测试都已打通，方便继续往上堆系统。
+- 存档位置：`Saved/SaveGames/FarmSlot.sav`；删掉它即可重新开始（新档 = 20 金 + 若干初始物资）。
 - 灵感与玩法来源：[RoyDevCh/FarmGame](https://github.com/RoyDevCh/FarmGame)。

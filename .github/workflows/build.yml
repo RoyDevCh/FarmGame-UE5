@@ -1,0 +1,246 @@
+# FarmGameUE CI —— Windows self-hosted runner + Unreal Engine 5.8
+#
+# runner 要求（self-hosted，不是 GitHub 托管的 windows-latest）：
+#   1. 装了 UE 5.8。默认装在 C:\Program Files\Epic Games\UE_5.8；装在别处就在仓库
+#      Settings → Secrets and variables → Actions → Variables 里把 UE_ROOT 指过去
+#      （也可以手动触发本 workflow 时填 engine_root）。
+#   2. GitHub Actions runner 打了 self-hosted、windows、ue5 三个标签；
+#      没有 ue5 标签的机器不会被派到这里的任务。
+#   3. 有 MSVC（Visual Studio 2022/2026 的「使用 C++ 的桌面开发」工作负载）。
+#      .NET SDK 一般不用单独装：引擎自带 Engine\Binaries\ThirdParty\DotNet\10.0\win-x64，
+#      Build.bat / RunUAT.bat 会把它加到 PATH。设了 UE_USE_SYSTEM_DOTNET=1 才用系统 SDK（需 >= 10.0）。
+#   4. 有 PowerShell。本文件的步骤统一用 shell: powershell（Windows 自带的 5.1），
+#      不依赖 PowerShell 7，没装 pwsh 的机器也能跑。
+#
+# 流程：checkout → 校验 UE 5.8 → Scripts/package.ps1 -SkipCook 编译 FarmGameUEEditor
+#       → UnrealEditor-Cmd 跑 Automation RunTests FarmGame → 上传日志 artifact
+#
+# 失败先看 artifact：Saved/Logs/Package/package-*.log（编译）、Saved/Logs/AutomationTests.log（测试）。
+# 本地复现与常见错误见 Docs/BUILD.md。
+
+name: Build & Test (Windows + UE 5.8)
+
+on:
+  push:
+    branches: [main]
+    paths-ignore:
+      - 'Docs/**'
+      - '**/*.md'
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      engine_root:
+        description: 'UE 5.8 根目录（留空则用仓库变量 UE_ROOT，再不行用默认路径）'
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+# 自托管机通常只有一台，新提交不打断正在跑的编译（打断会把 UBT 停在中间状态），只排队。
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  PROJECT_FILE: FarmGameUE.uproject
+  PROJECT_NAME: FarmGameUE
+  UE_ROOT_VAR: ${{ vars.UE_ROOT }}
+
+jobs:
+  build-and-test:
+    name: 编译 + 自动化测试
+    runs-on: [self-hosted, windows, ue5]
+    timeout-minutes: 90
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          # 保留 Intermediate / Saved / DerivedDataCache，让自托管机上的构建走增量。
+          # 要一次干净重建：手动删掉这三个目录再触发（或临时改成 clean: true）。
+          clean: false
+
+      - name: 校验 Unreal Engine 5.8
+        shell: powershell
+        run: |
+          $ErrorActionPreference = 'Stop'
+
+          # 候选路径：workflow_dispatch 输入 > 仓库变量 UE_ROOT > 机器环境变量 UE_ROOT > 默认安装路径
+          $candidates = New-Object System.Collections.ArrayList
+          $fromInput = '${{ inputs.engine_root }}'.Trim()
+          if ($fromInput) { [void]$candidates.Add($fromInput) }
+          if ($env:UE_ROOT_VAR) { [void]$candidates.Add($env:UE_ROOT_VAR.Trim()) }
+          if ($env:UE_ROOT) { [void]$candidates.Add($env:UE_ROOT.Trim()) }
+          [void]$candidates.Add('C:\Program Files\Epic Games\UE_5.8')
+
+          $engineRoot = $null
+          $tried = New-Object System.Collections.ArrayList
+
+          # 只做探测：候选路径可能在没插的盘上（Q:...）或 UNC 上，别让 Join-Path 直接抛异常，
+          # 否则用户看到的是 PowerShell 报错而不是下面那段"没装 UE"的说明。
+          $probeEap = $ErrorActionPreference
+          $ErrorActionPreference = 'Continue'
+          foreach ($c in $candidates) {
+            $p = ''
+            if ($c) { $p = ([string]$c).Trim().TrimEnd('\') }
+            if (-not $p) { continue }
+            $buildBat = $p + '\Engine\Build\BatchFiles\Build.bat'
+            $runUat   = $p + '\Engine\Build\BatchFiles\RunUAT.bat'
+            $editor   = $p + '\Engine\Binaries\Win64\UnrealEditor-Cmd.exe'
+            $usable = $false
+            try {
+              if ((Test-Path -LiteralPath $buildBat) -and (Test-Path -LiteralPath $runUat) -and (Test-Path -LiteralPath $editor)) { $usable = $true }
+            } catch {
+              $usable = $false
+            }
+            if ($usable) {
+              $engineRoot = $p
+              break
+            }
+            [void]$tried.Add($p)
+          }
+          $ErrorActionPreference = $probeEap
+
+          if (-not $engineRoot) {
+            $list = ($tried -join ' ; ')
+            Write-Output "::error title=未找到 Unreal Engine 5.8::这台 runner（$env:COMPUTERNAME）上没有可用的 UE 5.8 安装。已尝试：$list"
+            Write-Output ''
+            Write-Output '需要满足下面任意一条，然后重跑：'
+            Write-Output '  1. 把 UE 5.8 装到默认路径 C:\Program Files\Epic Games\UE_5.8，装完要能同时看到'
+            Write-Output '     Engine\Build\BatchFiles\Build.bat、Engine\Build\BatchFiles\RunUAT.bat、'
+            Write-Output '     Engine\Binaries\Win64\UnrealEditor-Cmd.exe 这三个文件。'
+            Write-Output '  2. 装在其他盘：在仓库 Settings -> Secrets and variables -> Actions -> Variables'
+            Write-Output '     新建变量 UE_ROOT（例如 D:\UE_5.8），或手动触发 workflow 时填 engine_root。'
+            Write-Output '  3. 确认这台机器上的 Actions runner 有 self-hosted、windows、ue5 三个标签。'
+            Write-Output ''
+            Write-Output '注意：GitHub 托管的 windows-latest 上没有 UE，本 workflow 只能跑在 self-hosted 上。'
+            exit 1
+          }
+
+          $versionFile = Join-Path $engineRoot 'Engine\Build\Build.version'
+          if (Test-Path -LiteralPath $versionFile) {
+            $bv = Get-Content -LiteralPath $versionFile -Raw | ConvertFrom-Json
+            Write-Output ("引擎: $engineRoot")
+            Write-Output ("版本: $($bv.MajorVersion).$($bv.MinorVersion).$($bv.PatchVersion) (CL $($bv.Changelist), $($bv.BranchName))")
+            if (($bv.MajorVersion -ne 5) -or ($bv.MinorVersion -lt 8)) {
+              Write-Output "::error title=UE 版本不对::本工程需要 UE 5.8，当前是 $($bv.MajorVersion).$($bv.MinorVersion).$($bv.PatchVersion)。请装 5.8，或把 UE_ROOT 指向 5.8。"
+              exit 1
+            }
+          } else {
+            Write-Output "::warning title=无法确认引擎版本::找不到 $versionFile，继续按 5.8 处理。"
+          }
+
+          "UE_ROOT=$engineRoot" | Out-File -FilePath $env:GITHUB_ENV -Encoding utf8 -Append
+
+      - name: 编译 FarmGameUEEditor（package.ps1 -SkipCook）
+        shell: powershell
+        run: |
+          # 只编译、不 cook：产出的 UnrealEditor-FarmGameUE.dll 供下一步跑自动化测试。
+          # 脚本失败时会自己打印日志路径并用非零码退出，这一步随之失败。
+          ./Scripts/package.ps1 -SkipCook -EngineRoot "$env:UE_ROOT"
+
+      - name: 运行 Automation 测试（FarmGame）
+        shell: powershell
+        timeout-minutes: 30
+        run: |
+          $ErrorActionPreference = 'Continue'
+
+          $project = Join-Path $env:GITHUB_WORKSPACE $env:PROJECT_FILE
+          $editor  = Join-Path $env:UE_ROOT 'Engine\Binaries\Win64\UnrealEditor-Cmd.exe'
+          $logDir  = Join-Path $env:GITHUB_WORKSPACE 'Saved\Logs'
+          $log     = Join-Path $logDir 'AutomationTests.log'
+          New-Item -ItemType Directory -Force -Path $logDir | Out-Null
+          if (Test-Path -LiteralPath $log) { Remove-Item -LiteralPath $log -Force }
+
+          if (-not (Test-Path -LiteralPath $editor)) {
+            Write-Output "::error title=缺少 UnrealEditor-Cmd::找不到 $editor"
+            exit 1
+          }
+
+          # -TestExit 让引擎在打完日志 "Automation Test Queue Empty N tests performed" 后自己退出。
+          # 不要用 'Automation RunTests FarmGame;Quit'：Quit 会在测试排队阶段就把编辑器关掉。
+          $argsList = @(
+            $project,
+            '-ExecCmds=Automation RunTests FarmGame',
+            '-TestExit=Automation Test Queue Empty',
+            '-unattended',
+            '-nopause',
+            '-nosplash',
+            '-nullrhi',
+            '-log',
+            '-stdout',
+            ('-abslog=' + $log)
+          )
+
+          Write-Output ('运行: "' + $editor + '" ' + ($argsList -join ' '))
+          & $editor @argsList
+          $exitCode = $LASTEXITCODE
+          Write-Output ("UnrealEditor-Cmd 退出码: $exitCode")
+
+          if (-not (Test-Path -LiteralPath $log)) {
+            Write-Output "::error title=没有测试日志::编辑器没有写出 $log，先看上面 editor 的输出。"
+            exit 1
+          }
+
+          $lines = Get-Content -LiteralPath $log
+          $pass = @($lines | Select-String -Pattern 'Test Completed\. Result=\{Success\}')
+          $fail = @($lines | Select-String -Pattern 'Test Completed\. Result=\{(Fail|Error|NotRun)\}')
+          $failedLines = @($lines | Select-String -Pattern 'Automation Test Failed')
+          $queueEmpty = @($lines | Select-String -Pattern 'Automation Test Queue Empty')
+
+          Write-Output ''
+          Write-Output "通过: $($pass.Count)   失败: $($fail.Count)"
+          foreach ($l in $pass) {
+            if ($l.Line -match 'Path=\{([^}]+)\}') { Write-Output ('  [PASS] ' + $Matches[1]) }
+          }
+          foreach ($l in $fail) {
+            if ($l.Line -match 'Path=\{([^}]+)\}') {
+              Write-Output ('  [FAIL] ' + $Matches[1])
+            } else {
+              Write-Output ('  [FAIL] ' + $l.Line.Trim())
+            }
+          }
+          foreach ($l in $failedLines) {
+            Write-Output ('  ' + $l.Line.Trim())
+          }
+
+          $summaryLines = @(
+            '### FarmGameUE Automation',
+            '',
+            '| 结果 | 数量 |',
+            '| --- | --- |',
+            ("| 通过 | {0} |" -f $pass.Count),
+            ("| 失败 | {0} |" -f $fail.Count),
+            ''
+          )
+          $summaryLines | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Encoding utf8 -Append
+
+          if ($queueEmpty.Count -eq 0) {
+            Write-Output "::error title=测试没有跑完::日志里没有 'Automation Test Queue Empty'，编辑器可能超时或被中断。见 $log"
+            exit 1
+          }
+          if ($pass.Count -eq 0) {
+            Write-Output "::error title=一条测试都没跑到::过滤词 FarmGame 没匹配到任何测试，检查 Source/FarmGameUE 下 FarmGame*Tests.cpp 的测试名。见 $log"
+            exit 1
+          }
+          if ($fail.Count -gt 0) {
+            Write-Output "::error title=自动化测试失败::$($fail.Count) 条测试失败，详情见 $log"
+            exit 1
+          }
+          if ($exitCode -ne 0) {
+            Write-Output "::warning title=编辑器非零退出::退出码 $exitCode，但测试全部通过，确认是否有其它告警。"
+          }
+          Write-Output '自动化测试全部通过。'
+
+      - name: 上传日志
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: farmgameue-logs-${{ github.run_id }}
+          path: |
+            Saved/Logs/**
+            Saved/Automation/**
+          if-no-files-found: warn
+          retention-days: 14

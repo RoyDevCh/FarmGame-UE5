@@ -2,6 +2,8 @@
 #include "Misc/AutomationTest.h"
 #include "FarmTypes.h"
 #include "FarmInventoryComponent.h"
+#include "FarmItems.h"
+#include "FarmRecipes.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
 
@@ -41,8 +43,7 @@ bool FFarmNoWaterTest::RunTest(const FString& Parameters)
 	int32 LastDay = 1;
 	bool bWatered = false;
 
-	const bool bAdvanced = FarmLogic::AdvanceCrop(Potato, 2, Stage, LastDay, bWatered, false);
-	TestFalse(TEXT("dry crop does not grow"), bAdvanced);
+	TestFalse(TEXT("dry crop does not grow"), FarmLogic::AdvanceCrop(Potato, 2, Stage, LastDay, bWatered, false));
 	TestEqual(TEXT("stage stays 0"), Stage, 0);
 
 	int32 Stage2 = 0;
@@ -70,12 +71,10 @@ bool FFarmMatureTest::RunTest(const FString& Parameters)
 	int32 Stage = 0;
 	int32 LastDay = 0;
 	bool bWatered = true;
-	int32 Today = 0;
 	for (int32 Day = 1; Day <= 10; ++Day)
 	{
-		Today = Day;
 		bWatered = true;
-		FarmLogic::AdvanceCrop(Corn, Today, Stage, LastDay, bWatered, true);
+		FarmLogic::AdvanceCrop(Corn, Day, Stage, LastDay, bWatered, true);
 	}
 	TestEqual(TEXT("stops at the last stage"), Stage, 3);
 	TestTrue(TEXT("reports mature"), FarmLogic::IsMature(Corn, Stage));
@@ -91,26 +90,23 @@ bool FFarmInventoryTest::RunTest(const FString& Parameters)
 	TestNotNull(TEXT("inventory created"), Inventory);
 	Inventory->ResetForNewGame();
 	TestEqual(TEXT("starting gold"), Inventory->Gold, 20);
-	TestEqual(TEXT("starting carrot seeds"), Inventory->GetSeedCount(TEXT("carrot")), 3);
+	TestEqual(TEXT("starting carrot seeds"), Inventory->GetCount(TEXT("carrot_seed")), 3);
+	TestEqual(TEXT("starting wood"), Inventory->GetCount(TEXT("wood")), 6);
 
-	TestTrue(TEXT("can buy carrot seed"), Inventory->BuySeed(TEXT("carrot"), 3));
+	TestTrue(TEXT("can buy carrot seed"), Inventory->BuyItem(TEXT("carrot_seed"), 1));
 	TestEqual(TEXT("gold after buy"), Inventory->Gold, 17);
-	TestEqual(TEXT("seed count after buy"), Inventory->GetSeedCount(TEXT("carrot")), 4);
+	TestEqual(TEXT("seed count after buy"), Inventory->GetCount(TEXT("carrot_seed")), 4);
 
-	TestTrue(TEXT("consume one seed"), Inventory->ConsumeSeed(TEXT("carrot")));
-	TestEqual(TEXT("seed count after consume"), Inventory->GetSeedCount(TEXT("carrot")), 3);
+	TestTrue(TEXT("remove one seed"), Inventory->RemoveItem(TEXT("carrot_seed"), 1));
+	TestEqual(TEXT("seed count after remove"), Inventory->GetCount(TEXT("carrot_seed")), 3);
 
-	FCropDef Carrot;
-	Carrot.Id = TEXT("carrot");
-	Carrot.SellPrice = 8;
-	TArray<FCropDef> Crops;
-	Crops.Add(Carrot);
-
-	Inventory->AddProduce(TEXT("carrot"), 2);
-	const int32 Earned = Inventory->SellAllProduce(Crops);
-	TestEqual(TEXT("earned gold"), Earned, 16);
-	TestEqual(TEXT("gold after selling"), Inventory->Gold, 33);
-	TestEqual(TEXT("produce cleared"), Inventory->GetTotalProduce(), 0);
+	Inventory->AddItem(TEXT("carrot"), 2);
+	Inventory->AddItem(TEXT("ingot"), 1);
+	const int32 Earned = Inventory->SellEverything();
+	TestEqual(TEXT("earned gold (2 carrots + 1 ingot)"), Earned, 34);
+	TestEqual(TEXT("gold after selling"), Inventory->Gold, 51);
+	TestEqual(TEXT("produce cleared"), Inventory->GetCount(TEXT("carrot")), 0);
+	TestEqual(TEXT("seeds kept"), Inventory->GetCount(TEXT("carrot_seed")), 3);
 	return true;
 }
 
@@ -122,9 +118,127 @@ bool FFarmPoorTest::RunTest(const FString& Parameters)
 	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
 	Inventory->ResetForNewGame();
 	Inventory->Gold = 2;
-	TestFalse(TEXT("cannot afford"), Inventory->BuySeed(TEXT("carrot"), 3));
+	TestFalse(TEXT("cannot afford"), Inventory->BuyItem(TEXT("carrot_seed"), 1));
 	TestEqual(TEXT("gold unchanged"), Inventory->Gold, 2);
-	TestEqual(TEXT("no extra seeds"), Inventory->GetSeedCount(TEXT("carrot")), 3);
+	TestEqual(TEXT("no extra seeds"), Inventory->GetCount(TEXT("carrot_seed")), 3);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmCraftTest, "FarmGame.Crafting.ConsumesIngredientsAndOutputs",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmCraftTest::RunTest(const FString& Parameters)
+{
+	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
+	Inventory->ResetForNewGame();
+
+	const FCraftRecipe* Fence = FarmRecipes::Find(TEXT("fence_kit"));
+	TestNotNull(TEXT("fence recipe exists"), Fence);
+	TestTrue(TEXT("can craft fence with 6 wood"), Inventory->CanCraft(*Fence));
+	TestTrue(TEXT("craft fence"), Inventory->Craft(*Fence));
+	TestEqual(TEXT("wood consumed"), Inventory->GetCount(TEXT("wood")), 1);
+	TestEqual(TEXT("fence kit added"), Inventory->GetCount(TEXT("fence_kit")), 1);
+
+	TestFalse(TEXT("cannot craft a second fence"), Inventory->CanCraft(*Fence));
+	TestFalse(TEXT("craft fails without wood"), Inventory->Craft(*Fence));
+	TestEqual(TEXT("still one fence kit"), Inventory->GetCount(TEXT("fence_kit")), 1);
+
+	const FCraftRecipe* Ingot = FarmRecipes::Find(TEXT("ingot"));
+	TestNotNull(TEXT("ingot recipe exists"), Ingot);
+	TestTrue(TEXT("ingot recipe needs a furnace"), Ingot->bNeedsFurnace);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmItemsTest, "FarmGame.Items.CatalogIsConsistent",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmItemsTest::RunTest(const FString& Parameters)
+{
+	TestTrue(TEXT("catalog not empty"), FarmItems::All().Num() >= 10);
+	TestNotNull(TEXT("carrot seed defined"), FarmItems::Find(TEXT("carrot_seed")));
+	TestNotNull(TEXT("carrot defined"), FarmItems::Find(TEXT("carrot")));
+	TestTrue(TEXT("carrot sells for 8"), FarmItems::SellPriceOf(TEXT("carrot")) == 8);
+	TestTrue(TEXT("carrot seed is a seed"), FarmItems::IsSeed(TEXT("carrot_seed")));
+	TestFalse(TEXT("carrot is not a seed"), FarmItems::IsSeed(TEXT("carrot")));
+	TestEqual(TEXT("seed id derived"), FarmItems::SeedId(TEXT("corn")), FName(TEXT("corn_seed")));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmHayTest, "FarmGame.Crafting.HayFromCorn",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmHayTest::RunTest(const FString& Parameters)
+{
+	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
+	Inventory->ResetForNewGame();
+	Inventory->Items.Reset();
+	Inventory->AddItem(TEXT("corn"), 2);
+
+	const FCraftRecipe* Hay = FarmRecipes::Find(TEXT("hay_bundle"));
+	TestNotNull(TEXT("hay recipe exists"), Hay);
+	TestTrue(TEXT("can craft hay from 2 corn"), Inventory->Craft(*Hay));
+	TestEqual(TEXT("corn consumed"), Inventory->GetCount(TEXT("corn")), 0);
+	TestEqual(TEXT("hay produced"), Inventory->GetCount(TEXT("hay")), 2);
+	TestFalse(TEXT("cannot craft again"), Inventory->Craft(*Hay));
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmSellFilterTest, "FarmGame.Inventory.SellSkipsSeedsAndResources",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmSellFilterTest::RunTest(const FString& Parameters)
+{
+	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
+	Inventory->ResetForNewGame();
+	Inventory->Items.Reset();
+	Inventory->AddItem(TEXT("wood"), 5);
+	Inventory->AddItem(TEXT("ore"), 3);
+	Inventory->AddItem(TEXT("egg"), 2);
+	Inventory->AddItem(TEXT("milk"), 1);
+
+	const int32 Before = Inventory->Gold;
+	const int32 Earned = Inventory->SellEverything();
+	TestEqual(TEXT("earned from egg + milk"), Earned, 36);
+	TestEqual(TEXT("gold increased"), Inventory->Gold, Before + 36);
+	TestEqual(TEXT("wood kept"), Inventory->GetCount(TEXT("wood")), 5);
+	TestEqual(TEXT("ore kept"), Inventory->GetCount(TEXT("ore")), 3);
+	TestEqual(TEXT("eggs sold"), Inventory->GetCount(TEXT("egg")), 0);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmRecipeCatalogTest, "FarmGame.Recipes.CatalogReferencesKnownItems",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmRecipeCatalogTest::RunTest(const FString& Parameters)
+{
+	for (const FCraftRecipe& Recipe : FarmRecipes::All())
+	{
+		TestNotNull(FString::Printf(TEXT("output %s exists in item catalog"), *Recipe.OutputId.ToString()), FarmItems::Find(Recipe.OutputId));
+		TestTrue(FString::Printf(TEXT("%s has inputs"), *Recipe.Id.ToString()), Recipe.Inputs.Num() > 0);
+		for (const FCraftIngredient& Ingredient : Recipe.Inputs)
+		{
+			TestNotNull(FString::Printf(TEXT("ingredient %s exists"), *Ingredient.ItemId.ToString()), FarmItems::Find(Ingredient.ItemId));
+			TestTrue(FString::Printf(TEXT("ingredient %s has positive count"), *Ingredient.ItemId.ToString()), Ingredient.Count > 0);
+		}
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmSmeltTest, "FarmGame.Crafting.FurnaceSmeltsOneOrePerInterval",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmSmeltTest::RunTest(const FString& Parameters)
+{
+	int32 Ore = 2;
+	int32 Ingots = 0;
+	float Timer = 0.f;
+
+	TestFalse(TEXT("no ingot before the interval"), FarmLogic::SmeltStep(Ore, Ingots, Timer, 4.f, 8.f));
+	TestEqual(TEXT("ore unchanged"), Ore, 2);
+	TestTrue(TEXT("ingot after 8 seconds"), FarmLogic::SmeltStep(Ore, Ingots, Timer, 4.f, 8.f));
+	TestEqual(TEXT("one ore consumed"), Ore, 1);
+	TestEqual(TEXT("one ingot produced"), Ingots, 1);
+	TestFalse(TEXT("no smelt with empty furnace"), FarmLogic::SmeltStep(Ore, Ingots, Timer, 100.f, 8.f) && Ore < 0);
 	return true;
 }
 

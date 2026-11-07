@@ -2,10 +2,11 @@
 
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
-#include "FarmTypes.h"
+#include "FarmItems.h"
+#include "FarmRecipes.h"
 #include "FarmInventoryComponent.generated.h"
 
-/** Money, seeds and harvested produce owned by the player. */
+/** Money and a unified item bag (seeds, produce, resources, animal products). */
 UCLASS(ClassGroup = (Farm), meta = (BlueprintSpawnableComponent))
 class FARMGAMEUE_API UFarmInventoryComponent : public UActorComponent
 {
@@ -15,29 +16,30 @@ public:
 	UFarmInventoryComponent();
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Farm") int32 Gold = 20;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Farm") TMap<FName, int32> Seeds;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Farm") TMap<FName, int32> Produce;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Farm") TMap<FName, int32> Items;
 
-	bool CanAfford(int32 Cost) const { return Gold >= Cost; }
+	UFUNCTION(BlueprintPure, Category = "Farm") int32 GetCount(FName ItemId) const;
+	UFUNCTION(BlueprintCallable, Category = "Farm") void AddItem(FName ItemId, int32 Amount);
+	UFUNCTION(BlueprintCallable, Category = "Farm") bool RemoveItem(FName ItemId, int32 Amount = 1);
 
-	/** Buys seeds, returns false (and changes nothing) when the player cannot afford it. */
-	UFUNCTION(BlueprintCallable, Category = "Farm") bool BuySeed(FName CropId, int32 SeedCost, int32 Amount = 1);
+	UFUNCTION(BlueprintPure, Category = "Farm") bool CanAfford(int32 Cost) const { return Gold >= Cost; }
+	UFUNCTION(BlueprintCallable, Category = "Farm") bool SpendGold(int32 Cost);
+	UFUNCTION(BlueprintCallable, Category = "Farm") void AddGold(int32 Amount);
 
-	/** Removes one seed; returns false when none are left. */
-	UFUNCTION(BlueprintCallable, Category = "Farm") bool ConsumeSeed(FName CropId, int32 Amount = 1);
+	/** Buys N of an item at its catalog price. */
+	UFUNCTION(BlueprintCallable, Category = "Farm") bool BuyItem(FName ItemId, int32 Amount = 1);
 
-	UFUNCTION(BlueprintCallable, Category = "Farm") void AddSeed(FName CropId, int32 Amount);
+	/** Sells everything in the bag that has a sell price above zero. */
+	UFUNCTION(BlueprintCallable, Category = "Farm") int32 SellEverything();
 
-	UFUNCTION(BlueprintCallable, Category = "Farm") void AddProduce(FName CropId, int32 Amount);
+	bool CanCraft(const FCraftRecipe& Recipe) const;
+	/** Consumes ingredients, adds outputs. */
+	bool Craft(const FCraftRecipe& Recipe);
 
-	UFUNCTION(BlueprintPure, Category = "Farm") int32 GetSeedCount(FName CropId) const;
+	UFUNCTION(BlueprintPure, Category = "Farm") int32 GetTotalItemCount() const;
 
-	UFUNCTION(BlueprintPure, Category = "Farm") int32 GetProduceCount(FName CropId) const;
-
-	/** Sells every harvested item, returns the gold earned. */
-	UFUNCTION(BlueprintCallable, Category = "Farm") int32 SellAllProduce(const TArray<FCropDef>& Crops);
-
-	UFUNCTION(BlueprintPure, Category = "Farm") int32 GetTotalProduce() const;
+	/** Items SellEverything would sell right now. */
+	UFUNCTION(BlueprintPure, Category = "Farm") int32 GetSellableCount() const;
 
 	void ResetForNewGame();
 };

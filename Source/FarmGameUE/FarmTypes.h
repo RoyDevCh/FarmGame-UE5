@@ -45,6 +45,31 @@ struct FPlotSaveData
 	UPROPERTY() int32 LastGrowthDay = 0;
 };
 
+/** Serialized building state. */
+USTRUCT()
+struct FBuildingSaveData
+{
+	GENERATED_BODY()
+
+	UPROPERTY() int32 Type = 0;
+	UPROPERTY() FVector Location = FVector::ZeroVector;
+	UPROPERTY() int32 OreCount = 0;
+	UPROPERTY() int32 IngotCount = 0;
+};
+
+/** Serialized animal state. */
+USTRUCT()
+struct FAnimalSaveData
+{
+	GENERATED_BODY()
+
+	UPROPERTY() int32 Type = 0;
+	UPROPERTY() FVector Location = FVector::ZeroVector;
+	UPROPERTY() bool bFed = false;
+	UPROPERTY() bool bProductReady = false;
+	UPROPERTY() int32 Health = 30;
+};
+
 /** Pure farming rules, kept free of UObject/world so they are unit-testable. */
 namespace FarmLogic
 {
@@ -52,6 +77,18 @@ namespace FarmLogic
 	inline int32 DaysForNextStage(const FCropDef& Crop) { return FMath::Max(1, Crop.DaysPerStage); }
 
 	inline bool IsMature(const FCropDef& Crop, int32 Stage) { return Stage >= FMath::Max(1, Crop.Stages) - 1; }
+
+	/** Furnace tick: moves one ore to an ingot every SecondsPerOre. */
+	inline bool SmeltStep(int32& OreCount, int32& IngotCount, float& Timer, float DeltaSeconds, float SecondsPerOre)
+	{
+		if (OreCount <= 0 || SecondsPerOre <= 0.f) return false;
+		Timer += DeltaSeconds;
+		if (Timer < SecondsPerOre) return false;
+		Timer -= SecondsPerOre;
+		OreCount--;
+		IngotCount++;
+		return true;
+	}
 
 	/**
 	 * Advances a planted crop when the day changed and the plot was watered.

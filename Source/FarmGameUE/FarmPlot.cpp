@@ -3,6 +3,7 @@
 #include "FarmPlayerController.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
+#include "FarmItems.h"
 #include "Components/StaticMeshComponent.h"
 #include "Materials/MaterialInstanceDynamic.h"
 #include "Materials/MaterialInterface.h"
@@ -119,6 +120,15 @@ void AFarmPlot::AdvanceDay(int32 Today)
 	RefreshVisuals();
 }
 
+void AFarmPlot::WaterFromRain()
+{
+	if (State == EFarmPlotState::Planted && !bWatered)
+	{
+		bWatered = true;
+		RefreshVisuals();
+	}
+}
+
 FString AFarmPlot::GetPrompt(const AFarmPlayerController* PC) const
 {
 	switch (State)
@@ -155,6 +165,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 	case EFarmPlotState::Untilled:
 		State = EFarmPlotState::Tilled;
 		RefreshVisuals();
+		UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d tilled"), Index);
 		break;
 
 	case EFarmPlotState::Tilled:
@@ -164,7 +175,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 			break;
 		}
 		const FName SelectedId = PC->GetSelectedCropId();
-		if (Inventory->ConsumeSeed(SelectedId))
+		if (Inventory->RemoveItem(FarmItems::SeedId(SelectedId), 1))
 		{
 			CropId = SelectedId;
 			CropDef = GM->FindCrop(SelectedId);
@@ -173,6 +184,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 			LastGrowthDay = GM->GetDay();
 			State = EFarmPlotState::Planted;
 			RefreshVisuals();
+			UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d planted %s"), Index, *CropId.ToString());
 		}
 		else
 		{
@@ -186,6 +198,7 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 		{
 			bWatered = true;
 			RefreshVisuals();
+			UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d watered"), Index);
 		}
 		break;
 
@@ -194,7 +207,8 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 		if (Inventory && !CropId.IsNone())
 		{
 			const int32 Yield = CropDef ? CropDef->YieldPerHarvest : 1;
-			Inventory->AddProduce(CropId, Yield);
+			Inventory->AddItem(CropId, Yield);
+			UE_LOG(LogTemp, Log, TEXT("FarmGame: plot %d harvested %s x%d"), Index, *CropId.ToString(), Yield);
 			if (PC)
 			{
 				PC->ShowToast(FString::Printf(TEXT("+%d %s"), Yield, CropDef ? *CropDef->DisplayName.ToString() : TEXT("crop")));

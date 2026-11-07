@@ -1,6 +1,7 @@
 #include "FarmCharacter.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
+#include "FarmPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/StaticMeshComponent.h"
@@ -46,6 +47,9 @@ AFarmCharacter::AFarmCharacter()
 void AFarmCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+	HomeLocation = GetActorLocation();
+	Health = MaxHealth;
+	UE_LOG(LogTemp, Log, TEXT("FarmGame: player spawned at %s"), *HomeLocation.ToCompactString());
 
 	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
 	{
@@ -58,6 +62,28 @@ void AFarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 	PlayerInputComponent->BindAxis(TEXT("MoveForward"), this, &AFarmCharacter::MoveForward);
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AFarmCharacter::MoveRight);
+}
+
+void AFarmCharacter::ApplyDamage(int32 Amount, AActor* Source)
+{
+	if (Amount <= 0 || IsDead()) return;
+	Health = FMath::Max(0, Health - Amount);
+	UE_LOG(LogTemp, Log, TEXT("FarmGame: damage %d from %s at distance %.0f -> HP %d"), Amount,
+		*GetNameSafe(Source), Source ? FVector::Dist2D(Source->GetActorLocation(), GetActorLocation()) : -1.f, Health);
+	if (Health <= 0)
+	{
+		Respawn();
+	}
+}
+
+void AFarmCharacter::Respawn()
+{
+	SetActorLocation(HomeLocation);
+	Health = MaxHealth;
+	if (AFarmPlayerController* PC = GetController<AFarmPlayerController>())
+	{
+		PC->ShowToast(TEXT("You passed out... back at the farm"));
+	}
 }
 
 void AFarmCharacter::MoveForward(float Value)

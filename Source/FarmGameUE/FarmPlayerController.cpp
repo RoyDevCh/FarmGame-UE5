@@ -1,9 +1,15 @@
 #include "FarmPlayerController.h"
 #include "FarmBin.h"
+#include "FarmBuilding.h"
+#include "FarmAnimal.h"
 #include "FarmCharacter.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
+#include "FarmItems.h"
 #include "FarmPlot.h"
+#include "FarmPortal.h"
+#include "FarmRecipes.h"
+#include "FarmResourceNode.h"
 #include "EngineUtils.h"
 
 AFarmPlayerController::AFarmPlayerController()
@@ -28,12 +34,24 @@ void AFarmPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("SaveGame"), IE_Pressed, this, &AFarmPlayerController::SaveGame);
 	InputComponent->BindAction(TEXT("LoadGame"), IE_Pressed, this, &AFarmPlayerController::LoadGame);
 	InputComponent->BindAction(TEXT("Sleep"), IE_Pressed, this, &AFarmPlayerController::Sleep);
+	InputComponent->BindAction(TEXT("Attack"), IE_Pressed, this, &AFarmPlayerController::Attack);
+	InputComponent->BindAction(TEXT("Build"), IE_Pressed, this, &AFarmPlayerController::ToggleBuildMode);
+	InputComponent->BindAction(TEXT("CraftMenu"), IE_Pressed, this, &AFarmPlayerController::ToggleCraftMenu);
+	InputComponent->BindAction(TEXT("Cancel"), IE_Pressed, this, &AFarmPlayerController::CancelMode);
+
+	InputComponent->BindAction(TEXT("Craft1"), IE_Pressed, this, &AFarmPlayerController::Craft1);
+	InputComponent->BindAction(TEXT("Craft2"), IE_Pressed, this, &AFarmPlayerController::Craft2);
+	InputComponent->BindAction(TEXT("Craft3"), IE_Pressed, this, &AFarmPlayerController::Craft3);
+	InputComponent->BindAction(TEXT("Craft4"), IE_Pressed, this, &AFarmPlayerController::Craft4);
+	InputComponent->BindAction(TEXT("Craft5"), IE_Pressed, this, &AFarmPlayerController::Craft5);
 }
 
 void AFarmPlayerController::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	AttackCooldown = FMath::Max(0.f, AttackCooldown - DeltaSeconds);
 	UpdateTarget();
+	UpdateGhost();
 }
 
 void AFarmPlayerController::UpdateTarget()
@@ -44,7 +62,7 @@ void AFarmPlayerController::UpdateTarget()
 	if (!MyPawn || !GM) return;
 
 	const FVector PawnLocation = MyPawn->GetActorLocation();
-	float BestDistance = 260.f;
+	float BestDistance = 320.f;
 
 	for (AFarmPlot* Plot : GM->Plots)
 	{
@@ -57,9 +75,91 @@ void AFarmPlayerController::UpdateTarget()
 		}
 	}
 
+	for (AFarmBuilding* Building : GM->Buildings)
+	{
+		if (!Building) continue;
+		const float Dist = FVector::Dist2D(PawnLocation, Building->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = Building;
+		}
+	}
+
+	for (AFarmResourceNode* Node : GM->ResourceNodes)
+	{
+		if (!Node) continue;
+		const float Dist = FVector::Dist2D(PawnLocation, Node->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = Node;
+		}
+	}
+
+	for (AFarmAnimal* Animal : GM->Animals)
+	{
+		if (!Animal || Animal->GetHealth() <= 0) continue;
+		const float Dist = FVector::Dist2D(PawnLocation, Animal->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = Animal;
+		}
+	}
+
+	for (AFarmPortal* Portal : GM->Portals)
+	{
+		if (!Portal) continue;
+		const float Dist = FVector::Dist2D(PawnLocation, Portal->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = Portal;
+		}
+	}
+
 	if (GM->GetBin() && FVector::Dist2D(PawnLocation, GM->GetBin()->GetActorLocation()) < BestDistance)
 	{
 		CurrentTarget = GM->GetBin();
+	}
+}
+
+void AFarmPlayerController::UpdateGhost()
+{
+	if (BuildModeIndex < 0)
+	{
+		if (Ghost)
+		{
+			Ghost->Destroy();
+			Ghost = nullptr;
+		}
+		return;
+	}
+
+	APawn* MyPawn = GetPawn();
+	UWorld* World = GetWorld();
+	if (!MyPawn || !World) return;
+
+	if (!Ghost)
+	{
+		Ghost = World->SpawnActor<AFarmBuilding>(AFarmBuilding::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+		if (Ghost)
+		{
+			Ghost->Configure(BuildModeIndex == 0 ? EBuildingType::Fence : EBuildingType::Furnace);
+			Ghost->SetActorEnableCollision(false);
+			Ghost->SetActorTickEnabled(false);
+		}
+	}
+
+	if (Ghost)
+	{
+		FVector Target = MyPawn->GetActorLocation() + MyPawn->GetActorForwardVector() * 220.f;
+		Target.X = FMath::RoundToFloat(Target.X / 100.f) * 100.f;
+		Target.Y = FMath::RoundToFloat(Target.Y / 100.f) * 100.f;
+		Target.Z = 0.f;
+		Ghost->SetActorLocation(Target);
+		Ghost->SetActorHiddenInGame(false);
 	}
 }
 
@@ -79,6 +179,10 @@ FString AFarmPlayerController::GetSelectedCropLabel() const
 
 FString AFarmPlayerController::GetPromptText() const
 {
+	if (IsBuildMode())
+	{
+		return TEXT("E: Place building    G: next type    Esc: cancel");
+	}
 	if (const AFarmPlot* Plot = Cast<AFarmPlot>(CurrentTarget.Get()))
 	{
 		return Plot->GetPrompt(this);
@@ -86,6 +190,22 @@ FString AFarmPlayerController::GetPromptText() const
 	if (const AFarmBin* Bin = Cast<AFarmBin>(CurrentTarget.Get()))
 	{
 		return Bin->GetPrompt(this);
+	}
+	if (const AFarmBuilding* Building = Cast<AFarmBuilding>(CurrentTarget.Get()))
+	{
+		return Building->GetPrompt(this);
+	}
+	if (const AFarmResourceNode* Node = Cast<AFarmResourceNode>(CurrentTarget.Get()))
+	{
+		return Node->GetPrompt(this);
+	}
+	if (const AFarmPortal* Portal = Cast<AFarmPortal>(CurrentTarget.Get()))
+	{
+		return Portal->GetPrompt();
+	}
+	if (const AFarmAnimal* Animal = Cast<AFarmAnimal>(CurrentTarget.Get()))
+	{
+		return Animal->GetPrompt(this);
 	}
 	return FString();
 }
@@ -105,9 +225,19 @@ float AFarmPlayerController::GetToastAlpha() const
 
 void AFarmPlayerController::Interact()
 {
-	AActor* Target = CurrentTarget.Get();
 	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
-	if (!Target || !Farmer) return;
+	if (!Farmer) return;
+	UE_LOG(LogTemp, Log, TEXT("FarmGame: interact at %s target=%s"),
+		*Farmer->GetActorLocation().ToCompactString(), *GetNameSafe(CurrentTarget.Get()));
+
+	if (IsBuildMode())
+	{
+		PlaceBuilding();
+		return;
+	}
+
+	AActor* Target = CurrentTarget.Get();
+	if (!Target) return;
 
 	if (AFarmPlot* Plot = Cast<AFarmPlot>(Target))
 	{
@@ -117,7 +247,179 @@ void AFarmPlayerController::Interact()
 	{
 		Bin->Interact(Farmer);
 	}
+	else if (AFarmBuilding* Building = Cast<AFarmBuilding>(Target))
+	{
+		Building->Interact(Farmer);
+	}
+	else if (AFarmResourceNode* Node = Cast<AFarmResourceNode>(Target))
+	{
+		Node->Interact(Farmer);
+	}
+	else if (AFarmPortal* Portal = Cast<AFarmPortal>(Target))
+	{
+		Portal->Interact(Farmer);
+	}
+	else if (AFarmAnimal* Animal = Cast<AFarmAnimal>(Target))
+	{
+		Animal->Interact(Farmer);
+	}
 }
+
+void AFarmPlayerController::Attack()
+{
+	if (AttackCooldown > 0.f) return;
+	AttackCooldown = 0.45f;
+
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
+	if (!Farmer || !GM) return;
+
+	const FVector Origin = Farmer->GetActorLocation();
+	const FVector Forward = Farmer->GetActorForwardVector().GetSafeNormal2D();
+	AFarmAnimal* Best = nullptr;
+	float BestDist = TNumericLimits<float>::Max();
+	for (AFarmAnimal* Animal : GM->Animals)
+	{
+		if (!Animal || Animal->GetHealth() <= 0) continue;
+		const FVector To = Animal->GetActorLocation() - Origin;
+		const float Dist = To.Size2D();
+		if (Dist > 320.f || Dist >= BestDist) continue;
+		Best = Animal;
+		BestDist = Dist;
+	}
+
+	if (Best)
+	{
+		Best->ApplyDamage(34, Farmer);
+	}
+}
+
+void AFarmPlayerController::ToggleBuildMode()
+{
+	BuildModeIndex = (BuildModeIndex + 2) % 3 - 1; // -1 -> 0 -> 1 -> -1
+	if (BuildModeIndex < 0)
+	{
+		ExitBuildMode();
+		ShowToast(TEXT("Build mode off"));
+	}
+	else
+	{
+		ShowToast(FString::Printf(TEXT("Build mode: %s (G to cycle)"), *GetBuildLabel()));
+	}
+}
+
+void AFarmPlayerController::ExitBuildMode()
+{
+	BuildModeIndex = -1;
+	if (Ghost)
+	{
+		Ghost->Destroy();
+		Ghost = nullptr;
+	}
+}
+
+FString AFarmPlayerController::GetBuildLabel() const
+{
+	if (BuildModeIndex == 0) return TEXT("Fence");
+	if (BuildModeIndex == 1) return TEXT("Furnace");
+	return TEXT("none");
+}
+
+void AFarmPlayerController::PlaceBuilding()
+{
+	AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!GM || !Farmer || !Ghost) return;
+
+	const FName KitItem = BuildModeIndex == 0 ? FName(TEXT("fence_kit")) : FName(TEXT("furnace_kit"));
+	if (Farmer->GetInventory()->GetCount(KitItem) <= 0)
+	{
+		ShowToast(FString::Printf(TEXT("Need %s (craft it with C)"), *FarmItems::LabelOf(KitItem)));
+		return;
+	}
+
+	const FVector Location = Ghost->GetActorLocation();
+	if (!GM->IsBuildLocationFree(Location, 105.f))
+	{
+		ShowToast(TEXT("Too close to something else"));
+		return;
+	}
+
+	Farmer->GetInventory()->RemoveItem(KitItem, 1);
+	GM->SpawnBuilding(BuildModeIndex == 0 ? EBuildingType::Fence : EBuildingType::Furnace, Location);
+	ShowToast(FString::Printf(TEXT("Placed %s"), *GetBuildLabel()));
+}
+
+void AFarmPlayerController::ToggleCraftMenu()
+{
+	bCraftMenuOpen = !bCraftMenuOpen;
+}
+
+void AFarmPlayerController::CancelMode()
+{
+	if (bCraftMenuOpen)
+	{
+		bCraftMenuOpen = false;
+		return;
+	}
+	if (IsBuildMode())
+	{
+		ExitBuildMode();
+	}
+}
+
+bool AFarmPlayerController::IsNearFurnace() const
+{
+	APawn* MyPawn = GetPawn();
+	AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
+	if (!MyPawn || !GM) return false;
+	for (const AFarmBuilding* Building : GM->Buildings)
+	{
+		if (Building && Building->GetBuildingType() == EBuildingType::Furnace &&
+			FVector::Dist2D(MyPawn->GetActorLocation(), Building->GetActorLocation()) < 320.f)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+bool AFarmPlayerController::CanCraftRecipe(int32 Index) const
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	const TArray<FCraftRecipe>& Recipes = FarmRecipes::All();
+	if (!Farmer || !Recipes.IsValidIndex(Index)) return false;
+	if (Recipes[Index].bNeedsFurnace && !IsNearFurnace()) return false;
+	return Farmer->GetInventory()->CanCraft(Recipes[Index]);
+}
+
+void AFarmPlayerController::CraftRecipe(int32 Index)
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	const TArray<FCraftRecipe>& Recipes = FarmRecipes::All();
+	if (!Farmer || !Recipes.IsValidIndex(Index)) return;
+
+	const FCraftRecipe& Recipe = Recipes[Index];
+	if (Recipe.bNeedsFurnace && !IsNearFurnace())
+	{
+		ShowToast(TEXT("Stand next to a furnace to smelt"));
+		return;
+	}
+	if (Farmer->GetInventory()->Craft(Recipe))
+	{
+		ShowToast(FString::Printf(TEXT("Crafted %s"), *FarmItems::LabelOf(Recipe.OutputId)));
+	}
+	else
+	{
+		ShowToast(TEXT("Missing ingredients"));
+	}
+}
+
+void AFarmPlayerController::Craft1() { CraftRecipe(0); }
+void AFarmPlayerController::Craft2() { CraftRecipe(1); }
+void AFarmPlayerController::Craft3() { CraftRecipe(2); }
+void AFarmPlayerController::Craft4() { CraftRecipe(3); }
+void AFarmPlayerController::Craft5() { CraftRecipe(4); }
 
 void AFarmPlayerController::CycleSeed()
 {
@@ -135,7 +437,7 @@ void AFarmPlayerController::BuySeed()
 
 	const FCropDef* Crop = GM->FindCrop(GetSelectedCropId());
 	if (!Crop) return;
-	if (Farmer->GetInventory()->BuySeed(Crop->Id, Crop->SeedCost))
+	if (Farmer->GetInventory()->BuyItem(FarmItems::SeedId(Crop->Id), 1))
 	{
 		ShowToast(FString::Printf(TEXT("Bought 1 %s seed for %d gold"), *Crop->DisplayName.ToString(), Crop->SeedCost));
 	}
@@ -151,7 +453,7 @@ void AFarmPlayerController::SaveGame()
 	AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
 	if (Farmer && GM)
 	{
-		GM->SaveGame(Farmer->GetInventory());
+		GM->SaveGame(Farmer);
 		ShowToast(TEXT("Game saved (Ctrl+L to load)"));
 	}
 }
@@ -162,7 +464,7 @@ void AFarmPlayerController::LoadGame()
 	AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
 	if (Farmer && GM)
 	{
-		ShowToast(GM->LoadGame(Farmer->GetInventory()) ? TEXT("Game loaded") : TEXT("No save found"));
+		ShowToast(GM->LoadGame(Farmer) ? TEXT("Game loaded") : TEXT("No save found"));
 	}
 }
 

@@ -1,8 +1,11 @@
 #include "FarmHUD.h"
+#include "FarmBuilding.h"
 #include "FarmCharacter.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
+#include "FarmItems.h"
 #include "FarmPlayerController.h"
+#include "FarmRecipes.h"
 #include "Engine/Canvas.h"
 #include "Engine/Engine.h"
 
@@ -25,29 +28,84 @@ void AFarmHUD::DrawHUD()
 	const FString Header = FString::Printf(TEXT("Day %d      Gold %d g"), GM->GetDay(), Character->GetInventory()->Gold);
 	DrawText(Header, FLinearColor(1.f, 0.94f, 0.75f), Margin, Margin, Medium, 1.25f);
 
+	const FString Status = FString::Printf(TEXT("%s   %s"), *GM->GetTimeLabel(), *GM->GetWeatherLabel());
+	float StatusW = 0.f, StatusH = 0.f;
+	GetTextSize(Status, StatusW, StatusH, Small, 1.2f);
+	DrawText(Status, FLinearColor(0.85f, 0.92f, 1.f), W - Margin - StatusW, Margin + 4.f, Small, 1.2f);
+
+	const float HealthPercent = Character->GetMaxHealth() > 0 ? static_cast<float>(Character->GetHealth()) / Character->GetMaxHealth() : 0.f;
+	DrawRect(FLinearColor(0.25f, 0.05f, 0.05f), Margin, H - Margin - 58.f, 240.f, 16.f);
+	DrawRect(FLinearColor(0.25f, 0.85f, 0.35f), Margin, H - Margin - 58.f, 240.f * HealthPercent, 16.f);
+	DrawText(FString::Printf(TEXT("HP %d / %d"), Character->GetHealth(), Character->GetMaxHealth()),
+		FLinearColor(0.95f, 0.95f, 0.95f), Margin, H - Margin - 84.f, Small, 1.05f);
+
 	float Y = Margin + 48.f;
 	DrawText(FString::Printf(TEXT("Selected seed: %s  (Q to change)"), *PC->GetSelectedCropLabel()), FLinearColor(0.85f, 0.95f, 1.f), Margin, Y, Small, 1.15f);
 	Y += 26.f;
 
 	for (const FCropDef& Crop : GM->Crops)
 	{
-		const int32 Seeds = Character->GetInventory()->GetSeedCount(Crop.Id);
-		const int32 Produce = Character->GetInventory()->GetProduceCount(Crop.Id);
+		const int32 Seeds = Character->GetInventory()->GetCount(FarmItems::SeedId(Crop.Id));
+		const int32 Produce = Character->GetInventory()->GetCount(Crop.Id);
 		const FString Line = FString::Printf(TEXT("%s: %d seeds, %d harvested  (seed %dg / sell %dg)"),
 			*Crop.DisplayName.ToString(), Seeds, Produce, Crop.SeedCost, Crop.SellPrice);
 		DrawText(Line, FLinearColor(0.82f, 0.86f, 0.8f), Margin, Y, Small, 1.05f);
 		Y += 22.f;
 	}
 
-	const FString Help = TEXT("WASD move | E interact | Q seed | B buy at bin | T sleep | Ctrl+S save | Ctrl+L load");
+	Y += 6.f;
+	DrawText(FString::Printf(TEXT("Wood %d   Stone %d   Ore %d   Ingot %d   Hay %d"),
+		Character->GetInventory()->GetCount(TEXT("wood")),
+		Character->GetInventory()->GetCount(TEXT("stone")),
+		Character->GetInventory()->GetCount(TEXT("ore")),
+		Character->GetInventory()->GetCount(TEXT("ingot")),
+		Character->GetInventory()->GetCount(TEXT("hay"))),
+		FLinearColor(0.72f, 0.78f, 0.7f), Margin, Y, Small, 1.0f);
+	Y += 22.f;
+	DrawText(FString::Printf(TEXT("Kits: fence %d   furnace %d"),
+		Character->GetInventory()->GetCount(TEXT("fence_kit")),
+		Character->GetInventory()->GetCount(TEXT("furnace_kit"))),
+		FLinearColor(0.72f, 0.78f, 0.7f), Margin, Y, Small, 1.0f);
+
+	const FString Help = TEXT("WASD move | E interact/place | Q seed | B buy | C craft | G build | T sleep | Ctrl+S/Ctrl+L");
 	DrawText(Help, FLinearColor(0.55f, 0.6f, 0.65f), Margin, H - Margin - 22.f, Small, 1.0f);
 
+	if (PC->IsBuildMode())
+	{
+		const FString BuildLine = FString::Printf(TEXT("BUILD MODE: %s   (G cycle, E place, Esc cancel)"), *PC->GetBuildLabel());
+		float BW = 0.f, BH = 0.f;
+		GetTextSize(BuildLine, BW, BH, Small, 1.15f);
+		DrawText(BuildLine, FLinearColor(0.6f, 1.f, 0.6f), (W - BW) * 0.5f, H - 210.f, Small, 1.15f);
+	}
+
 	const FString Prompt = PC->GetPromptText();
-	if (!Prompt.IsEmpty())
+	if (!Prompt.IsEmpty() && !PC->IsCraftMenuOpen())
 	{
 		float TextW = 0.f, TextH = 0.f;
 		GetTextSize(Prompt, TextW, TextH, Small, 1.2f);
 		DrawText(Prompt, FLinearColor(1.f, 1.f, 1.f), (W - TextW) * 0.5f, H - 140.f, Small, 1.2f);
+	}
+
+	if (PC->IsCraftMenuOpen())
+	{
+		DrawText(TEXT("CRAFTING  (C or Esc to close)"), FLinearColor(1.f, 0.9f, 0.5f), Margin, H - 420.f, Medium, 1.15f);
+		const TArray<FCraftRecipe>& Recipes = FarmRecipes::All();
+		float RY = H - 386.f;
+		for (int32 i = 0; i < Recipes.Num(); ++i)
+		{
+			const FCraftRecipe& Recipe = Recipes[i];
+			FString Ingredients;
+			for (const FCraftIngredient& Ingredient : Recipe.Inputs)
+			{
+				Ingredients += FString::Printf(TEXT("%s x%d  "), *FarmItems::LabelOf(Ingredient.ItemId), Ingredient.Count);
+			}
+			const bool bCanCraft = PC->CanCraftRecipe(i);
+			const bool bFurnaceOnly = Recipe.bNeedsFurnace;
+			const FString Line = FString::Printf(TEXT("[%d] %s   %s%s"), i + 1, Recipe.Label, *Ingredients,
+				bFurnaceOnly ? TEXT("(needs furnace)") : TEXT(""));
+			DrawText(Line, bCanCraft ? FLinearColor(0.55f, 1.f, 0.55f) : FLinearColor(0.55f, 0.55f, 0.55f), Margin, RY, Small, 1.05f);
+			RY += 24.f;
+		}
 	}
 
 	const float ToastAlpha = PC->GetToastAlpha();
