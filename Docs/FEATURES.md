@@ -19,7 +19,7 @@
 | 建筑与熔炉 | `AFarmBuilding` |
 | 传送门 | `AFarmPortal` |
 | HUD | `AFarmHUD::DrawHUD` |
-| 数据表 | `FarmItems::All`（18 项）、`FarmRecipes::All`（4 条）、`FarmCrops::MakeDefaults()`（5 种作物） |
+| 数据表 | `FarmItems::All`（19 项）、`FarmRecipes::All`（5 条）、`FarmCrops::MakeDefaults()`（5 种作物） |
 
 ## 1. 地图与初始布局
 
@@ -153,7 +153,7 @@
 
 新档只会初始化一次（`AFarmGameMode::bPlayerInitialized`）；之后读档会用存档覆盖。
 
-### 4.2 物品表（`FarmItems::All`，18 项）
+### 4.2 物品表（`FarmItems::All`，19 项）
 
 类别 `EItemKind`：Seed / Produce / Resource / AnimalProduct / Material。
 
@@ -418,7 +418,7 @@ Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后�
 | 底部 | 制作菜单（按 `C` 展开，逐条列出配方、材料、能否制作） |
 | 顶部中央 | Toast（3.5 秒，最后 1.2 秒淡出） |
 
-## 14. 自动化测试（24 条）
+## 14. 自动化测试（27 条）
 
 全部是 `EAutomationTestFlags::EditorContext | EngineFilter` 的简单测试，前缀 `FarmGame.`。
 基础 11 条在 `FarmGameTests.cpp`，补充 6 条在 `FarmGameExtraTests.cpp`，都包在 `#if WITH_DEV_AUTOMATION_TESTS` 里。

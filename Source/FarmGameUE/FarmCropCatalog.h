@@ -51,6 +51,7 @@ namespace FarmCrops
 		Tomato.SeedCost = 7;
 		Tomato.SellPrice = 18;
 		Tomato.YieldPerHarvest = 2;
+		Tomato.bRegrowAfterHarvest = true;
 		Tomato.Color = FLinearColor(0.85f, 0.18f, 0.12f);
 		Crops.Add(Tomato);
 

@@ -214,8 +214,12 @@ if (Test-Path -LiteralPath $FallbackLog -PathType Leaf) {
     $CandidateLogs.Add($FallbackLog)
 }
 
+
 foreach ($CandidateLog in $CandidateLogs) {
-    foreach ($Line in [System.IO.File]::ReadLines($CandidateLog)) {
+    $Lines = $null
+    try { $Lines = [System.IO.File]::ReadAllLines($CandidateLog) }
+    catch { Write-Host "WARN: cannot read $CandidateLog ($($_.Exception.Message)); skipping" -ForegroundColor Yellow; continue }
+    foreach ($Line in $Lines) {
         if ($Line -notmatch 'Test Completed\.') {
             continue
         }

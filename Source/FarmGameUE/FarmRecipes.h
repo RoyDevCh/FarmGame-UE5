@@ -27,6 +27,7 @@ namespace FarmRecipes
 		static const TArray<FCraftRecipe> Recipes = {
 			{ TEXT("fence_kit"), TEXT("Fence Kit (build with G)"), { { TEXT("wood"), 5 } }, TEXT("fence_kit"), 1, false },
 			{ TEXT("furnace_kit"), TEXT("Furnace Kit (build with G)"), { { TEXT("stone"), 10 }, { TEXT("wood"), 5 } }, TEXT("furnace_kit"), 1, false },
+			{ TEXT("chest_kit"), TEXT("Storage Chest Kit (build with G)"), { { TEXT("wood"), 12 } }, TEXT("chest_kit"), 1, false },
 			{ TEXT("ingot"), TEXT("Smelt Iron Ingot (at furnace)"), { { TEXT("ore"), 2 } }, TEXT("ingot"), 1, true },
 			{ TEXT("hay_bundle"), TEXT("Hay Bundle (animal feed)"), { { TEXT("corn"), 2 } }, TEXT("hay"), 2, false }
 		};

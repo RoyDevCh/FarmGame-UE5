@@ -6,6 +6,7 @@
 #include "FarmInventoryComponent.h"
 #include "FarmPlayerController.h"
 #include "FarmAnimal.h"
+#include "FarmArt.h"
 #include "FarmPlot.h"
 #include "FarmPortal.h"
 #include "FarmResourceNode.h"
@@ -184,7 +185,7 @@ void AFarmGameMode::BuildWorld()
 			if (BaseMaterial)
 			{
 				UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(BaseMaterial, Ground);
-				MID->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.10f, 0.23f, 0.09f));
+				MID->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.07f, 0.17f, 0.06f));
 				Mesh->SetMaterial(0, MID);
 			}
 		}
@@ -291,43 +292,65 @@ void AFarmGameMode::BuildWorld()
 	}
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: resource nodes %d"), ResourceNodes.Num());
 
-	// A few decorative trees around the farm
-	if (CubeMesh)
+	// Imported scenery: farm buildings and nature props.
+	SpawnProp(TEXT("/Game/Art/Buildings/barn.barn"), FVector(-1700.f, -1500.f, 0.f), 900.f, 25.f);
+	SpawnProp(TEXT("/Game/Art/Buildings/house.house"), FVector(1700.f, -1500.f, 0.f), 900.f, -20.f);
+	SpawnProp(TEXT("/Game/Art/Buildings/Windmill.Windmill"), FVector(2000.f, 1300.f, 0.f), 1100.f, 40.f);
+	SpawnProp(TEXT("/Game/Art/Buildings/wall_square.wall_square"), FVector(-900.f, 1500.f, 0.f), 300.f, 10.f);
+
+	const FVector PalmSpots[] = { FVector(-2200.f, 200.f, 0.f), FVector(2300.f, -300.f, 0.f), FVector(-300.f, -2100.f, 0.f) };
+	for (const FVector& Spot : PalmSpots) SpawnProp(TEXT("/Game/Art/Environment/Palm_Tree.Palm_Tree"), Spot, 800.f);
+
+	const FVector PineSpots[] = { FVector(2400.f, 1800.f, 0.f), FVector(-2400.f, -600.f, 0.f), FVector(600.f, 2200.f, 0.f) };
+	for (const FVector& Spot : PineSpots) SpawnProp(TEXT("/Game/Art/Environment/Pine_cone.Pine_cone"), Spot, 650.f);
+
+	const FVector BushSpots[] = {
+		FVector(-600.f, -700.f, 0.f), FVector(650.f, -650.f, 0.f), FVector(-700.f, 650.f, 0.f),
+		FVector(750.f, 700.f, 0.f), FVector(0.f, 1100.f, 0.f), FVector(0.f, -1100.f, 0.f)
+	};
+	for (const FVector& Spot : BushSpots) SpawnProp(TEXT("/Game/Art/Environment/Bush.Bush"), Spot, 120.f);
+
+	const FVector FlowerSpots[] = {
+		FVector(-500.f, -450.f, 0.f), FVector(520.f, -480.f, 0.f), FVector(-540.f, 480.f, 0.f),
+		FVector(560.f, 520.f, 0.f), FVector(-900.f, 100.f, 0.f), FVector(900.f, -100.f, 0.f),
+		FVector(150.f, 900.f, 0.f), FVector(-150.f, -900.f, 0.f)
+	};
+	for (const FVector& Spot : FlowerSpots) SpawnProp(TEXT("/Game/Art/Environment/Flower.Flower"), Spot, 40.f);
+
+	// Scatter grass clumps outside the farm plot area for ground detail.
 	{
-		const FVector TreeSpots[] = {
-			FVector(-1200.f, -900.f, 0.f), FVector(1300.f, -700.f, 0.f), FVector(-1500.f, 800.f, 0.f),
-			FVector(1600.f, 1100.f, 0.f), FVector(-400.f, 1700.f, 0.f), FVector(900.f, 1800.f, 0.f)
-		};
-		for (const FVector& Spot : TreeSpots)
+		FRandomStream Rng(1337);
+		for (int32 i = 0; i < 60; ++i)
 		{
-			AStaticMeshActor* Trunk = World->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), Spot + FVector(0.f, 0.f, 220.f), FRotator::ZeroRotator);
-			if (Trunk)
-			{
-				Trunk->GetStaticMeshComponent()->SetStaticMesh(CubeMesh);
-				Trunk->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
-				Trunk->SetActorScale3D(FVector(0.5f, 0.5f, 4.5f));
-				if (BaseMaterial)
-				{
-					UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(BaseMaterial, Trunk);
-					MID->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.35f, 0.22f, 0.12f));
-					Trunk->GetStaticMeshComponent()->SetMaterial(0, MID);
-				}
-			}
-			AStaticMeshActor* Crown = World->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), Spot + FVector(0.f, 0.f, 520.f), FRotator::ZeroRotator);
-			if (Crown)
-			{
-				Crown->GetStaticMeshComponent()->SetStaticMesh(CubeMesh);
-				Crown->GetStaticMeshComponent()->SetMobility(EComponentMobility::Movable);
-				Crown->SetActorScale3D(FVector(2.6f, 2.6f, 2.2f));
-				if (BaseMaterial)
-				{
-					UMaterialInstanceDynamic* MID = UMaterialInstanceDynamic::Create(BaseMaterial, Crown);
-					MID->SetVectorParameterValue(TEXT("Color"), FLinearColor(0.10f, 0.42f, 0.15f));
-					Crown->GetStaticMeshComponent()->SetMaterial(0, MID);
-				}
-			}
+			const FVector P(Rng.FRandRange(-2600.f, 2600.f), Rng.FRandRange(-2600.f, 2600.f), 0.f);
+			if (FVector::Dist2D(P, FVector::ZeroVector) < 900.f) continue;
+			SpawnProp(TEXT("/Game/Art/Environment/grass.grass"), P, 45.f, Rng.FRandRange(0.f, 360.f));
 		}
 	}
+
+	SpawnProp(TEXT("/Game/Art/Environment/metal_rock.metal_rock"), FVector(2400.f, 2300.f, 0.f), 120.f);
+	SpawnProp(TEXT("/Game/Art/Environment/rock2.rock2"), FVector(-2100.f, 2100.f, 0.f), 90.f);
+}
+
+void AFarmGameMode::SpawnProp(const TCHAR* Path, const FVector& Location, float Size, float Yaw)
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+	UStaticMesh* Mesh = FarmArt::LoadMesh(Path);
+	if (!Mesh) return;
+
+	AStaticMeshActor* Prop = World->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), Location, FRotator(0.f, Yaw, 0.f));
+	if (!Prop) return;
+
+	UStaticMeshComponent* Comp = Prop->GetStaticMeshComponent();
+	Comp->SetStaticMesh(Mesh);
+	Comp->SetMobility(EComponentMobility::Movable);
+	const FBox Box = Mesh->GetBoundingBox();
+	const FVector Extent = Box.GetSize();
+	const float MaxDim = FMath::Max3(Extent.X, Extent.Y, Extent.Z);
+	const float Scale = MaxDim > KINDA_SMALL_NUMBER ? Size / MaxDim : 1.f;
+	Prop->SetActorScale3D(FVector(Scale));
+	Prop->SetActorLocation(Location + FVector(0.f, 0.f, -Box.Min.Z * Scale));
 }
 
 void AFarmGameMode::SpawnEnvironment()
@@ -403,6 +426,7 @@ void AFarmGameMode::SaveGame(AFarmCharacter* Character)
 		Data.Location = Building->GetActorLocation();
 		Data.OreCount = Building->GetOreCount();
 		Data.IngotCount = Building->GetIngotCount();
+		Data.Storage = Building->GetStorage();
 		Save->Buildings.Add(Data);
 	}
 	for (AFarmAnimal* Animal : Animals)
@@ -459,6 +483,7 @@ bool AFarmGameMode::LoadGame(AFarmCharacter* Character)
 		if (AFarmBuilding* Building = SpawnBuilding(static_cast<EBuildingType>(Data.Type), Data.Location))
 		{
 			Building->RestoreState(Data.OreCount, Data.IngotCount);
+			Building->RestoreStorage(Data.Storage);
 		}
 	}
 

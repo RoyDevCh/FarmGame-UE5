@@ -110,6 +110,39 @@ int32 UFarmInventoryComponent::GetTotalItemCount() const
 	return Total;
 }
 
+int32 UFarmInventoryComponent::DepositResources(TMap<FName, int32>& Storage)
+{
+	TArray<FName> Moved;
+	int32 Total = 0;
+	for (const TPair<FName, int32>& Pair : Items)
+	{
+		const FItemDef* Def = FarmItems::Find(Pair.Key);
+		if (Def && Def->Kind == EItemKind::Resource && Pair.Value > 0)
+		{
+			Storage.FindOrAdd(Pair.Key) += Pair.Value;
+			Total += Pair.Value;
+			Moved.Add(Pair.Key);
+		}
+	}
+	for (const FName& Id : Moved)
+	{
+		Items.Remove(Id);
+	}
+	return Total;
+}
+
+int32 UFarmInventoryComponent::WithdrawResources(TMap<FName, int32>& Storage)
+{
+	int32 Total = 0;
+	for (const TPair<FName, int32>& Pair : Storage)
+	{
+		AddItem(Pair.Key, Pair.Value);
+		Total += Pair.Value;
+	}
+	Storage.Reset();
+	return Total;
+}
+
 int32 UFarmInventoryComponent::GetSellableCount() const
 {
 	int32 Total = 0;

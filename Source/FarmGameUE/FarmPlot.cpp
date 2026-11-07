@@ -57,8 +57,12 @@ void AFarmPlot::BeginPlay()
 	bArtSoil = FarmArt::Apply(SoilMesh, TEXT("/Game/Art/Farming/soil_hoed.soil_hoed"), 120.f);
 	if (bArtSoil && SoilMaterial)
 	{
-		// The imported soil material is unlit white; keep the shape, use the farm palette.
-		SoilMesh->SetMaterial(0, SoilMaterial);
+		// Replace every material slot so the imported soil texture cannot leak through.
+		const int32 NumMats = SoilMesh->GetNumMaterials();
+		for (int32 MatIndex = 0; MatIndex < NumMats; ++MatIndex)
+		{
+			SoilMesh->SetMaterial(MatIndex, SoilMaterial);
+		}
 	}
 	RefreshVisuals();
 }
@@ -237,11 +241,23 @@ void AFarmPlot::Interact(AFarmCharacter* Character)
 				PC->ShowToast(FString::Printf(TEXT("+%d %s"), Yield, CropDef ? *CropDef->DisplayName.ToString() : TEXT("crop")));
 			}
 		}
-		State = EFarmPlotState::Tilled;
-		CropId = NAME_None;
-		CropDef = nullptr;
-		Stage = 0;
-		bWatered = false;
+		const int32 NextStage = CropDef ? FarmLogic::StageAfterHarvest(*CropDef) : -1;
+		if (NextStage >= 0 && CropDef)
+		{
+			// Regrowing crop (tomato): keep it planted at stage 1 and require water again.
+			Stage = NextStage;
+			bWatered = false;
+			LastGrowthDay = GM ? GM->GetDay() : 0;
+			State = EFarmPlotState::Planted;
+		}
+		else
+		{
+			State = EFarmPlotState::Tilled;
+			CropId = NAME_None;
+			CropDef = nullptr;
+			Stage = 0;
+			bWatered = false;
+		}
 		RefreshVisuals();
 		break;
 	}

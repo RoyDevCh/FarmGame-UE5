@@ -185,7 +185,7 @@
 | 阅读 / 学习 / 对话 / 任务 | `Gameplay/ReadObject`、`Actions/ActionRead` / `ActionLearn`、`Tools/DialogueQuestsWrap` | 无 | 需要文本资产与任务系统，超出垂直切片范围 |
 | 骑乘 / 载具 | `Gameplay/AnimalRide`、`Actions/ActionRide` | 无 | 需要角色挂载点与移动控制切换 |
 | 任意位置种植 | `Plant` 是可建造对象（`Buildable` + `Selectable`），能放在任意地面 | 只能种在 36 块地里 | 本版用"地块 = 语义单元"简化状态与存档；自由种植需要空间索引 + 每株植物的独立序列化 |
-| 美术资产 | 337 个 FBX / 325 张贴图 / 203 个材质 | 导入 17 个 FBX（`Content/Art`）+ 运行时包围盒归一化；其余用 `/Engine/BasicShapes` | 只导入关键道具，控制体积；许可仍需确认 |
+| 美术资产 | 337 个 FBX / 325 张贴图 / 203 个材质 | 导入 30 个 FBX（`Content/Art`）+ 运行时包围盒归一化；其余用 `/Engine/BasicShapes` | 只导入关键道具，控制体积；许可仍需确认 |
 | 数据资产化 | 一整套 ScriptableObject | C++ 静态表 | 见 4.3 |
 
 ## 6. 如果继续推进：建议顺序

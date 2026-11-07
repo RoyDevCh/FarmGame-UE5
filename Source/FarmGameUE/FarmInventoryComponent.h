@@ -41,5 +41,11 @@ public:
 	/** Items SellEverything would sell right now. */
 	UFUNCTION(BlueprintPure, Category = "Farm") int32 GetSellableCount() const;
 
+	/** Moves every Resource item into Storage; returns how many moved. */
+	int32 DepositResources(TMap<FName, int32>& Storage);
+
+	/** Moves everything in Storage back into the bag; returns how many moved. */
+	int32 WithdrawResources(TMap<FName, int32>& Storage);
+
 	void ResetForNewGame();
 };

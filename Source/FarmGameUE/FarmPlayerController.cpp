@@ -157,7 +157,9 @@ void AFarmPlayerController::UpdateGhost()
 		Ghost = World->SpawnActor<AFarmBuilding>(AFarmBuilding::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
 		if (Ghost)
 		{
-			Ghost->Configure(BuildModeIndex == 0 ? EBuildingType::Fence : EBuildingType::Furnace);
+			Ghost->Configure(BuildModeIndex == 0 ? EBuildingType::Fence
+			: BuildModeIndex == 1 ? EBuildingType::Furnace
+			: EBuildingType::Chest);
 			Ghost->SetActorEnableCollision(false);
 			Ghost->SetActorTickEnabled(false);
 		}
@@ -307,7 +309,7 @@ void AFarmPlayerController::Attack()
 
 void AFarmPlayerController::ToggleBuildMode()
 {
-	BuildModeIndex = (BuildModeIndex + 2) % 3 - 1; // -1 -> 0 -> 1 -> -1
+	BuildModeIndex = (BuildModeIndex + 2) % 4 - 1; // -1 -> 0 -> 1 -> 2 -> -1
 	if (BuildModeIndex < 0)
 	{
 		ExitBuildMode();
@@ -333,6 +335,7 @@ FString AFarmPlayerController::GetBuildLabel() const
 {
 	if (BuildModeIndex == 0) return TEXT("Fence");
 	if (BuildModeIndex == 1) return TEXT("Furnace");
+	if (BuildModeIndex == 2) return TEXT("Chest");
 	return TEXT("none");
 }
 
@@ -342,7 +345,9 @@ void AFarmPlayerController::PlaceBuilding()
 	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
 	if (!GM || !Farmer || !Ghost) return;
 
-	const FName KitItem = BuildModeIndex == 0 ? FName(TEXT("fence_kit")) : FName(TEXT("furnace_kit"));
+	const FName KitItem = BuildModeIndex == 0 ? FName(TEXT("fence_kit"))
+		: BuildModeIndex == 1 ? FName(TEXT("furnace_kit"))
+		: FName(TEXT("chest_kit"));
 	if (Farmer->GetInventory()->GetCount(KitItem) <= 0)
 	{
 		ShowToast(FString::Printf(TEXT("Need %s (craft it with C)"), *FarmItems::LabelOf(KitItem)));
@@ -357,7 +362,10 @@ void AFarmPlayerController::PlaceBuilding()
 	}
 
 	Farmer->GetInventory()->RemoveItem(KitItem, 1);
-	GM->SpawnBuilding(BuildModeIndex == 0 ? EBuildingType::Fence : EBuildingType::Furnace, Location);
+	const EBuildingType Type = BuildModeIndex == 0 ? EBuildingType::Fence
+		: BuildModeIndex == 1 ? EBuildingType::Furnace
+		: EBuildingType::Chest;
+	GM->SpawnBuilding(Type, Location);
 	ShowToast(FString::Printf(TEXT("Placed %s"), *GetBuildLabel()));
 }
 

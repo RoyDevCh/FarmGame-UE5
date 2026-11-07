@@ -36,8 +36,10 @@ void AFarmBuilding::Configure(EBuildingType InType)
 
 void AFarmBuilding::ApplyVisual()
 {
-	const TCHAR* ArtPath = Type == EBuildingType::Fence ? TEXT("/Game/Art/Buildings/fence_long.fence_long") : TEXT("/Game/Art/Buildings/furnace.furnace");
-	const float ArtHeight = Type == EBuildingType::Fence ? 110.f : 170.f;
+	const TCHAR* ArtPath = Type == EBuildingType::Fence ? TEXT("/Game/Art/Buildings/fence_long.fence_long")
+		: Type == EBuildingType::Furnace ? TEXT("/Game/Art/Buildings/furnace.furnace")
+		: TEXT("/Game/Art/Buildings/Chest_stone.Chest_stone");
+	const float ArtHeight = Type == EBuildingType::Fence ? 110.f : Type == EBuildingType::Furnace ? 170.f : 95.f;
 	const bool bArtApplied = Type == EBuildingType::Fence ? FarmArt::Apply(Mesh, ArtPath, ArtHeight) : FarmArt::ApplyHeight(Mesh, ArtPath, ArtHeight);
 	if (bArtApplied)
 	{
@@ -97,11 +99,24 @@ void AFarmBuilding::Tick(float DeltaSeconds)
 	FarmLogic::SmeltStep(OreCount, IngotCount, SmeltTimer, DeltaSeconds, SmeltSecondsPerOre());
 }
 
+int32 AFarmBuilding::GetStoredTotal() const
+{
+	int32 Total = 0;
+	for (const TPair<FName, int32>& Pair : Storage) Total += Pair.Value;
+	return Total;
+}
+
 FString AFarmBuilding::GetPrompt(const AFarmPlayerController* PC) const
 {
 	if (Type == EBuildingType::Fence)
 	{
 		return TEXT("Fence");
+	}
+	if (Type == EBuildingType::Chest)
+	{
+		return GetStoredTotal() > 0
+			? FString::Printf(TEXT("E: Take out %d stored resources"), GetStoredTotal())
+			: TEXT("E: Store all wood / stone / ore / hay");
 	}
 	if (IngotCount > 0)
 	{
@@ -116,10 +131,27 @@ FString AFarmBuilding::GetPrompt(const AFarmPlayerController* PC) const
 
 void AFarmBuilding::Interact(AFarmCharacter* Character)
 {
-	if (!Character || Type != EBuildingType::Furnace) return;
+	if (!Character) return;
 	UFarmInventoryComponent* Inventory = Character->GetInventory();
 	AFarmPlayerController* PC = Character->GetController<AFarmPlayerController>();
 	if (!Inventory) return;
+
+	if (Type == EBuildingType::Chest)
+	{
+		if (GetStoredTotal() > 0)
+		{
+			const int32 Moved = Inventory->WithdrawResources(Storage);
+			if (PC) PC->ShowToast(FString::Printf(TEXT("Took out %d resources"), Moved));
+		}
+		else
+		{
+			const int32 Moved = Inventory->DepositResources(Storage);
+			if (PC) PC->ShowToast(Moved > 0 ? FString::Printf(TEXT("Stored %d resources"), Moved) : TEXT("No resources to store"));
+		}
+		return;
+	}
+
+	if (Type != EBuildingType::Furnace) return;
 
 	if (IngotCount > 0)
 	{

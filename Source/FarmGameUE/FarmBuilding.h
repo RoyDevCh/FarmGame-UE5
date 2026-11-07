@@ -12,7 +12,8 @@ UENUM()
 enum class EBuildingType : uint8
 {
 	Fence,
-	Furnace
+	Furnace,
+	Chest
 };
 
 /** Player-placed building. Furnace smelts ore into ingots over time. */
@@ -33,6 +34,10 @@ public:
 	int32 GetOreCount() const { return OreCount; }
 	int32 GetIngotCount() const { return IngotCount; }
 	void RestoreState(int32 InOre, int32 InIngots);
+	void RestoreStorage(const TMap<FName, int32>& InStorage) { Storage = InStorage; }
+
+	const TMap<FName, int32>& GetStorage() const { return Storage; }
+	int32 GetStoredTotal() const;
 
 	static int32 MaxOre() { return 5; }
 	static float SmeltSecondsPerOre() { return 8.f; }
@@ -46,6 +51,7 @@ protected:
 	int32 OreCount = 0;
 	int32 IngotCount = 0;
 	float SmeltTimer = 0.f;
+	UPROPERTY() TMap<FName, int32> Storage;
 
 	void ApplyVisual();
 };

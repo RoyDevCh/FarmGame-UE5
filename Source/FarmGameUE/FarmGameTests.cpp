@@ -366,4 +366,69 @@ bool FFarmSaveDefaultsTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmRegrowTest, "FarmGame.Crops.RegrowAfterHarvest",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmRegrowTest::RunTest(const FString& Parameters)
+{
+	const TArray<FCropDef> Crops = FarmCrops::MakeDefaults();
+	for (const FCropDef& Crop : Crops)
+	{
+		const int32 Next = FarmLogic::StageAfterHarvest(Crop);
+		if (Crop.Id == TEXT("tomato"))
+		{
+			TestEqual(TEXT("tomato regrows to stage 1"), Next, 1);
+			TestTrue(TEXT("tomato flagged regrow"), Crop.bRegrowAfterHarvest);
+		}
+		else
+		{
+			TestEqual(FString::Printf(TEXT("%s is cleared after harvest"), *Crop.Id.ToString()), Next, -1);
+		}
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmStorageTest, "FarmGame.Inventory.ChestDepositWithdraw",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmStorageTest::RunTest(const FString& Parameters)
+{
+	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
+	Inventory->ResetForNewGame();
+	Inventory->Items.Reset();
+	Inventory->AddItem(TEXT("wood"), 7);
+	Inventory->AddItem(TEXT("stone"), 3);
+	Inventory->AddItem(TEXT("carrot"), 2);
+	Inventory->AddItem(TEXT("hay"), 1);
+
+	TMap<FName, int32> Chest;
+	const int32 Moved = Inventory->DepositResources(Chest);
+	TestEqual(TEXT("deposited resources only"), Moved, 11);
+	TestEqual(TEXT("chest wood"), Chest.FindRef(TEXT("wood")), 7);
+	TestEqual(TEXT("chest stone"), Chest.FindRef(TEXT("stone")), 3);
+	TestEqual(TEXT("chest hay"), Chest.FindRef(TEXT("hay")), 1);
+	TestEqual(TEXT("carrots stay in bag"), Inventory->GetCount(TEXT("carrot")), 2);
+	TestEqual(TEXT("wood left the bag"), Inventory->GetCount(TEXT("wood")), 0);
+
+	const int32 Taken = Inventory->WithdrawResources(Chest);
+	TestEqual(TEXT("withdrew everything"), Taken, 11);
+	TestEqual(TEXT("bag wood restored"), Inventory->GetCount(TEXT("wood")), 7);
+	TestEqual(TEXT("chest empty"), Chest.Num(), 0);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmChestRecipeTest, "FarmGame.Crafting.ChestRecipeCostsWood",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmChestRecipeTest::RunTest(const FString& Parameters)
+{
+	const FCraftRecipe* Chest = FarmRecipes::Find(TEXT("chest_kit"));
+	TestNotNull(TEXT("chest recipe exists"), Chest);
+	TestEqual(TEXT("one input"), Chest->Inputs.Num(), 1);
+	TestEqual(TEXT("input is wood"), Chest->Inputs[0].ItemId, FName(TEXT("wood")));
+	TestEqual(TEXT("costs 12 wood"), Chest->Inputs[0].Count, 12);
+	TestNotNull(TEXT("chest kit in catalog"), FarmItems::Find(TEXT("chest_kit")));
+	return true;
+}
+
 #endif

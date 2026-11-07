@@ -28,6 +28,8 @@ struct FCropDef
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 SeedCost = 3;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 SellPrice = 8;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) int32 YieldPerHarvest = 1;
+	/** When true the plot returns to stage 1 after harvest instead of being cleared. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite) bool bRegrowAfterHarvest = false;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite) FLinearColor Color = FLinearColor(0.12f, 0.55f, 0.18f);
 };
 
@@ -55,6 +57,7 @@ struct FBuildingSaveData
 	UPROPERTY() FVector Location = FVector::ZeroVector;
 	UPROPERTY() int32 OreCount = 0;
 	UPROPERTY() int32 IngotCount = 0;
+	UPROPERTY() TMap<FName, int32> Storage;
 };
 
 /** Serialized animal state. */
@@ -77,6 +80,9 @@ namespace FarmLogic
 	inline int32 DaysForNextStage(const FCropDef& Crop) { return FMath::Max(1, Crop.DaysPerStage); }
 
 	inline bool IsMature(const FCropDef& Crop, int32 Stage) { return Stage >= FMath::Max(1, Crop.Stages) - 1; }
+
+	/** Stage a plot keeps after harvest; -1 means the crop is removed. */
+	inline int32 StageAfterHarvest(const FCropDef& Crop) { return Crop.bRegrowAfterHarvest ? 1 : -1; }
 
 	/** Furnace tick: moves one ore to an ingot every SecondsPerOre. */
 	inline bool SmeltStep(int32& OreCount, int32& IngotCount, float& Timer, float DeltaSeconds, float SecondsPerOre)

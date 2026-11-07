@@ -4,10 +4,10 @@
 用 **Unreal Engine 5.8 + C++** 重做的一个可玩版本。
 
 这不是 1:1 移植：先把"能玩、可验证、可继续扩展"的骨架立起来。规则、数据、存档、自动化测试都是 UE 原生 C++ 实现；
-美术已从原版 Unity 工程导入 17 个 FBX（角色、鸡、牛、熊、四种作物、土壤、栅栏、熔炉、箱子、树、石头），运行时按包围盒自动归一化缩放；缺失时回退到 `/Engine/BasicShapes` 几何体。
+美术已从原版 Unity 工程导入 30 个 FBX（角色、鸡、牛、熊、五种作物、土壤、栅栏、熔炉、箱子、树、石头，以及谷仓/房屋/风车/棕榈/松树/灌木/花/草丛），运行时按包围盒自动归一化缩放；缺失时回退到 `/Engine/BasicShapes` 几何体。
 
 **当前版本 v2**：在 v1 的种田闭环（锄地 → 播种 → 浇水 → 过夜生长 → 收获 → 卖钱）之上，补齐了采集、制作、建造、
-冶炼、养殖、战斗、传送、天气与昼夜光照；存档从"天数 + 金币 + 地块"扩展到建筑、动物、天气、HP；自动化测试从 5 条增加到 24 条。
+冶炼、养殖、战斗、传送、天气与昼夜光照；存档从"天数 + 金币 + 地块"扩展到建筑、动物、天气、HP；自动化测试从 5 条增加到 27 条。
 
 ![Gameplay](Docs/screenshots/01_start.png)
 
@@ -31,6 +31,8 @@
 
 ![Slate UI](Docs/screenshots/10_slate_ui.png)
 
+![Decor](Docs/screenshots/11_decor.png)
+
 <sub>`Tab` 背包/制作面板（Slate）：分组物品 + 可点击配方按钮，禁用项灰显。</sub>
 
 ## 功能（v2）
@@ -38,14 +40,15 @@
 | 系统 | 内容 |
 |---|---|
 | 农田网格 | 6×6 = 36 块，间距 150；`Untilled → Tilled → Planted → Harvestable`，收获后回到 `Tilled` |
-| 作物 | 5 种：胡萝卜 / 土豆 / 玉米 / 番茄 / 南瓜；阶段 3/3/4/3/4，每阶段 1/2/1/2/2 天，种子 3/5/6/7/10 金，售价 8/14/12/18/26 金，收获 1/2/2/2/1 个 |
+| 作物 | 5 种：胡萝卜 / 土豆 / 玉米 / 番茄 / 南瓜；阶段 3/3/4/3/4，每阶段 1/2/1/2/2 天，种子 3/5/6/7/10 金，售价 8/14/12/18/26 金；番茄收后回到阶段 1 可重复收获 |
 | 生长规则 | 只有"浇过水"的 `Planted` 地块才会推进；每天结算一次；成熟后停在最后阶段等收获 |
 | 时间 | 每天 180 秒，HUD 时钟 06:00 → 24:00（第 1 天从 09:00 开局，之后每天从 06:00 起）；`T` 睡觉立刻进入下一天 |
 | 天气 | 每天切换时 1/4 概率下雨；雨天所有 `Planted` 地块自动浇水，阳光变暗、色温变冷 |
 | 昼夜光照 | 定向光俯仰角按 `sin` 曲线走完一天；最后 20% 的白天亮度衰减到 35%，下限 1.1 |
 | 经济 | 初始 20 金 / 3 胡萝卜种子 / 1 玉米种子 / 6 木头 / 1 干草；`B` 在发货箱旁买种子；发货箱 `E` 卖货 |
-| 制作 | `C` 打开菜单，4 条配方：栅栏套件 / 熔炉套件 / 铁锭 / 干草；`1`–`5` 结算 |
-| 建造 | `G` 循环 关闭 → 栅栏 → 熔炉；预览落在身前 220、吸附 100 网格；`E` 放置并消耗套件 |
+| 制作 | `C` 打开菜单或 `Tab` 面板，5 条配方：栅栏 / 熔炉 / 储物箱 / 铁锭（需熔炉）/ 干草；`1`–`5` 或点击结算 |
+| 建造 | `G` 循环 关闭 → 栅栏 → 熔炉 → 储物箱；预览落在身前 220、吸附 100 网格；`E` 放置并消耗套件 |
+| 储物箱 | 12 木制作套件；`E` 一键存入全部木/石/矿/干草，再按一次全部取出；存量随存档保存 |
 | 熔炉 | 装填"1 矿石 + 1 木头"，每 8 秒出 1 铁锭，最多同时堆 5 块矿石 |
 | 采集 | 树 ×5（木）、石头 ×5（石）、矿脉 ×6（矿，在矿洞）；每个采集点每天复活 |
 | 养殖 | 鸡 ×2、牛 ×1；喂 1 干草 → 次日产出 → `E` 收 1 蛋 / 1 奶 |
@@ -54,7 +57,7 @@
 | 存档 | `Ctrl+S` / `Ctrl+L`：天数、当日进度、天气、金币、全部物品、HP、36 块地、建筑、动物 |
 | HUD | Canvas 立即模式绘制：天数/金币、时间 + 天气、HP 条、种子与收成、材料、套件、交互提示、Toast |
 | 背包 UI | `Tab` 打开 Slate 面板 `SFarmInventoryWidget`：分组物品列表 + 4 个可点击制作按钮；游戏内鼠标可用 |
-| 测试 | 24 条 UE Automation（`FarmGameTests.cpp` 18 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
+| 测试 | 27 条 UE Automation（`FarmGameTests.cpp` 21 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
 | 打包 | `Scripts/package.ps1` 跑通 BuildCookRun，产出 `Saved/Archive/Windows/FarmGameUE.exe`（本机已实测可启动） |
 
 ### 明确没做的（避免误读）
@@ -101,7 +104,7 @@
 
 ## 测试
 
-共 24 条 UE Automation 测试，统一挂在 `FarmGame.*` 前缀下：`FarmGameTests.cpp` 18 条，`FarmGameExtraTests.cpp` 6 条。
+共 27 条 UE Automation 测试，统一挂在 `FarmGame.*` 前缀下：`FarmGameTests.cpp` 21 条，`FarmGameExtraTests.cpp` 6 条。
 
 最省事的跑法（自动定位引擎、跑完打印通过/失败数量）：
 
@@ -124,11 +127,12 @@
 | `FarmGame.Items`（2） | `CatalogIsConsistent` / `IdsAreUnique` |
 | `FarmGame.Recipes`（2） | `CatalogReferencesKnownItems` / `IdsAreUnique` |
 | `FarmGame.Save`（1） | `DefaultsAreSane` |
+| 其它（3） | `Crops.RegrowAfterHarvest` / `Inventory.ChestDepositWithdraw` / `Crafting.ChestRecipeCostsWood` |
 | `FarmGame.Extra`（6） | `CropMultiStageContinuous` / `SmeltTwoStepsInARow` / `SellIncludesIngotKeepsSeedsAndResources` / `CraftFailureKeepsMaterials` / `SeedIdsForThreeCrops` / `RecipeOutputsInCatalog` |
 
 测试全部是纯逻辑 / 组件级：生长与冶炼直接调 `FarmLogic` 的静态函数，库存与制作直接 `NewObject<UFarmInventoryComponent>()`，
 不创建 `UWorld`、不启动 PIE，所以能在 `-nullrhi` 下跑。
-本机最近一次全量运行 24/24 Success，日志见 `Saved/Logs/FarmGameUE-backup-2026.11.07-18.02.48.log`；
+本机最近一次全量运行 27/27 Success，日志见 `Saved/Logs/FarmGameUE-backup-2026.11.07-18.02.48.log`；
 测试逐条说明与排错见 [Docs/TESTING.md](Docs/TESTING.md)。
 
 ## 代码结构

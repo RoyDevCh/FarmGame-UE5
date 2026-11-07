@@ -66,4 +66,6 @@ protected:
 
 	void BuildWorld();
 	void SpawnEnvironment();
+	/** Spawns a decorative static mesh scaled so its largest dimension equals Size. */
+	void SpawnProp(const TCHAR* Path, const FVector& Location, float Size, float Yaw = 0.f);
 };
