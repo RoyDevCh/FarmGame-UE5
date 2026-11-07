@@ -59,7 +59,7 @@ void AFarmPlot::BeginPlay()
 	if (bArtSoil)
 	{
 		// Use the generated soil material on every slot (imported textures are inconsistent).
-		UMaterialInterface* SoilArtMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Art/Materials/M_FarmSoil.M_FarmSoil"));
+		UMaterialInterface* SoilArtMaterial = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Art/Materials/M_FarmSoilTiled.M_FarmSoilTiled"));
 		UMaterialInterface* UseMaterial = SoilArtMaterial ? SoilArtMaterial : SoilMaterial;
 		const int32 NumMats = SoilMesh->GetNumMaterials();
 		for (int32 MatIndex = 0; MatIndex < NumMats; ++MatIndex)

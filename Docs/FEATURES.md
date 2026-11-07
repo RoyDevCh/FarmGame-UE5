@@ -418,6 +418,10 @@ Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后�
 | 底部 | 制作菜单（按 `C` 展开，逐条列出配方、材料、能否制作） |
 | 顶部中央 | Toast（3.5 秒，最后 1.2 秒淡出） |
 
+## 13.3 材质与贴图
+
+地面、土壤、木材使用 `Content/Art/Textures` 下程序生成的可平铺噪声贴图（`T_FarmGrass` / `T_FarmDirt` / `T_FarmWood`），由 `M_FarmGrassTiled` 等材质按 UV 平铺采样；缺失时回退到纯色材质。
+
 ## 13.4 动画
 
 角色与动物使用导入的 SkeletalMesh + AnimSequence，由代码直接 `PlayAnimation`（无 AnimBP）：

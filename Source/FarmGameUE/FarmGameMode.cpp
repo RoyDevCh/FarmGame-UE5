@@ -185,7 +185,7 @@ void AFarmGameMode::BuildWorld()
 			Mesh->SetStaticMesh(PlaneMesh);
 			Mesh->SetMobility(EComponentMobility::Movable);
 			Ground->SetActorScale3D(FVector(140.f, 140.f, 1.f));
-			if (UMaterialInterface* GrassMat = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Art/Materials/M_FarmGrass.M_FarmGrass")))
+			if (UMaterialInterface* GrassMat = LoadObject<UMaterialInterface>(nullptr, TEXT("/Game/Art/Materials/M_FarmGrassTiled.M_FarmGrassTiled")))
 			{
 				Mesh->SetMaterial(0, GrassMat);
 			}
@@ -300,10 +300,10 @@ void AFarmGameMode::BuildWorld()
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: resource nodes %d"), ResourceNodes.Num());
 
 	// Imported scenery: farm buildings and nature props.
-	SpawnProp(TEXT("/Game/Art/Buildings/barn.barn"), FVector(-1700.f, -1500.f, 0.f), 900.f, 25.f);
-	SpawnProp(TEXT("/Game/Art/Buildings/house.house"), FVector(1700.f, -1500.f, 0.f), 900.f, -20.f);
-	SpawnProp(TEXT("/Game/Art/Buildings/Windmill.Windmill"), FVector(2000.f, 1300.f, 0.f), 1100.f, 40.f);
-	SpawnProp(TEXT("/Game/Art/Buildings/wall_square.wall_square"), FVector(-900.f, 1500.f, 0.f), 300.f, 10.f);
+	SpawnProp(TEXT("/Game/Art/Buildings/barn.barn"), FVector(-1500.f, 1450.f, 0.f), 620.f, 25.f);
+	SpawnProp(TEXT("/Game/Art/Buildings/house.house"), FVector(1500.f, -1450.f, 0.f), 600.f, -20.f);
+	SpawnProp(TEXT("/Game/Art/Buildings/Windmill.Windmill"), FVector(1500.f, 1250.f, 0.f), 950.f, 40.f);
+	SpawnProp(TEXT("/Game/Art/Buildings/wall_square.wall_square"), FVector(-1100.f, 1700.f, 0.f), 280.f, 10.f);
 
 	const FVector PalmSpots[] = { FVector(-2200.f, 200.f, 0.f), FVector(2300.f, -300.f, 0.f), FVector(-300.f, -2100.f, 0.f) };
 	for (const FVector& Spot : PalmSpots) SpawnProp(TEXT("/Game/Art/Environment/Palm_Tree.Palm_Tree"), Spot, 800.f);
@@ -327,11 +327,11 @@ void AFarmGameMode::BuildWorld()
 	// Scatter grass clumps outside the farm plot area for ground detail.
 	{
 		FRandomStream Rng(1337);
-		for (int32 i = 0; i < 60; ++i)
+		for (int32 i = 0; i < 220; ++i)
 		{
 			const FVector P(Rng.FRandRange(-2600.f, 2600.f), Rng.FRandRange(-2600.f, 2600.f), 0.f);
-			if (FVector::Dist2D(P, FVector::ZeroVector) < 900.f) continue;
-			SpawnProp(TEXT("/Game/Art/Environment/grass.grass"), P, 45.f, Rng.FRandRange(0.f, 360.f));
+			if (FVector::Dist2D(P, FVector::ZeroVector) < 520.f) continue;
+			SpawnProp(TEXT("/Game/Art/Environment/grass.grass"), P, Rng.FRandRange(30.f, 70.f), Rng.FRandRange(0.f, 360.f));
 		}
 	}
 

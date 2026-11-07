@@ -33,8 +33,8 @@ AFarmCharacter::AFarmCharacter()
 
 	SpringArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	SpringArm->SetupAttachment(RootComponent);
-	SpringArm->TargetArmLength = 1600.f;
-	SpringArm->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	SpringArm->TargetArmLength = 1400.f;
+	SpringArm->SetRelativeRotation(FRotator(-58.f, 0.f, 0.f));
 	SpringArm->bDoCollisionTest = false;
 	SpringArm->bUsePawnControlRotation = false;
 	SpringArm->bInheritPitch = false;
