@@ -108,12 +108,13 @@ void AFarmCharacter::UpdateToolVisual()
 	UFarmInventoryComponent* Bag = GetInventory();
 	if (!Bag) return;
 
+	const FName Equipped = Bag->EquippedTool;
 	const TCHAR* Path = nullptr;
-	if (Bag->GetCount(TEXT("steel_axe")) > 0 || Bag->GetCount(TEXT("axe")) > 0)
+	if (Equipped == TEXT("axe") || Equipped == TEXT("steel_axe"))
 	{
 		Path = TEXT("/Game/Art/Props/Axe.Axe");
 	}
-	else if (Bag->GetCount(TEXT("steel_pickaxe")) > 0 || Bag->GetCount(TEXT("pickaxe")) > 0)
+	else if (Equipped == TEXT("pickaxe") || Equipped == TEXT("steel_pickaxe"))
 	{
 		Path = TEXT("/Game/Art/Props/Pickaxe.Pickaxe");
 	}

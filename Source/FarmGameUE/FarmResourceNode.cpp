@@ -122,15 +122,11 @@ void AFarmResourceNode::Interact(AFarmCharacter* Character)
 	if (Type == EResourceType::Rock) Yield = TEXT("stone");
 	else if (Type == EResourceType::Ore) Yield = TEXT("ore");
 
-	int32 Tier = 0;
-	if (Type == EResourceType::Tree)
-	{
-		Tier = Inventory->GetCount(TEXT("steel_axe")) > 0 ? 2 : (Inventory->GetCount(TEXT("axe")) > 0 ? 1 : 0);
-	}
-	else
-	{
-		Tier = Inventory->GetCount(TEXT("steel_pickaxe")) > 0 ? 2 : (Inventory->GetCount(TEXT("pickaxe")) > 0 ? 1 : 0);
-	}
+	const FString EquippedName = Inventory->EquippedTool.ToString();
+	const bool bIsPickaxe = EquippedName.Contains(TEXT("pickaxe"));
+	const bool bIsAxe = !bIsPickaxe && EquippedName.Contains(TEXT("axe"));
+	const bool bWrongTool = (Type == EResourceType::Tree) ? bIsPickaxe : bIsAxe;
+	const int32 Tier = bWrongTool ? 0 : FarmLogic::ToolTier(Inventory->EquippedTool);
 	const int32 Amount = FarmLogic::GatherYield(Tier);
 	Inventory->AddItem(Yield, Amount);
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: gathered %s x%d (%d left)"), *Yield.ToString(), Amount, Remaining);

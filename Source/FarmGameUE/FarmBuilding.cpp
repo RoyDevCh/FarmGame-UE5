@@ -145,16 +145,7 @@ void AFarmBuilding::Interact(AFarmCharacter* Character)
 
 	if (Type == EBuildingType::Chest)
 	{
-		if (GetStoredTotal() > 0)
-		{
-			const int32 Moved = Inventory->WithdrawResources(Storage);
-			if (PC) PC->ShowToast(FString::Printf(TEXT("Took out %d resources"), Moved));
-		}
-		else
-		{
-			const int32 Moved = Inventory->DepositResources(Storage);
-			if (PC) PC->ShowToast(Moved > 0 ? FString::Printf(TEXT("Stored %d resources"), Moved) : TEXT("No resources to store"));
-		}
+		if (PC) PC->OpenStorage(this);
 		return;
 	}
 

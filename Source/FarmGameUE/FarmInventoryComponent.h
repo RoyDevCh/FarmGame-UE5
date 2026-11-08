@@ -22,6 +22,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Farm") void AddItem(FName ItemId, int32 Amount);
 	UFUNCTION(BlueprintCallable, Category = "Farm") bool RemoveItem(FName ItemId, int32 Amount = 1);
 
+	/** Currently equipped tool item id (axe / pickaxe / steel variants). */
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Farm") FName EquippedTool;
+	UFUNCTION(BlueprintCallable, Category = "Farm") void SetEquippedTool(FName ItemId) { EquippedTool = ItemId; }
+
 	UFUNCTION(BlueprintPure, Category = "Farm") bool CanAfford(int32 Cost) const { return Gold >= Cost; }
 	UFUNCTION(BlueprintCallable, Category = "Farm") bool SpendGold(int32 Cost);
 	UFUNCTION(BlueprintCallable, Category = "Farm") void AddGold(int32 Amount);

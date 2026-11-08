@@ -11,6 +11,8 @@ class SFarmInventoryWidget;
 class SFarmMenuWidget;
 class SFarmShopWidget;
 class SFarmSettingsWidget;
+class SFarmStorageWidget;
+class AFarmBuilding;
 
 UCLASS()
 class FARMGAMEUE_API AFarmPlayerController : public APlayerController
@@ -45,6 +47,7 @@ public:
 	void Attack();
 	void ToggleInventory();
 	void EatFood();
+	void CycleEquipment();
 	bool IsInventoryOpen() const { return bInventoryOpen; }
 	bool IsSlateInventoryActive() const { return InventoryWidget.IsValid(); }
 
@@ -58,6 +61,10 @@ public:
 	void CloseShop();
 	void BuyFromShop(FName ItemId, int32 Price);
 	void SellAllAtShop();
+	void OpenStorage(AFarmBuilding* Chest);
+	void CloseStorage();
+	void StorageDepositAll();
+	void StorageWithdrawAll();
 	void OpenSettings();
 	void CloseSettings();
 	void ToggleFullscreen();
@@ -111,6 +118,9 @@ protected:
 	TSharedPtr<SFarmMenuWidget> MenuWidget;
 	TSharedPtr<SFarmShopWidget> ShopWidget;
 	TSharedPtr<SFarmSettingsWidget> SettingsWidget;
+	TSharedPtr<SFarmStorageWidget> StorageWidget;
+	TWeakObjectPtr<AFarmBuilding> OpenChest;
+	bool bStorageOpen = false;
 	bool bSettingsFromMenu = false;
 	float MasterVolume = 1.f;
 	bool bShopOpen = false;

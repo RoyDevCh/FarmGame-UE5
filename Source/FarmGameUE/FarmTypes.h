@@ -84,6 +84,14 @@ namespace FarmLogic
 	/** Stage a plot keeps after harvest; -1 means the crop is removed. */
 	inline int32 StageAfterHarvest(const FCropDef& Crop) { return Crop.bRegrowAfterHarvest ? 1 : -1; }
 
+	/** Tool tier for an equipped item id: steel 2, basic 1, none 0. */
+	inline int32 ToolTier(FName Id)
+	{
+		if (Id == TEXT("steel_axe") || Id == TEXT("steel_pickaxe")) return 2;
+		if (Id == TEXT("axe") || Id == TEXT("pickaxe")) return 1;
+		return 0;
+	}
+
 	/** Gathering yield by tool tier: 0 = hands (1), 1 = tool (2), 2 = steel (3). */
 	inline int32 GatherYield(int32 ToolTier) { return 1 + FMath::Clamp(ToolTier, 0, 2); }
 

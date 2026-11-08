@@ -14,6 +14,8 @@
 #include "FarmBed.h"
 #include "EngineUtils.h"
 #include "FarmSettingsWidget.h"
+#include "FarmStorageWidget.h"
+#include "FarmBuilding.h"
 #include "GameFramework/GameUserSettings.h"
 #include "AudioDevice.h"
 #include "Misc/ConfigCacheIni.h"
@@ -114,6 +116,7 @@ void AFarmPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("CraftMenu"), IE_Pressed, this, &AFarmPlayerController::ToggleCraftMenu);
 	InputComponent->BindAction(TEXT("Inventory"), IE_Pressed, this, &AFarmPlayerController::ToggleInventory);
 	InputComponent->BindAction(TEXT("Eat"), IE_Pressed, this, &AFarmPlayerController::EatFood);
+	InputComponent->BindAction(TEXT("Equip"), IE_Pressed, this, &AFarmPlayerController::CycleEquipment);
 	InputComponent->BindAction(TEXT("Cancel"), IE_Pressed, this, &AFarmPlayerController::CancelMode);
 
 	InputComponent->BindAction(TEXT("Craft1"), IE_Pressed, this, &AFarmPlayerController::Craft1);
@@ -703,6 +706,91 @@ void AFarmPlayerController::SellAllAtShop()
 	if (ShopWidget.IsValid()) ShopWidget->Refresh();
 }
 
+void AFarmPlayerController::OpenStorage(AFarmBuilding* Chest)
+{
+	if (!Chest) return;
+	OpenChest = Chest;
+	if (!StorageWidget.IsValid() && GEngine && GEngine->GameViewport)
+	{
+		SAssignNew(StorageWidget, SFarmStorageWidget).PlayerController(this);
+		GEngine->GameViewport->AddViewportWidgetContent(StorageWidget.ToSharedRef());
+	}
+	if (!StorageWidget.IsValid()) return;
+	StorageWidget->SetChest(Chest);
+	StorageWidget->Refresh();
+	StorageWidget->SetVisibility(EVisibility::Visible);
+	bStorageOpen = true;
+	bShowMouseCursor = true;
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(StorageWidget);
+	SetInputMode(InputMode);
+	if (FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().SetKeyboardFocus(StorageWidget, EFocusCause::SetDirectly);
+	}
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(true);
+	}
+}
+
+void AFarmPlayerController::CloseStorage()
+{
+	if (!StorageWidget.IsValid()) return;
+	StorageWidget->SetVisibility(EVisibility::Collapsed);
+	bStorageOpen = false;
+	bShowMouseCursor = false;
+	SetInputMode(FInputModeGameOnly());
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(false);
+	}
+}
+
+void AFarmPlayerController::StorageDepositAll()
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!Farmer || !Farmer->GetInventory() || !OpenChest.IsValid()) return;
+	const int32 Moved = Farmer->GetInventory()->DepositResources(OpenChest->GetStorageMutable());
+	ShowToast(Moved > 0 ? FString::Printf(TEXT("Stored %d resources"), Moved) : TEXT("No resources to store"));
+	if (StorageWidget.IsValid()) StorageWidget->Refresh();
+}
+
+void AFarmPlayerController::StorageWithdrawAll()
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!Farmer || !Farmer->GetInventory() || !OpenChest.IsValid()) return;
+	const int32 Moved = Farmer->GetInventory()->WithdrawResources(OpenChest->GetStorageMutable());
+	ShowToast(Moved > 0 ? FString::Printf(TEXT("Took out %d resources"), Moved) : TEXT("Storage is empty"));
+	if (StorageWidget.IsValid()) StorageWidget->Refresh();
+}
+
+void AFarmPlayerController::CycleEquipment()
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!Farmer || !Farmer->GetInventory()) return;
+	UFarmInventoryComponent* Inventory = Farmer->GetInventory();
+
+	static const FName Tools[] = { TEXT("axe"), TEXT("pickaxe"), TEXT("steel_axe"), TEXT("steel_pickaxe") };
+	TArray<FName> Owned;
+	for (const FName& Id : Tools)
+	{
+		if (Inventory->GetCount(Id) > 0) Owned.Add(Id);
+	}
+	if (Owned.Num() == 0)
+	{
+		Inventory->SetEquippedTool(NAME_None);
+		ShowToast(TEXT("No tools to equip"));
+		return;
+	}
+
+	int32 Current = Owned.IndexOfByKey(Inventory->EquippedTool);
+	const FName Next = Owned[(Current + 1) % Owned.Num()];
+	Inventory->SetEquippedTool(Next);
+	FarmAudio::Play(this, TEXT("/Game/Art/Audio/pop.pop"), 0.6f);
+	ShowToast(FString::Printf(TEXT("Equipped %s"), *FarmItems::LabelOf(Next)));
+}
+
 void AFarmPlayerController::EatFood()
 {
 	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
@@ -854,6 +942,11 @@ void AFarmPlayerController::HandleMenuQuit()
 
 void AFarmPlayerController::CancelMode()
 {
+	if (bStorageOpen)
+	{
+		CloseStorage();
+		return;
+	}
 	if (bShopOpen)
 	{
 		CloseShop();

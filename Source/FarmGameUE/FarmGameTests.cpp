@@ -668,4 +668,19 @@ bool FFarmSprinklerRecipeTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmEquipTierTest, "FarmGame.Tools.EquipTierMapping",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmEquipTierTest::RunTest(const FString& Parameters)
+{
+	TestEqual(TEXT("nothing equipped"), FarmLogic::ToolTier(NAME_None), 0);
+	TestEqual(TEXT("axe tier"), FarmLogic::ToolTier(TEXT("axe")), 1);
+	TestEqual(TEXT("pickaxe tier"), FarmLogic::ToolTier(TEXT("pickaxe")), 1);
+	TestEqual(TEXT("steel axe tier"), FarmLogic::ToolTier(TEXT("steel_axe")), 2);
+	TestEqual(TEXT("steel pickaxe tier"), FarmLogic::ToolTier(TEXT("steel_pickaxe")), 2);
+	TestEqual(TEXT("unknown item"), FarmLogic::ToolTier(TEXT("apple")), 0);
+	TestEqual(TEXT("yield with steel"), FarmLogic::GatherYield(FarmLogic::ToolTier(TEXT("steel_pickaxe"))), 3);
+	return true;
+}
+
 #endif

@@ -38,6 +38,7 @@ public:
 	void RestoreStorage(const TMap<FName, int32>& InStorage) { Storage = InStorage; }
 
 	const TMap<FName, int32>& GetStorage() const { return Storage; }
+	TMap<FName, int32>& GetStorageMutable() { return Storage; }
 	int32 GetStoredTotal() const;
 
 	static int32 MaxOre() { return 5; }
