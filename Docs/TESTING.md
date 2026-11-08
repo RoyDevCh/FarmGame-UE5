@@ -3,19 +3,19 @@
 本工程使用 UE 自带的 **Automation Test** 框架（`IMPLEMENT_SIMPLE_AUTOMATION_TEST`）验证纯逻辑。
 测试不创建 `UWorld`、不启动 PIE，因此可以在 `UnrealEditor-Cmd.exe` 中以 `-nullrhi` 无界面运行。
 
-当前共 **29 条**测试（`FarmGameTests.cpp` 23 条 + `FarmGameExtraTests.cpp` 6 条）：
+当前共 **38 条**测试（`FarmGameTests.cpp` 32 条 + `FarmGameExtraTests.cpp` 6 条）：
 
-- 基础测试 11 条：`Source/FarmGameUE/FarmGameTests.cpp`
+- 基础测试 32 条：`Source/FarmGameUE/FarmGameTests.cpp`
 - 补充测试 6 条：`Source/FarmGameUE/FarmGameExtraTests.cpp`
 
-> README 的“测试”章节写作时间较早（当时为 5 条），测试数量以本文件为准。
+> 数量按 2026-11-09 的源码清点；本机同日全量运行 38/38 Success（`Saved/Logs/FarmGameAutomation.log`，日志内自报 38 tests performed）。
 
 测试代码全部包在 `#if WITH_DEV_AUTOMATION_TESTS` 中，只在开发/编辑器构建里编译，Shipping 构建不包含。
 现有依赖（`Core`、`CoreUObject`、`Engine`）已足够，**不需要改 `FarmGameUE.Build.cs`**。
 
 ## 测试清单
 
-### 基础测试（FarmGameTests.cpp，11 条）
+### 基础测试（FarmGameTests.cpp，32 条）
 
 | 测试名 | 验证内容 |
 |---|---|
@@ -24,12 +24,33 @@
 | `FarmGame.CropGrowth.MaturesAndStops` | 4 阶段玉米连续推进 10 天，停在第 3 阶段（成熟），`IsMature` 为真 |
 | `FarmGame.Inventory.BuyAndSell` | 初始 20 金币/3 胡萝卜种子/6 木材；买种子扣钱；卖 2 胡萝卜 + 1 ingot 得 34，种子保留 |
 | `FarmGame.Inventory.CannotBuyWithoutGold` | 金币不足时购买失败，金币与种子数量不变 |
-| `FarmGame.Crafting.ConsumesIngredientsAndOutputs` | 围栏配方消耗 5 木材（6→1）并产出 1 个 fence_kit；材料不足时再次制作失败；ingot 配方需要熔炉 |
-| `FarmGame.Items.CatalogIsConsistent` | 物品目录不少于 10 项；胡萝卜种子/胡萝卜存在；胡萝卜售价 8；种子判定与 `SeedId("corn")` 正确 |
+| `FarmGame.Crafting.ConsumesIngredientsAndOutputs` | 围栏配方消耗 5 木材（6→1）并产出 1 个 fence_kit；材料不足时再次制作失败；ingot 配方带熔炉标记 |
+| `FarmGame.Items.CatalogIsConsistent` | 物品目录不少于 10 项；胡萝卜种子/胡萝卜存在；胡萝卜售价 8；种子判定与 `SeedId(玉米)` 正确 |
 | `FarmGame.Crafting.HayFromCorn` | 2 玉米合成 2 干草；材料耗尽后再次合成失败 |
 | `FarmGame.Inventory.SellSkipsSeedsAndResources` | 出售时木材/矿石保留，鸡蛋与牛奶卖出共 36 金币 |
 | `FarmGame.Recipes.CatalogReferencesKnownItems` | 每个配方的产出物与配料都在物品目录中，配料数量为正，且配方有输入 |
 | `FarmGame.Crafting.FurnaceSmeltsOneOrePerInterval` | 熔炉未满 8 秒不产出；满 8 秒消耗 1 矿石产出 1 ingot；矿石数量不会变成负数 |
+| `FarmGame.Crops.CatalogSanity` | 作物表恰好 5 种、Id 唯一、至少 2 阶段、每阶段至少 1 天、单次产量 ≥1、单次利润 >0，且种子与产物都在物品表里 |
+| `FarmGame.Items.IdsAreUnique` | 物品 Id 非空且唯一、Label 非空，物品表至少 18 项 |
+| `FarmGame.Recipes.IdsAreUnique` | 配方 Id 唯一、`OutputCount > 0`，配方表至少 4 条 |
+| `FarmGame.Inventory.UnknownItemRejected` | 购买不存在的物品失败，金币与背包都不变 |
+| `FarmGame.Inventory.EmptySaleIsNoop` | 空背包卖货收入 0、金币不变、`GetSellableCount` 为 0 |
+| `FarmGame.Crafting.ExactMaterialsConsumeAll` | 恰好 10 石 + 5 木做熔炉套件：材料清零、产出 1 个 |
+| `FarmGame.Save.DefaultsAreSane` | `UFarmSaveGame` 默认 1 天 / 20 金 / 100 HP，地块、建筑、动物数组为空 |
+| `FarmGame.Crops.RegrowAfterHarvest` | 番茄 `StageAfterHarvest` 为 1 且标记 regrow，其余 4 种为 -1（清地） |
+| `FarmGame.Inventory.ChestDepositWithdraw` | 存入只搬 Resource（7 木 + 3 石 + 1 干草 = 11），胡萝卜留在背包；取回 11 个后箱子清空 |
+| `FarmGame.Crafting.ChestRecipeCostsWood` | 箱子配方只有 1 条输入（wood ×12），`chest_kit` 在物品表里 |
+| `FarmGame.Quests.AdvanceToCompletion` | 默认 8 段；进度逐次 +1、到目标判定完成、封顶后不可重复完成 |
+| `FarmGame.Quests.DefaultsReferenceItems` | 每段目标标题非空、Target > 0，匹配的物品都在物品表里 |
+| `FarmGame.Tools.GatherYieldDoubles` | `GatherYield(0/1/2)` 分别为 1/2/3 |
+| `FarmGame.Tools.CatalogHasAxeAndPickaxe` | 斧/镐/钢斧/钢镐都在物品表与配方表里，且配方产出就是该工具 |
+| `FarmGame.Shop.StockIsValid` | 商店至少 8 种货，每种都在物品表里且价格 > 0 |
+| `FarmGame.Food.CatalogHasAppleAndBread` | 苹果/面包在物品表里、类别为 `Food`、买价 > 0 |
+| `FarmGame.Food.ShopStockIncludesFood` | 商店货架包含苹果与面包，且价格 > 0 |
+| `FarmGame.Tools.SteelRecipesConsumeBaseTool` | 钢斧/钢镐配方各有 2 条输入：基础工具 ×1 + 矿石 ×5 |
+| `FarmGame.Quests.LastObjectiveIsSteelAxe` | 8 段目标的第 7 段是苹果、第 8 段是钢斧（Target = 1） |
+| `FarmGame.Inventory.SpendGoldIsAtomic` | 20 金花 5 金后剩 15；再花 999999 失败且金币不变 |
+| `FarmGame.Recipes.AllOutputsExistInCatalog` | 所有配方的产物都在物品表里，`OutputCount ≥ 1` |
 
 ### 补充测试（FarmGameExtraTests.cpp，6 条）
 
@@ -55,7 +76,7 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Scripts\run-tests.ps1
 
 脚本支持 Windows PowerShell 5.1 与 PowerShell 7。
 
-只跑本次新增的 6 条：
+只跑补充测试（`FarmGame.Extra`，6 条）：
 
 ```powershell
 .\Scripts\run-tests.ps1 -TestFilter FarmGame.Extra
@@ -93,8 +114,8 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Scripts\run-tests.ps1
 ```text
  FarmGame automation summary
 ==============================================
- Test Completed lines : 17
- Success              : 17
+ Test Completed lines : 38
+ Success              : 38
  Failed               : 0
  Editor exit code     : 0
 
@@ -138,7 +159,7 @@ Select-String -Path .\Saved\Logs\FarmGameManual.log -Pattern 'Test Completed'
 LogAutomationController: Display: Test Completed. Result={Success} Name={FarmGame.CropGrowth.AdvancesWithWater} Path={...}
 ```
 
-按前缀运行子集：`Automation RunTests FarmGame.Extra`、`Automation RunTests FarmGame.Inventory` 等。
+按前缀运行子集：`Automation RunTests FarmGame.Extra`、`Automation RunTests FarmGame.Quests`、`Automation RunTests FarmGame.Tools`、`Automation RunTests FarmGame.Shop`、`Automation RunTests FarmGame.Food`、`Automation RunTests FarmGame.Inventory` 等。
 
 ## 如何新增测试
 
@@ -204,5 +225,12 @@ bool FFarmMyNewTest::RunTest(const FString& Parameters)
 
 ## 边界
 
-当前测试只覆盖不依赖世界的规则与背包逻辑，不覆盖 Actor 交互、地块状态机、存档、HUD、输入与渲染。
-这些部分需要 PIE 内 Functional Test 或手工验证；本批测试刻意保持可在命令行的无渲染环境中稳定运行。
+当前测试覆盖：纯规则（生长、冶炼、采集倍率、目标推进）、全部数据表（物品 / 配方 / 作物 / 目标 / 商店货架）、
+`UFarmInventoryComponent`（买卖、制作、卖货、箱子存取），以及 `UFarmSaveGame` 的默认值。
+
+**不覆盖**：Actor 交互（`E` 的分派）、地块状态机与视觉、实际存读档往返、`NotifyProduced` 的奖励发放与 HUD 目标行、
+Canvas HUD、Slate 菜单 / 商店 / 设置（焦点、点击、Esc 返回）、手持工具姿态与渲染。
+这些需要 PIE 内 Functional Test、Slate 自动化或手工验证；本批测试刻意保持可在命令行的无渲染环境中稳定运行。
+
+已知的 UI 缺口：商店的购买/一键卖货、开始菜单的 Continue/新游戏/切槽、设置的全屏/画质都**没有**自动化 UI 测试，
+只有商店货架数据（`FarmGame.Shop.StockIsValid`）和目标表（`FarmGame.Quests.*`）被覆盖。
