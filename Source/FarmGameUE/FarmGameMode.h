@@ -14,6 +14,7 @@ class AFarmBuilding;
 class AFarmResourceNode;
 class AFarmAnimal;
 class AFarmPortal;
+class AFarmShop;
 class UFarmInventoryComponent;
 
 /** Owns the farm world, crop catalog, day cycle and save/load. */
@@ -50,6 +51,7 @@ public:
 	bool IsGameStarted() const { return bGameStarted; }
 	bool IsGamePaused() const { return bGamePaused; }
 	AFarmBin* GetBin() const { return Bin; }
+	AFarmShop* GetShop() const { return Shop; }
 	float GetDayLengthSeconds() const { return DayLengthSeconds; }
 	/** 0..1 progress through the current day. */
 	float GetDayProgress() const { return DayLengthSeconds > 0.f ? FMath::Clamp(DayTimer / DayLengthSeconds, 0.f, 1.f) : 0.f; }
@@ -75,6 +77,7 @@ protected:
 	bool bGameStarted = false;
 	bool bGamePaused = false;
 	UPROPERTY() AFarmBin* Bin = nullptr;
+	UPROPERTY() AFarmShop* Shop = nullptr;
 	UPROPERTY() class ADirectionalLight* SunLight = nullptr;
 	bool bRaining = false;
 	float TotalGameMinutes = 0.f;

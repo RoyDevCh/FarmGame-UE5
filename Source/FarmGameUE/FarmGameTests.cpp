@@ -6,6 +6,7 @@
 #include "FarmRecipes.h"
 #include "FarmCropCatalog.h"
 #include "FarmQuests.h"
+#include "FarmPlayerController.h"
 #include "FarmSaveGame.h"
 
 #if WITH_DEV_AUTOMATION_TESTS
@@ -486,6 +487,21 @@ bool FFarmToolsCatalogTest::RunTest(const FString& Parameters)
 		const FCraftRecipe* Recipe = FarmRecipes::Find(Id);
 		TestNotNull(FString::Printf(TEXT("%s recipe exists"), Id), Recipe);
 		TestEqual(TEXT("recipe outputs the tool"), Recipe->OutputId, FName(Id));
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmShopStockTest, "FarmGame.Shop.StockIsValid",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmShopStockTest::RunTest(const FString& Parameters)
+{
+	const TArray<AFarmPlayerController::FShopEntry>& Stock = AFarmPlayerController::GetShopStock();
+	TestTrue(TEXT("shop has goods"), Stock.Num() >= 8);
+	for (const AFarmPlayerController::FShopEntry& Entry : Stock)
+	{
+		TestNotNull(FString::Printf(TEXT("%s exists"), *Entry.Id.ToString()), FarmItems::Find(Entry.Id));
+		TestTrue(FString::Printf(TEXT("%s has a price"), *Entry.Id.ToString()), Entry.Price > 0);
 	}
 	return true;
 }

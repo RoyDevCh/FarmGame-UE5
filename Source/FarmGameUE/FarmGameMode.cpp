@@ -9,6 +9,7 @@
 #include "FarmArt.h"
 #include "FarmPlot.h"
 #include "FarmPortal.h"
+#include "FarmShop.h"
 #include "FarmResourceNode.h"
 #include "FarmSaveGame.h"
 
@@ -367,7 +368,8 @@ void AFarmGameMode::BuildWorld()
 
 	// Village props imported from the original project.
 	SpawnProp(TEXT("/Game/Art/Props/Well.Well"), FVector(700.f, 1000.f, 0.f), 240.f, 15.f);
-	SpawnProp(TEXT("/Game/Art/Props/Selling_Kiosk.Selling_Kiosk"), FVector(320.f, 1000.f, 0.f), 260.f, 100.f);
+	Shop = World->SpawnActor<AFarmShop>(AFarmShop::StaticClass(), FVector(320.f, 1000.f, 0.f), FRotator(0.f, 100.f, 0.f));
+	if (Shop) UE_LOG(LogTemp, Log, TEXT("FarmGame: shop spawned"));
 	SpawnProp(TEXT("/Game/Art/Props/Bench.Bench"), FVector(950.f, 820.f, 0.f), 130.f, -35.f);
 	SpawnProp(TEXT("/Game/Art/Props/LampPost.LampPost"), FVector(240.f, 760.f, 0.f), 280.f);
 	SpawnProp(TEXT("/Game/Art/Props/LampPost.LampPost"), FVector(1080.f, 760.f, 0.f), 280.f);

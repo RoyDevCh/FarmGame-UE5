@@ -8,6 +8,8 @@
 #include "FarmInventoryComponent.h"
 #include "FarmInventoryWidget.h"
 #include "FarmMenuWidget.h"
+#include "FarmShop.h"
+#include "FarmShopWidget.h"
 #include "FarmItems.h"
 #include "FarmPlot.h"
 #include "FarmPortal.h"
@@ -144,6 +146,15 @@ void AFarmPlayerController::UpdateTarget()
 	{
 		CurrentTarget = GM->GetBin();
 	}
+
+	if (AFarmShop* Shop = GM->GetShop())
+	{
+		const float Dist = FVector::Dist2D(PawnLocation, Shop->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			CurrentTarget = Shop;
+		}
+	}
 }
 
 void AFarmPlayerController::UpdateGhost()
@@ -230,6 +241,10 @@ FString AFarmPlayerController::GetPromptText() const
 	{
 		return Animal->GetPrompt(this);
 	}
+	if (const AFarmShop* Shop = Cast<AFarmShop>(CurrentTarget.Get()))
+	{
+		return Shop->GetPrompt(this);
+	}
 	return FString();
 }
 
@@ -285,6 +300,10 @@ void AFarmPlayerController::Interact()
 	else if (AFarmAnimal* Animal = Cast<AFarmAnimal>(Target))
 	{
 		Animal->Interact(Farmer);
+	}
+	else if (AFarmShop* Shop = Cast<AFarmShop>(Target))
+	{
+		Shop->Interact(Farmer);
 	}
 }
 
@@ -417,6 +436,67 @@ void AFarmPlayerController::ToggleCraftMenu()
 	}
 }
 
+const TArray<AFarmPlayerController::FShopEntry>& AFarmPlayerController::GetShopStock()
+{
+	static const TArray<FShopEntry> Stock = {
+		{ TEXT("carrot_seed"), 3 }, { TEXT("potato_seed"), 5 }, { TEXT("corn_seed"), 6 },
+		{ TEXT("tomato_seed"), 7 }, { TEXT("pumpkin_seed"), 10 },
+		{ TEXT("hay"), 4 }, { TEXT("ore"), 8 }, { TEXT("wood"), 2 }, { TEXT("stone"), 2 }
+	};
+	return Stock;
+}
+
+void AFarmPlayerController::OpenShop()
+{
+	if (!ShopWidget.IsValid() && GEngine && GEngine->GameViewport)
+	{
+		SAssignNew(ShopWidget, SFarmShopWidget).PlayerController(this);
+		GEngine->GameViewport->AddViewportWidgetContent(ShopWidget.ToSharedRef());
+	}
+	if (!ShopWidget.IsValid()) return;
+
+	ShopWidget->Refresh();
+	ShopWidget->SetVisibility(EVisibility::Visible);
+	bShopOpen = true;
+	bShowMouseCursor = true;
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(ShopWidget);
+	SetInputMode(InputMode);
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(true);
+	}
+}
+
+void AFarmPlayerController::CloseShop()
+{
+	if (!ShopWidget.IsValid()) return;
+	ShopWidget->SetVisibility(EVisibility::Collapsed);
+	bShopOpen = false;
+	bShowMouseCursor = false;
+	SetInputMode(FInputModeGameOnly());
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(false);
+	}
+}
+
+void AFarmPlayerController::BuyFromShop(FName ItemId, int32 Price)
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!Farmer || !Farmer->GetInventory()) return;
+	UFarmInventoryComponent* Inventory = Farmer->GetInventory();
+	if (!Inventory->SpendGold(Price))
+	{
+		ShowToast(TEXT("Not enough gold"));
+		return;
+	}
+	Inventory->AddItem(ItemId, 1);
+	FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"), 0.7f);
+	ShowToast(FString::Printf(TEXT("Bought %s"), *FarmItems::LabelOf(ItemId)));
+	if (ShopWidget.IsValid()) ShopWidget->Refresh();
+}
+
 void AFarmPlayerController::EatFood()
 {
 	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
@@ -498,6 +578,11 @@ void AFarmPlayerController::HandleMenuQuit()
 
 void AFarmPlayerController::CancelMode()
 {
+	if (bShopOpen)
+	{
+		CloseShop();
+		return;
+	}
 	if (MenuWidget.IsValid() && MenuWidget->GetVisibility() == EVisibility::Visible)
 	{
 		HandleMenuEscape();

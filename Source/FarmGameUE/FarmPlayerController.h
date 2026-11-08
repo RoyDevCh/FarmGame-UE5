@@ -9,6 +9,7 @@ class AFarmBin;
 class AFarmBuilding;
 class SFarmInventoryWidget;
 class SFarmMenuWidget;
+class SFarmShopWidget;
 
 UCLASS()
 class FARMGAMEUE_API AFarmPlayerController : public APlayerController
@@ -45,6 +46,17 @@ public:
 	bool IsInventoryOpen() const { return bInventoryOpen; }
 	bool IsSlateInventoryActive() const { return InventoryWidget.IsValid(); }
 
+	struct FShopEntry
+	{
+		FName Id;
+		int32 Price = 0;
+	};
+	static const TArray<FShopEntry>& GetShopStock();
+	void OpenShop();
+	void CloseShop();
+	void BuyFromShop(FName ItemId, int32 Price);
+	bool IsShopOpen() const { return bShopOpen; }
+
 	// Start / pause menu
 	void HandleMenuPrimary();
 	void HandleMenuEscape();
@@ -79,6 +91,8 @@ protected:
 	bool bInventoryOpen = false;
 	TSharedPtr<SFarmInventoryWidget> InventoryWidget;
 	TSharedPtr<SFarmMenuWidget> MenuWidget;
+	TSharedPtr<SFarmShopWidget> ShopWidget;
+	bool bShopOpen = false;
 	bool bMenuStartMode = true;
 	float AttackCooldown = 0.f;
 	UPROPERTY() AFarmBuilding* Ghost = nullptr;

@@ -62,6 +62,7 @@
 | 材质/贴图 | `M_FarmGrassTiled` / `M_FarmSoilTiled` / `M_FarmWoodTiled`：噪声生成的可平铺贴图 + 材质；地表不再纯色 |
 | 目标 | 3 段线性任务：收获 3 胡萝卜 → 制作熔炉套件 → 冶炼铁锭；HUD 显示进度，完成自动推进 |
 | 工具 | 斧（木4+矿1）、镐（木4+矿2）可制作；持有对应工具时树木/石头/矿脉产量 ×2 |
+| 商店 | 村口水井旁的售卖亭：`E` 打开，可买 5 种种子、干草、矿石、木材、石头；买不起时按钮灰显 |
 | 音效 | 7 个原版 WAV：锄地 / 播种 / 浇水 / 收获 / 制作 / 建造 / 挥击 / 命中；2D 播放，缺失静默 |
 | 测试 | 29 条 UE Automation（`FarmGameTests.cpp` 23 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
 | 打包 | `Scripts/package.ps1` 跑通 BuildCookRun，产出 `Saved/Archive/Windows/FarmGameUE.exe`（本机已实测可启动） |
