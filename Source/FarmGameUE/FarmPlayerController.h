@@ -61,6 +61,10 @@ public:
 	void HandleMenuPrimary();
 	void HandleMenuEscape();
 	void HandleMenuQuit();
+	void HandleMenuNewGame();
+	void HandleMenuCycleSlot();
+	int32 GetMenuSlot() const;
+	bool HasSaveInSlot(int32 Slot) const;
 	void ShowMenu(bool bStartMode);
 	void HideMenu();
 	void ToggleBuildMode();

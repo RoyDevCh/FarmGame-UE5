@@ -7,7 +7,7 @@ class AFarmPlayerController;
 class STextBlock;
 class SButton;
 
-/** Full-screen start / pause menu. */
+/** Full-screen start / pause menu with save slot selection. */
 class FARMGAMEUE_API SFarmMenuWidget : public SCompoundWidget
 {
 public:
@@ -17,8 +17,8 @@ public:
 
 	void Construct(const FArguments& InArgs);
 
-	/** Start mode shows "Start game"; pause mode shows "Resume". */
 	void SetStartMode(bool bStart);
+	void RefreshLabels();
 
 	virtual bool SupportsKeyboardFocus() const override { return true; }
 	virtual FReply OnKeyDown(const FGeometry& InGeometry, const FKeyEvent& InKeyEvent) override;
@@ -26,7 +26,9 @@ public:
 private:
 	TWeakObjectPtr<AFarmPlayerController> PlayerController;
 	TSharedPtr<STextBlock> TitleText;
-	TSharedPtr<STextBlock> BodyText;
-	TSharedPtr<SButton> PrimaryButton;
 	TSharedPtr<STextBlock> PrimaryLabel;
+	TSharedPtr<SButton> PrimaryButton;
+	TSharedPtr<SButton> NewGameButton;
+	TSharedPtr<STextBlock> SlotLabel;
+	bool bStartMode = true;
 };

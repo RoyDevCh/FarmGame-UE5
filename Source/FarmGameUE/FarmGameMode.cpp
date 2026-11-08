@@ -168,6 +168,31 @@ AFarmBuilding* AFarmGameMode::SpawnBuilding(EBuildingType Type, const FVector& L
 	return Building;
 }
 
+static bool GFarmSkipMenuOnce = false;
+
+bool AFarmGameMode::ConsumeSkipMenu()
+{
+	const bool bSkip = GFarmSkipMenuOnce;
+	GFarmSkipMenuOnce = false;
+	return bSkip;
+}
+
+bool AFarmGameMode::HasSaveInSlot(int32 Slot) const
+{
+	const int32 Clamped = FMath::Clamp(Slot, 1, 3);
+	return UGameplayStatics::DoesSaveGameExist(FString::Printf(TEXT("FarmSlot%d"), Clamped), 0);
+}
+
+void AFarmGameMode::NewGame()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+	FString MapName = World->GetMapName();
+	MapName.RemoveFromStart(World->StreamingLevelsPrefix);
+	GFarmSkipMenuOnce = true;
+	UGameplayStatics::OpenLevel(this, FName(*MapName));
+}
+
 void AFarmGameMode::NotifyProduced(FName ItemId, int32 Amount)
 {
 	if (!Quests.IsValidIndex(ActiveQuestIndex)) return;
@@ -531,17 +556,17 @@ void AFarmGameMode::SaveGame(AFarmCharacter* Character)
 		Data.Health = Animal->GetHealth();
 		Save->Animals.Add(Data);
 	}
-	UGameplayStatics::SaveGameToSlot(Save, TEXT("FarmSlot"), 0);
+	UGameplayStatics::SaveGameToSlot(Save, SaveSlotName(), 0);
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: saved day %d (buildings %d, animals %d)"), Day, Save->Buildings.Num(), Save->Animals.Num());
 }
 
 bool AFarmGameMode::LoadGame(AFarmCharacter* Character)
 {
-	if (!UGameplayStatics::DoesSaveGameExist(TEXT("FarmSlot"), 0))
+	if (!UGameplayStatics::DoesSaveGameExist(SaveSlotName(), 0))
 	{
 		return false;
 	}
-	UFarmSaveGame* Save = Cast<UFarmSaveGame>(UGameplayStatics::LoadGameFromSlot(TEXT("FarmSlot"), 0));
+	UFarmSaveGame* Save = Cast<UFarmSaveGame>(UGameplayStatics::LoadGameFromSlot(SaveSlotName(), 0));
 	if (!Save) return false;
 
 	Day = Save->Day;

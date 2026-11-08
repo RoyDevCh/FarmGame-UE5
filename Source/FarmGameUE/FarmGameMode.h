@@ -68,12 +68,22 @@ public:
 	void SaveGame(AFarmCharacter* Character);
 	bool LoadGame(AFarmCharacter* Character);
 
+	void SetSaveSlot(int32 InSlot) { SaveSlotIndex = FMath::Clamp(InSlot, 1, 3); }
+	int32 GetSaveSlot() const { return SaveSlotIndex; }
+	FString SaveSlotName() const { return FString::Printf(TEXT("FarmSlot%d"), SaveSlotIndex); }
+	bool HasSaveInSlot(int32 Slot) const;
+	/** Reloads the current map as a fresh game. */
+	void NewGame();
+	/** True once right after NewGame reloaded the map. */
+	bool ConsumeSkipMenu();
+
 protected:
 	UPROPERTY() int32 Day = 1;
 	UPROPERTY() float DayLengthSeconds = 180.f;
 	float DayTimer = 0.f;
 	UPROPERTY() TArray<FQuestState> Quests;
 	int32 ActiveQuestIndex = 0;
+	int32 SaveSlotIndex = 1;
 	bool bGameStarted = false;
 	bool bGamePaused = false;
 	UPROPERTY() AFarmBin* Bin = nullptr;

@@ -42,6 +42,15 @@ void AFarmPlayerController::BeginPlay()
 		GEngine->GameViewport->AddViewportWidgetContent(MenuWidget.ToSharedRef());
 		MenuWidget->SetVisibility(EVisibility::Collapsed);
 		ShowMenu(true);
+
+		if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+		{
+			if (GM->ConsumeSkipMenu())
+			{
+				GM->StartGame();
+				HideMenu();
+			}
+		}
 	}
 }
 
@@ -529,6 +538,7 @@ void AFarmPlayerController::ShowMenu(bool bStartMode)
 	if (!MenuWidget.IsValid()) return;
 	bMenuStartMode = bStartMode;
 	MenuWidget->SetStartMode(bStartMode);
+	MenuWidget->RefreshLabels();
 	MenuWidget->SetVisibility(EVisibility::Visible);
 	bShowMouseCursor = true;
 	FInputModeUIOnly InputMode;
@@ -552,19 +562,64 @@ void AFarmPlayerController::HideMenu()
 	}
 }
 
+int32 AFarmPlayerController::GetMenuSlot() const
+{
+	const AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
+	return GM ? GM->GetSaveSlot() : 1;
+}
+
+bool AFarmPlayerController::HasSaveInSlot(int32 Slot) const
+{
+	const AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
+	return GM ? GM->HasSaveInSlot(Slot) : false;
+}
+
 void AFarmPlayerController::HandleMenuPrimary()
 {
-	if (bMenuStartMode)
+	AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
+	if (!GM)
 	{
-		if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+		return;
+	}
+
+	if (!bMenuStartMode)
+	{
+		HideMenu();
+		return;
+	}
+
+	if (GM->HasSaveInSlot(GM->GetSaveSlot()))
+	{
+		if (AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn()))
 		{
-			GM->StartGame();
+			GM->LoadGame(Farmer);
 		}
+		GM->StartGame();
 		HideMenu();
 	}
 	else
 	{
-		HideMenu();
+		GM->NewGame();
+	}
+}
+
+void AFarmPlayerController::HandleMenuNewGame()
+{
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->NewGame();
+	}
+}
+
+void AFarmPlayerController::HandleMenuCycleSlot()
+{
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetSaveSlot((GM->GetSaveSlot() % 3) + 1);
+	}
+	if (MenuWidget.IsValid())
+	{
+		MenuWidget->RefreshLabels();
 	}
 }
 
