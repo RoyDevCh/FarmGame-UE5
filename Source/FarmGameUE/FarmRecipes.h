@@ -40,7 +40,9 @@ namespace FarmRecipes
 			{ TEXT("mixing_pot_kit"), TEXT("Mixing Pot Kit (build with G)"), { { TEXT("stone"), 8 }, { TEXT("wood"), 6 } }, TEXT("mixing_pot_kit"), 1, false },
 			{ TEXT("bread"), TEXT("Bread (at mixing pot)"), { { TEXT("corn"), 2 } }, TEXT("bread"), 1, false, true },
 			{ TEXT("cheese"), TEXT("Cheese (at mixing pot)"), { { TEXT("milk"), 2 } }, TEXT("cheese"), 1, false, true },
-			{ TEXT("soup"), TEXT("Soup (at mixing pot)"), { { TEXT("carrot"), 1 }, { TEXT("potato"), 1 } }, TEXT("soup"), 1, false, true }
+			{ TEXT("soup"), TEXT("Soup (at mixing pot)"), { { TEXT("carrot"), 1 }, { TEXT("potato"), 1 } }, TEXT("soup"), 1, false, true },
+			{ TEXT("fishing_rod"), TEXT("Fishing Rod"), { { TEXT("wood"), 4 }, { TEXT("ore"), 1 } }, TEXT("fishing_rod"), 1, false },
+			{ TEXT("cooked_fish"), TEXT("Cooked Fish (at mixing pot)"), { { TEXT("fish"), 1 } }, TEXT("cooked_fish"), 1, false, true }
 		};
 		return Recipes;
 	}

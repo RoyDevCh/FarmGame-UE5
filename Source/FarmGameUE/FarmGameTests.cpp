@@ -702,4 +702,20 @@ bool FFarmCookingRecipeTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmFishingRecipeTest, "FarmGame.Crafting.FishingRecipes",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmFishingRecipeTest::RunTest(const FString& Parameters)
+{
+	const FCraftRecipe* Rod = FarmRecipes::Find(TEXT("fishing_rod"));
+	TestNotNull(TEXT("fishing rod recipe"), Rod);
+	TestNotNull(TEXT("fishing rod item"), FarmItems::Find(TEXT("fishing_rod")));
+	TestNotNull(TEXT("fish item"), FarmItems::Find(TEXT("fish")));
+	const FCraftRecipe* Cooked = FarmRecipes::Find(TEXT("cooked_fish"));
+	TestNotNull(TEXT("cooked fish recipe"), Cooked);
+	TestTrue(TEXT("cooked fish needs pot"), Cooked->bNeedsMixingPot);
+	TestNotNull(TEXT("cooked fish item"), FarmItems::Find(TEXT("cooked_fish")));
+	return true;
+}
+
 #endif

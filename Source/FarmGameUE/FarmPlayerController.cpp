@@ -12,6 +12,7 @@
 #include "FarmShopWidget.h"
 #include "FarmSceneDoor.h"
 #include "FarmBed.h"
+#include "FarmFishingSpot.h"
 #include "EngineUtils.h"
 #include "FarmSettingsWidget.h"
 #include "FarmStorageWidget.h"
@@ -231,6 +232,15 @@ void AFarmPlayerController::UpdateTarget()
 			CurrentTarget = *It;
 		}
 	}
+	for (TActorIterator<AFarmFishingSpot> It(GetWorld()); It; ++It)
+	{
+		const float Dist = FVector::Dist2D(PawnLocation, It->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = *It;
+		}
+	}
 }
 
 void AFarmPlayerController::UpdateGhost()
@@ -331,6 +341,10 @@ FString AFarmPlayerController::GetPromptText() const
 	{
 		return Bed->GetPrompt(this);
 	}
+	if (const AFarmFishingSpot* Fishing = Cast<AFarmFishingSpot>(CurrentTarget.Get()))
+	{
+		return Fishing->GetPrompt(this);
+	}
 	return FString();
 }
 
@@ -398,6 +412,10 @@ void AFarmPlayerController::Interact()
 	else if (AFarmBed* Bed = Cast<AFarmBed>(Target))
 	{
 		Bed->Interact(Farmer);
+	}
+	else if (AFarmFishingSpot* Fishing = Cast<AFarmFishingSpot>(Target))
+	{
+		Fishing->Interact(Farmer);
 	}
 }
 
@@ -802,7 +820,7 @@ void AFarmPlayerController::EatFood()
 	UFarmInventoryComponent* Inventory = Farmer->GetInventory();
 
 	struct FFood { FName Id; int32 Heal; };
-	const FFood Foods[] = { { TEXT("soup"), 25 }, { TEXT("bread"), 20 }, { TEXT("cheese"), 15 }, { TEXT("apple"), 10 }, { TEXT("meat"), 15 }, { TEXT("milk"), 8 }, { TEXT("egg"), 5 } };
+	const FFood Foods[] = { { TEXT("cooked_fish"), 30 }, { TEXT("soup"), 25 }, { TEXT("bread"), 20 }, { TEXT("cheese"), 15 }, { TEXT("apple"), 10 }, { TEXT("fish"), 12 }, { TEXT("meat"), 15 }, { TEXT("milk"), 8 }, { TEXT("egg"), 5 } };
 	for (const FFood& Food : Foods)
 	{
 		if (Inventory->GetCount(Food.Id) > 0)

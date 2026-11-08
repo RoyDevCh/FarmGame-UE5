@@ -13,6 +13,7 @@
 #include "FarmSceneDoor.h"
 #include "FarmPlayerController.h"
 #include "FarmBed.h"
+#include "FarmFishingSpot.h"
 #include "FarmResourceNode.h"
 #include "FarmSaveGame.h"
 
@@ -551,6 +552,7 @@ void AFarmGameMode::BuildWorld()
 	SpawnProp(TEXT("/Game/Art/Props/LampPost.LampPost"), FVector(1080.f, 760.f, 0.f), 280.f);
 	SpawnProp(TEXT("/Game/Art/Props/Fountain.Fountain"), FVector(1420.f, 1250.f, 0.f), 420.f);
 	SpawnProp(TEXT("/Game/Art/Environment/Pond.Pond"), FVector(-1050.f, 1450.f, 0.f), 720.f);
+	World->SpawnActor<AFarmFishingSpot>(AFarmFishingSpot::StaticClass(), FVector(-850.f, 1250.f, 0.f), FRotator::ZeroRotator);
 	SpawnProp(TEXT("/Game/Art/Props/WoodenCrate.WoodenCrate"), FVector(-1280.f, 980.f, 0.f), 90.f, 12.f);
 	SpawnProp(TEXT("/Game/Art/Props/WoodenCrate.WoodenCrate"), FVector(-1210.f, 1030.f, 0.f), 80.f, -20.f);
 	SpawnProp(TEXT("/Game/Art/Props/trough.trough"), FVector(1500.f, -380.f, 0.f), 130.f);
