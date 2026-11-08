@@ -43,6 +43,12 @@ public:
 	void NotifyProduced(FName ItemId, int32 Amount);
 	const TArray<FQuestState>& GetQuests() const { return Quests; }
 	int32 GetActiveQuestIndex() const { return ActiveQuestIndex; }
+
+	/** Starts the simulation (leaves the main menu). */
+	void StartGame() { bGameStarted = true; }
+	void SetGamePaused(bool bPaused) { bGamePaused = bPaused; }
+	bool IsGameStarted() const { return bGameStarted; }
+	bool IsGamePaused() const { return bGamePaused; }
 	AFarmBin* GetBin() const { return Bin; }
 	float GetDayLengthSeconds() const { return DayLengthSeconds; }
 	/** 0..1 progress through the current day. */
@@ -66,6 +72,8 @@ protected:
 	float DayTimer = 0.f;
 	UPROPERTY() TArray<FQuestState> Quests;
 	int32 ActiveQuestIndex = 0;
+	bool bGameStarted = false;
+	bool bGamePaused = false;
 	UPROPERTY() AFarmBin* Bin = nullptr;
 	UPROPERTY() class ADirectionalLight* SunLight = nullptr;
 	bool bRaining = false;

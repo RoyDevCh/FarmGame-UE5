@@ -8,6 +8,7 @@ class AFarmPlot;
 class AFarmBin;
 class AFarmBuilding;
 class SFarmInventoryWidget;
+class SFarmMenuWidget;
 
 UCLASS()
 class FARMGAMEUE_API AFarmPlayerController : public APlayerController
@@ -42,6 +43,13 @@ public:
 	void ToggleInventory();
 	bool IsInventoryOpen() const { return bInventoryOpen; }
 	bool IsSlateInventoryActive() const { return InventoryWidget.IsValid(); }
+
+	// Start / pause menu
+	void HandleMenuPrimary();
+	void HandleMenuEscape();
+	void HandleMenuQuit();
+	void ShowMenu(bool bStartMode);
+	void HideMenu();
 	void ToggleBuildMode();
 	void ToggleCraftMenu();
 	void CancelMode();
@@ -69,6 +77,8 @@ protected:
 	bool bCraftMenuOpen = false;
 	bool bInventoryOpen = false;
 	TSharedPtr<SFarmInventoryWidget> InventoryWidget;
+	TSharedPtr<SFarmMenuWidget> MenuWidget;
+	bool bMenuStartMode = true;
 	float AttackCooldown = 0.f;
 	UPROPERTY() AFarmBuilding* Ghost = nullptr;
 

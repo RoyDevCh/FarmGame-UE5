@@ -7,6 +7,7 @@
 #include "FarmAudio.h"
 #include "FarmInventoryComponent.h"
 #include "FarmInventoryWidget.h"
+#include "FarmMenuWidget.h"
 #include "FarmItems.h"
 #include "FarmPlot.h"
 #include "FarmPortal.h"
@@ -15,6 +16,8 @@
 #include "EngineUtils.h"
 #include "Engine/Engine.h"
 #include "Engine/GameViewportClient.h"
+#include "Framework/Application/SlateApplication.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 AFarmPlayerController::AFarmPlayerController()
 {
@@ -32,6 +35,11 @@ void AFarmPlayerController::BeginPlay()
 		SAssignNew(InventoryWidget, SFarmInventoryWidget).PlayerController(this);
 		GEngine->GameViewport->AddViewportWidgetContent(InventoryWidget.ToSharedRef());
 		InventoryWidget->SetVisibility(EVisibility::Collapsed);
+
+		SAssignNew(MenuWidget, SFarmMenuWidget).PlayerController(this);
+		GEngine->GameViewport->AddViewportWidgetContent(MenuWidget.ToSharedRef());
+		MenuWidget->SetVisibility(EVisibility::Collapsed);
+		ShowMenu(true);
 	}
 }
 
@@ -408,8 +416,75 @@ void AFarmPlayerController::ToggleCraftMenu()
 	}
 }
 
+void AFarmPlayerController::ShowMenu(bool bStartMode)
+{
+	if (!MenuWidget.IsValid()) return;
+	bMenuStartMode = bStartMode;
+	MenuWidget->SetStartMode(bStartMode);
+	MenuWidget->SetVisibility(EVisibility::Visible);
+	bShowMouseCursor = true;
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(MenuWidget);
+	SetInputMode(InputMode);
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(true);
+	}
+}
+
+void AFarmPlayerController::HideMenu()
+{
+	if (!MenuWidget.IsValid()) return;
+	MenuWidget->SetVisibility(EVisibility::Collapsed);
+	bShowMouseCursor = false;
+	SetInputMode(FInputModeGameOnly());
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(false);
+	}
+}
+
+void AFarmPlayerController::HandleMenuPrimary()
+{
+	if (bMenuStartMode)
+	{
+		if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+		{
+			GM->StartGame();
+		}
+		HideMenu();
+	}
+	else
+	{
+		HideMenu();
+	}
+}
+
+void AFarmPlayerController::HandleMenuEscape()
+{
+	if (!bMenuStartMode)
+	{
+		HideMenu();
+	}
+}
+
+void AFarmPlayerController::HandleMenuQuit()
+{
+	UKismetSystemLibrary::QuitGame(this, this, EQuitPreference::Quit, false);
+}
+
 void AFarmPlayerController::CancelMode()
 {
+	if (MenuWidget.IsValid() && MenuWidget->GetVisibility() == EVisibility::Visible)
+	{
+		HandleMenuEscape();
+		return;
+	}
+	if (!bInventoryOpen && !bCraftMenuOpen && BuildModeIndex < 0)
+	{
+		ShowMenu(false);
+		return;
+	}
 	if (bInventoryOpen)
 	{
 		ToggleInventory();

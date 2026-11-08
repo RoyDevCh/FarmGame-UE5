@@ -82,6 +82,7 @@ FString AFarmGameMode::GetTimeLabel() const
 void AFarmGameMode::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	if (!bGameStarted || bGamePaused) return;
 	if (DayLengthSeconds > 0.f)
 	{
 		DayTimer += DeltaSeconds;
