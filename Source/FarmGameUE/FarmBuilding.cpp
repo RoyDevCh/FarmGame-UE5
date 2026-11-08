@@ -40,8 +40,9 @@ void AFarmBuilding::ApplyVisual()
 {
 	const TCHAR* ArtPath = Type == EBuildingType::Fence ? TEXT("/Game/Art/Buildings/fence_long.fence_long")
 		: Type == EBuildingType::Furnace ? TEXT("/Game/Art/Buildings/furnace.furnace")
-		: TEXT("/Game/Art/Buildings/Chest_stone.Chest_stone");
-	const float ArtHeight = Type == EBuildingType::Fence ? 110.f : Type == EBuildingType::Furnace ? 170.f : 95.f;
+		: Type == EBuildingType::Chest ? TEXT("/Game/Art/Buildings/Chest_stone.Chest_stone")
+		: TEXT("/Game/Art/Props/sprinkler.sprinkler");
+	const float ArtHeight = Type == EBuildingType::Fence ? 110.f : Type == EBuildingType::Furnace ? 170.f : Type == EBuildingType::Chest ? 95.f : 80.f;
 	const bool bArtApplied = Type == EBuildingType::Fence ? FarmArt::Apply(Mesh, ArtPath, ArtHeight) : FarmArt::ApplyHeight(Mesh, ArtPath, ArtHeight);
 	if (bArtApplied)
 	{
@@ -113,6 +114,10 @@ FString AFarmBuilding::GetPrompt(const AFarmPlayerController* PC) const
 	if (Type == EBuildingType::Fence)
 	{
 		return TEXT("Fence");
+	}
+	if (Type == EBuildingType::Sprinkler)
+	{
+		return TEXT("Sprinkler: waters nearby plots every morning");
 	}
 	if (Type == EBuildingType::Chest)
 	{

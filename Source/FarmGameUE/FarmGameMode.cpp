@@ -137,6 +137,17 @@ void AFarmGameMode::AdvanceDay()
 			if (Plot) Plot->WaterFromRain();
 		}
 	}
+	for (AFarmBuilding* Building : Buildings)
+	{
+		if (!Building || Building->GetBuildingType() != EBuildingType::Sprinkler) continue;
+		for (AFarmPlot* Plot : Plots)
+		{
+			if (Plot && FVector::Dist2D(Plot->GetActorLocation(), Building->GetActorLocation()) <= 260.f)
+			{
+				Plot->WaterFromRain();
+			}
+		}
+	}
 	for (AFarmPlot* Plot : Plots)
 	{
 		if (Plot) Plot->AdvanceDay(Day);

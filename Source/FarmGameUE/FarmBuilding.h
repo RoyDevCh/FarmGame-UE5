@@ -13,7 +13,8 @@ enum class EBuildingType : uint8
 {
 	Fence,
 	Furnace,
-	Chest
+	Chest,
+	Sprinkler
 };
 
 /** Player-placed building. Furnace smelts ore into ingots over time. */

@@ -210,7 +210,8 @@ void AFarmPlayerController::UpdateGhost()
 		{
 			Ghost->Configure(BuildModeIndex == 0 ? EBuildingType::Fence
 			: BuildModeIndex == 1 ? EBuildingType::Furnace
-			: EBuildingType::Chest);
+			: BuildModeIndex == 2 ? EBuildingType::Chest
+			: EBuildingType::Sprinkler);
 			Ghost->SetActorEnableCollision(false);
 			Ghost->SetActorTickEnabled(false);
 		}
@@ -370,7 +371,7 @@ void AFarmPlayerController::Attack()
 
 void AFarmPlayerController::ToggleBuildMode()
 {
-	BuildModeIndex = (BuildModeIndex + 2) % 4 - 1; // -1 -> 0 -> 1 -> 2 -> -1
+	BuildModeIndex = (BuildModeIndex + 2) % 5 - 1; // -1 -> 0 -> 1 -> 2 -> 3 -> -1
 	if (BuildModeIndex < 0)
 	{
 		ExitBuildMode();
@@ -397,6 +398,7 @@ FString AFarmPlayerController::GetBuildLabel() const
 	if (BuildModeIndex == 0) return TEXT("Fence");
 	if (BuildModeIndex == 1) return TEXT("Furnace");
 	if (BuildModeIndex == 2) return TEXT("Chest");
+	if (BuildModeIndex == 3) return TEXT("Sprinkler");
 	return TEXT("none");
 }
 
@@ -408,7 +410,8 @@ void AFarmPlayerController::PlaceBuilding()
 
 	const FName KitItem = BuildModeIndex == 0 ? FName(TEXT("fence_kit"))
 		: BuildModeIndex == 1 ? FName(TEXT("furnace_kit"))
-		: FName(TEXT("chest_kit"));
+		: BuildModeIndex == 2 ? FName(TEXT("chest_kit"))
+		: FName(TEXT("sprinkler_kit"));
 	if (Farmer->GetInventory()->GetCount(KitItem) <= 0)
 	{
 		ShowToast(FString::Printf(TEXT("Need %s (craft it with C)"), *FarmItems::LabelOf(KitItem)));
@@ -425,7 +428,8 @@ void AFarmPlayerController::PlaceBuilding()
 	Farmer->GetInventory()->RemoveItem(KitItem, 1);
 	const EBuildingType Type = BuildModeIndex == 0 ? EBuildingType::Fence
 		: BuildModeIndex == 1 ? EBuildingType::Furnace
-		: EBuildingType::Chest;
+		: BuildModeIndex == 2 ? EBuildingType::Chest
+		: EBuildingType::Sprinkler;
 	GM->SpawnBuilding(Type, Location);
 	FarmAudio::Play(this, TEXT("/Game/Art/Audio/build.build"));
 	ShowToast(FString::Printf(TEXT("Placed %s"), *GetBuildLabel()));

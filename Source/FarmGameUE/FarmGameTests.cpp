@@ -648,4 +648,24 @@ bool FFarmRecipeOutputsTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmSprinklerRecipeTest, "FarmGame.Crafting.SprinklerRecipeCosts",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmSprinklerRecipeTest::RunTest(const FString& Parameters)
+{
+	const FCraftRecipe* Recipe = FarmRecipes::Find(TEXT("sprinkler_kit"));
+	TestNotNull(TEXT("sprinkler recipe exists"), Recipe);
+	TestEqual(TEXT("outputs sprinkler kit"), Recipe->OutputId, FName(TEXT("sprinkler_kit")));
+	TestNotNull(TEXT("kit is in the catalog"), FarmItems::Find(TEXT("sprinkler_kit")));
+	int32 Stone = 0, Ore = 0;
+	for (const FCraftIngredient& Ingredient : Recipe->Inputs)
+	{
+		if (Ingredient.ItemId == TEXT("stone")) Stone = Ingredient.Count;
+		if (Ingredient.ItemId == TEXT("ore")) Ore = Ingredient.Count;
+	}
+	TestEqual(TEXT("six stone"), Stone, 6);
+	TestEqual(TEXT("two ore"), Ore, 2);
+	return true;
+}
+
 #endif
