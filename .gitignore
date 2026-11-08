@@ -16,3 +16,5 @@ Saved/
 
 # Local-only MCP backend, not part of the game
 Plugins/EngineWire/
+# ue-control verify_animation fixture maps
+Content/UEControlVerification/
