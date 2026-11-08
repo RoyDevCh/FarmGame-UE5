@@ -49,7 +49,7 @@ void AFarmHUD::DrawHUD()
 		DrawRect(FLinearColor(0.2f, 0.12f, 0.05f), Margin + 250.f, H - Margin - 40.f, 160.f, 12.f);
 		DrawRect(FLinearColor(1.f, 0.65f, 0.25f), Margin + 250.f, H - Margin - 40.f, 160.f * HungerPercent, 12.f);
 		DrawText(FString::Printf(TEXT("Stamina %d   Hunger %d   Lv %d  (XP %d)"), FMath::RoundToInt(Stats->GetStamina()), FMath::RoundToInt(Stats->GetHunger()), Stats->GetLevel(), Stats->GetXP()),
-			FLinearColor(0.85f, 0.9f, 1.f), Margin, H - Margin - 64.f + 12.f, Small, 1.0f);
+			FLinearColor(0.85f, 0.9f, 1.f), Margin, H - Margin - 66.f, Small, 0.95f);
 	}
 
 	float Y = Margin + 48.f;
