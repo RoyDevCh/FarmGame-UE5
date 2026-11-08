@@ -3,6 +3,7 @@
 #include "FarmCharacter.h"
 #include "FarmStatsComponent.h"
 #include "FarmMinimap.h"
+#include "FarmWeather.h"
 #include "FarmPlot.h"
 #include "FarmBuilding.h"
 #include "FarmGameMode.h"
@@ -29,7 +30,7 @@ void AFarmHUD::DrawHUD()
 	const float H = Canvas->SizeY;
 	const float Margin = 28.f;
 
-	const FString Header = FString::Printf(TEXT("Day %d      Gold %d g"), GM->GetDay(), Character->GetInventory()->Gold);
+	const FString Header = FString::Printf(TEXT("Day %d  %s      Gold %d g"), GM->GetDay(), FarmWeather::SeasonName(FarmWeather::SeasonForDay(GM->GetDay())), Character->GetInventory()->Gold);
 	DrawText(Header, FLinearColor(1.f, 0.94f, 0.75f), Margin, Margin, Medium, 1.25f);
 
 	const FString Status = FString::Printf(TEXT("%s   %s"), *GM->GetTimeLabel(), *GM->GetWeatherLabel());

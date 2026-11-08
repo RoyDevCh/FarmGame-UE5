@@ -19,6 +19,9 @@
 #include "FarmDefense.h"
 #include "FarmPet.h"
 #include "FarmRideable.h"
+#include "FarmWeather.h"
+#include "FarmWater.h"
+#include "FarmLadder.h"
 #include "FarmResourceNode.h"
 #include "FarmSaveGame.h"
 
@@ -85,6 +88,11 @@ void AFarmGameMode::BeginPlay()
 	}
 	// Start the first day around 09:00 so the farm is lit on spawn.
 	DayTimer = DayLengthSeconds * (3.f / 18.f);
+	if (GetWorld())
+	{
+		WeatherSystem = GetWorld()->SpawnActor<AFarmWeatherSystem>(AFarmWeatherSystem::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+		if (WeatherSystem) WeatherSystem->UpdateForDay(Day);
+	}
 	if (GetWorld() && GetWorld()->GetMapName().Contains(TEXT("House")))
 	{
 		BuildHouseWorld();
@@ -179,7 +187,8 @@ void AFarmGameMode::Tick(float DeltaSeconds)
 void AFarmGameMode::AdvanceDay()
 {
 	Day++;
-	bRaining = FMath::RandRange(0, 3) == 0;
+	bRaining = FarmWeather::RollRain(Day, FMath::RandRange(0, 99));
+	if (WeatherSystem) WeatherSystem->UpdateForDay(Day);
 	if (bRaining)
 	{
 		for (AFarmPlot* Plot : Plots)
@@ -569,6 +578,8 @@ void AFarmGameMode::BuildWorld()
 	SpawnProp(TEXT("/Game/Art/Environment/Pond.Pond"), FVector(-1050.f, 1450.f, 0.f), 720.f);
 	World->SpawnActor<AFarmFishingSpot>(AFarmFishingSpot::StaticClass(), FVector(-850.f, 1250.f, 0.f), FRotator::ZeroRotator);
 	World->SpawnActor<AFarmCampfire>(AFarmCampfire::StaticClass(), FVector(-300.f, -200.f, 0.f), FRotator::ZeroRotator);
+	World->SpawnActor<AFarmWater>(AFarmWater::StaticClass(), FVector(-1050.f, 1450.f, 0.f), FRotator::ZeroRotator);
+	World->SpawnActor<AFarmLadder>(AFarmLadder::StaticClass(), FVector(780.f, 640.f, 0.f), FRotator::ZeroRotator);
 	World->SpawnActor<AFarmTrap>(AFarmTrap::StaticClass(), FVector(700.f, 300.f, 0.f), FRotator::ZeroRotator);
 	World->SpawnActor<AFarmTower>(AFarmTower::StaticClass(), FVector(900.f, -200.f, 0.f), FRotator::ZeroRotator);
 	World->SpawnActor<AFarmPet>(AFarmPet::StaticClass(), FVector(-420.f, -620.f, 0.f), FRotator::ZeroRotator);

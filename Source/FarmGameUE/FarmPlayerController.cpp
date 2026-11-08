@@ -16,6 +16,7 @@
 #include "FarmCampfire.h"
 #include "FarmPet.h"
 #include "FarmRideable.h"
+#include "FarmLadder.h"
 #include "EngineUtils.h"
 #include "FarmSettingsWidget.h"
 #include "FarmStorageWidget.h"
@@ -273,6 +274,15 @@ void AFarmPlayerController::UpdateTarget()
 			CurrentTarget = *It;
 		}
 	}
+	for (TActorIterator<AFarmLadder> It(GetWorld()); It; ++It)
+	{
+		const float Dist = FVector::Dist2D(PawnLocation, It->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = *It;
+		}
+	}
 }
 
 void AFarmPlayerController::UpdateGhost()
@@ -389,6 +399,10 @@ FString AFarmPlayerController::GetPromptText() const
 	{
 		return Mount->GetPrompt(this);
 	}
+	if (const AFarmLadder* Ladder = Cast<AFarmLadder>(CurrentTarget.Get()))
+	{
+		return Ladder->GetPrompt(this);
+	}
 	return FString();
 }
 
@@ -472,6 +486,10 @@ void AFarmPlayerController::Interact()
 	else if (AFarmRideable* Mount = Cast<AFarmRideable>(Target))
 	{
 		if (Mount->IsRidden()) Mount->Dismount(); else Mount->TryMount(Farmer);
+	}
+	else if (AFarmLadder* Ladder = Cast<AFarmLadder>(Target))
+	{
+		Ladder->Interact(Farmer);
 	}
 }
 
