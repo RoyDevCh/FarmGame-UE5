@@ -57,6 +57,18 @@ namespace FarmQuests
 		Steel.Target = 3;
 		Quests.Add(Steel);
 
+		FQuestState Shop;
+		Shop.Title = TEXT("Buy an apple at the shop");
+		Shop.ItemId = TEXT("apple");
+		Shop.Target = 1;
+		Quests.Add(Shop);
+
+		FQuestState SteelAxe;
+		SteelAxe.Title = TEXT("Craft a steel axe");
+		SteelAxe.ItemId = TEXT("steel_axe");
+		SteelAxe.Target = 1;
+		Quests.Add(SteelAxe);
+
 		return Quests;
 	}
 

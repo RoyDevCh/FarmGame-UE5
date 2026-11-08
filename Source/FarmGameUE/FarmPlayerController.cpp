@@ -493,6 +493,10 @@ void AFarmPlayerController::BuyFromShop(FName ItemId, int32 Price)
 		return;
 	}
 	Inventory->AddItem(ItemId, 1);
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->NotifyProduced(ItemId, 1);
+	}
 	FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"), 0.7f);
 	ShowToast(FString::Printf(TEXT("Bought %s"), *FarmItems::LabelOf(ItemId)));
 	if (ShopWidget.IsValid()) ShopWidget->Refresh();

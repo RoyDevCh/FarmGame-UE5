@@ -439,7 +439,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmQuestAdvanceTest, "FarmGame.Quests.Advance
 bool FFarmQuestAdvanceTest::RunTest(const FString& Parameters)
 {
 	TArray<FQuestState> Quests = FarmQuests::MakeDefault();
-	TestEqual(TEXT("six objectives"), Quests.Num(), 6);
+	TestEqual(TEXT("eight objectives"), Quests.Num(), 8);
 
 	FQuestState& Quest = Quests[0];
 	TestFalse(TEXT("no completion before target"), FarmQuests::Advance(Quest, 1));
