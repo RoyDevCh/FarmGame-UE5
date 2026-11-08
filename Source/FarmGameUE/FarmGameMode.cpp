@@ -51,6 +51,7 @@ void AFarmGameMode::BeginPlay()
 	{
 		bGameStarted = true;
 		bSkipMenuOnStart = true;
+		UE_LOG(LogTemp, Log, TEXT("FarmGame: autostart from URL option"));
 	}
 	// Start the first day around 09:00 so the farm is lit on spawn.
 	DayTimer = DayLengthSeconds * (3.f / 18.f);

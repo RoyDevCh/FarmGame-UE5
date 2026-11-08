@@ -49,6 +49,7 @@ void AFarmPlayerController::BeginPlay()
 			{
 				GM->StartGame();
 				HideMenu();
+				UE_LOG(LogTemp, Log, TEXT("FarmGame: menu skipped (autostart)"));
 			}
 		}
 	}
@@ -609,6 +610,16 @@ void AFarmPlayerController::HandleMenuPrimary()
 	{
 		GM->NewGame();
 	}
+}
+
+void AFarmPlayerController::DebugNewGame()
+{
+	HandleMenuNewGame();
+}
+
+void AFarmPlayerController::FarmNewGame()
+{
+	HandleMenuNewGame();
 }
 
 void AFarmPlayerController::HandleMenuNewGame()

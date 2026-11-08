@@ -62,6 +62,8 @@ public:
 	void HandleMenuEscape();
 	void HandleMenuQuit();
 	void HandleMenuNewGame();
+	UFUNCTION(BlueprintCallable, Category = "Farm") void DebugNewGame();
+	UFUNCTION(Exec) void FarmNewGame();
 	void HandleMenuCycleSlot();
 	int32 GetMenuSlot() const;
 	bool HasSaveInSlot(int32 Slot) const;
