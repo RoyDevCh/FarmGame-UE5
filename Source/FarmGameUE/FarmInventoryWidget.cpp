@@ -5,12 +5,14 @@
 #include "FarmItems.h"
 #include "FarmPlayerController.h"
 #include "FarmRecipes.h"
+#include "FarmIcon.h"
 
 #include "Widgets/SBoxPanel.h"
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Text/STextBlock.h"
 #include "Widgets/Input/SButton.h"
 #include "Styling/CoreStyle.h"
+#include "Widgets/Images/SImage.h"
 
 #define LOCTEXT_NAMESPACE "FarmInventory"
 
@@ -102,9 +104,20 @@ void SFarmInventoryWidget::Refresh()
 			const FText Label = Def.SellPrice > 0
 				? FText::FromString(FString::Printf(TEXT("  %s  x%d      sell %dg"), Def.Label, Count, Def.SellPrice))
 				: FText::FromString(FString::Printf(TEXT("  %s  x%d"), Def.Label, Count));
+			const TSharedPtr<FSlateBrush> Icon = FarmIcon::BrushFor(Def.Id);
 			ItemList->AddSlot().AutoHeight()
 			[
-				SNew(STextBlock).Text(Label).ColorAndOpacity(FLinearColor(0.9f, 0.92f, 0.88f))
+				SNew(SHorizontalBox)
+				+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 6, 0)
+				[
+					SNew(SImage)
+					.Image_Lambda([Icon]() { return Icon.IsValid() ? Icon.Get() : FCoreStyle::Get().GetBrush("WhiteBrush"); })
+					.ColorAndOpacity(Icon.IsValid() ? FLinearColor::White : FLinearColor(0.f, 0.f, 0.f, 0.f))
+				]
+				+ SHorizontalBox::Slot().FillWidth(1.f).VAlign(VAlign_Center)
+				[
+					SNew(STextBlock).Text(Label).ColorAndOpacity(FLinearColor(0.9f, 0.92f, 0.88f))
+				]
 			];
 		}
 	}

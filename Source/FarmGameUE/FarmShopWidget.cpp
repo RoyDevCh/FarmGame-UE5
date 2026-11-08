@@ -8,6 +8,8 @@
 #include "Widgets/Layout/SBorder.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
+#include "Widgets/Images/SImage.h"
+#include "FarmIcon.h"
 #include "Widgets/Input/SButton.h"
 #include "Styling/CoreStyle.h"
 
@@ -87,9 +89,16 @@ void SFarmShopWidget::Refresh()
 	for (const AFarmPlayerController::FShopEntry& Entry : AFarmPlayerController::GetShopStock())
 	{
 		const bool bAfford = Inventory->Gold >= Entry.Price;
+		const TSharedPtr<FSlateBrush> Icon = FarmIcon::BrushFor(Entry.Id);
 		Rows->AddSlot().AutoHeight().Padding(2.f)
 		[
 			SNew(SHorizontalBox)
+			+ SHorizontalBox::Slot().AutoWidth().VAlign(VAlign_Center).Padding(0, 0, 8, 0)
+			[
+				SNew(SImage)
+				.Image_Lambda([Icon]() { return Icon.IsValid() ? Icon.Get() : FCoreStyle::Get().GetBrush("WhiteBrush"); })
+				.ColorAndOpacity(Icon.IsValid() ? FLinearColor::White : FLinearColor(0.f, 0.f, 0.f, 0.f))
+			]
 			+ SHorizontalBox::Slot().AutoWidth().Padding(0, 0, 12, 0).VAlign(VAlign_Center)
 			[
 				SNew(SBox).WidthOverride(230.f)
