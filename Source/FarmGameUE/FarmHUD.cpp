@@ -2,6 +2,9 @@
 #include "FarmBuilding.h"
 #include "FarmCharacter.h"
 #include "FarmStatsComponent.h"
+#include "FarmMinimap.h"
+#include "FarmPlot.h"
+#include "FarmBuilding.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
 #include "FarmItems.h"
@@ -178,6 +181,22 @@ void AFarmHUD::DrawHUD()
 			Line = FString::Printf(TEXT("Objective: %s  (%d/%d)   +%dg"), *Quests[Index].Title, Quests[Index].Progress, Quests[Index].Target, Quests[Index].Reward);
 		}
 		DrawText(Line, FLinearColor(1.f, 0.85f, 0.45f), W * 0.02f, H * 0.34f, Small, 1.05f);
+	}
+
+	if (GM && Character)
+	{
+		TArray<FVector> PlotLocations;
+		TArray<FVector> BuildingLocations;
+		for (const AFarmPlot* Plot : GM->Plots)
+		{
+			if (Plot) PlotLocations.Add(Plot->GetActorLocation());
+		}
+		for (const AFarmBuilding* Building : GM->Buildings)
+		{
+			if (Building) BuildingLocations.Add(Building->GetActorLocation());
+		}
+		FarmMinimap::Draw(this, Character->GetActorLocation(), PlotLocations, BuildingLocations,
+			Character->GetActorLocation(), 3000.f, FVector2D(W - 220.f, 44.f), FVector2D(200.f, 200.f));
 	}
 
 	const float ToastAlpha = PC->GetToastAlpha();

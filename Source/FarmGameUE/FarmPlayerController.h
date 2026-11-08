@@ -12,6 +12,7 @@ class SFarmMenuWidget;
 class SFarmShopWidget;
 class SFarmSettingsWidget;
 class SFarmStorageWidget;
+class SFarmEquipWidget;
 class AFarmBuilding;
 
 UCLASS()
@@ -61,6 +62,10 @@ public:
 	void CloseShop();
 	void BuyFromShop(FName ItemId, int32 Price);
 	void SellAllAtShop();
+	void OpenEquipPanel();
+	void CloseEquipPanel();
+	void ToggleEquipPanel();
+	void EquipToolItem(FName ItemId);
 	void OpenStorage(AFarmBuilding* Chest);
 	void CloseStorage();
 	void StorageDepositAll();
@@ -120,6 +125,7 @@ protected:
 	TSharedPtr<SFarmShopWidget> ShopWidget;
 	TSharedPtr<SFarmSettingsWidget> SettingsWidget;
 	TSharedPtr<SFarmStorageWidget> StorageWidget;
+	TSharedPtr<SFarmEquipWidget> EquipWidget;
 	TWeakObjectPtr<AFarmBuilding> OpenChest;
 	bool bStorageOpen = false;
 	bool bSettingsFromMenu = false;

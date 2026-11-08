@@ -15,9 +15,11 @@
 #include "FarmFishingSpot.h"
 #include "FarmCampfire.h"
 #include "FarmPet.h"
+#include "FarmRideable.h"
 #include "EngineUtils.h"
 #include "FarmSettingsWidget.h"
 #include "FarmStorageWidget.h"
+#include "FarmEquipWidget.h"
 #include "FarmBuilding.h"
 #include "GameFramework/GameUserSettings.h"
 #include "AudioDevice.h"
@@ -120,6 +122,7 @@ void AFarmPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("Inventory"), IE_Pressed, this, &AFarmPlayerController::ToggleInventory);
 	InputComponent->BindAction(TEXT("Eat"), IE_Pressed, this, &AFarmPlayerController::EatFood);
 	InputComponent->BindAction(TEXT("Equip"), IE_Pressed, this, &AFarmPlayerController::CycleEquipment);
+	InputComponent->BindAction(TEXT("EquipPanel"), IE_Pressed, this, &AFarmPlayerController::ToggleEquipPanel);
 	InputComponent->BindAction(TEXT("Cancel"), IE_Pressed, this, &AFarmPlayerController::CancelMode);
 
 	InputComponent->BindAction(TEXT("Craft1"), IE_Pressed, this, &AFarmPlayerController::Craft1);
@@ -261,6 +264,15 @@ void AFarmPlayerController::UpdateTarget()
 			CurrentTarget = *It;
 		}
 	}
+	for (TActorIterator<AFarmRideable> It(GetWorld()); It; ++It)
+	{
+		const float Dist = FVector::Dist2D(PawnLocation, It->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = *It;
+		}
+	}
 }
 
 void AFarmPlayerController::UpdateGhost()
@@ -373,6 +385,10 @@ FString AFarmPlayerController::GetPromptText() const
 	{
 		return Pet->GetPrompt(this);
 	}
+	if (const AFarmRideable* Mount = Cast<AFarmRideable>(CurrentTarget.Get()))
+	{
+		return Mount->GetPrompt(this);
+	}
 	return FString();
 }
 
@@ -452,6 +468,10 @@ void AFarmPlayerController::Interact()
 	else if (AFarmPet* Pet = Cast<AFarmPet>(Target))
 	{
 		Pet->Interact(Farmer);
+	}
+	else if (AFarmRideable* Mount = Cast<AFarmRideable>(Target))
+	{
+		if (Mount->IsRidden()) Mount->Dismount(); else Mount->TryMount(Farmer);
 	}
 }
 
@@ -762,6 +782,68 @@ void AFarmPlayerController::SellAllAtShop()
 	ShowToast(Earned > 0 ? FString::Printf(TEXT("Sold goods for %dg"), Earned) : TEXT("Nothing to sell"));
 	FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"), 0.7f);
 	if (ShopWidget.IsValid()) ShopWidget->Refresh();
+}
+
+void AFarmPlayerController::EquipToolItem(FName ItemId)
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!Farmer || !Farmer->GetInventory()) return;
+	if (Farmer->GetInventory()->GetCount(ItemId) <= 0)
+	{
+		ShowToast(FString::Printf(TEXT("No %s in the bag"), *FarmItems::LabelOf(ItemId)));
+		return;
+	}
+	Farmer->GetInventory()->SetEquippedTool(ItemId);
+	Farmer->UpdateToolVisual();
+	ShowToast(FString::Printf(TEXT("Equipped %s"), *FarmItems::LabelOf(ItemId)));
+	if (EquipWidget.IsValid()) EquipWidget->Refresh();
+}
+
+void AFarmPlayerController::ToggleEquipPanel()
+{
+	if (EquipWidget.IsValid() && EquipWidget->GetVisibility() == EVisibility::Visible)
+	{
+		CloseEquipPanel();
+		return;
+	}
+	OpenEquipPanel();
+}
+
+void AFarmPlayerController::OpenEquipPanel()
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!Farmer || !Farmer->GetInventory() || !GEngine || !GEngine->GameViewport) return;
+	if (!EquipWidget.IsValid())
+	{
+		SAssignNew(EquipWidget, SFarmEquipWidget).PlayerController(this).Inventory(Farmer->GetInventory());
+		GEngine->GameViewport->AddViewportWidgetContent(EquipWidget.ToSharedRef());
+	}
+	EquipWidget->Refresh();
+	EquipWidget->SetVisibility(EVisibility::Visible);
+	bShowMouseCursor = true;
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(EquipWidget);
+	SetInputMode(InputMode);
+	if (FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().SetKeyboardFocus(EquipWidget, EFocusCause::SetDirectly);
+	}
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(true);
+	}
+}
+
+void AFarmPlayerController::CloseEquipPanel()
+{
+	if (!EquipWidget.IsValid()) return;
+	EquipWidget->SetVisibility(EVisibility::Collapsed);
+	bShowMouseCursor = false;
+	SetInputMode(FInputModeGameOnly());
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(false);
+	}
 }
 
 void AFarmPlayerController::OpenStorage(AFarmBuilding* Chest)

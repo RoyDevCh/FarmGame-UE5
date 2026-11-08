@@ -18,6 +18,7 @@
 #include "FarmAmbience.h"
 #include "FarmDefense.h"
 #include "FarmPet.h"
+#include "FarmRideable.h"
 #include "FarmResourceNode.h"
 #include "FarmSaveGame.h"
 
@@ -571,6 +572,7 @@ void AFarmGameMode::BuildWorld()
 	World->SpawnActor<AFarmTrap>(AFarmTrap::StaticClass(), FVector(700.f, 300.f, 0.f), FRotator::ZeroRotator);
 	World->SpawnActor<AFarmTower>(AFarmTower::StaticClass(), FVector(900.f, -200.f, 0.f), FRotator::ZeroRotator);
 	World->SpawnActor<AFarmPet>(AFarmPet::StaticClass(), FVector(-420.f, -620.f, 0.f), FRotator::ZeroRotator);
+	World->SpawnActor<AFarmRideable>(AFarmRideable::StaticClass(), FVector(450.f, -350.f, 0.f), FRotator::ZeroRotator);
 	SpawnProp(TEXT("/Game/Art/Props/WoodenCrate.WoodenCrate"), FVector(-1280.f, 980.f, 0.f), 90.f, 12.f);
 	SpawnProp(TEXT("/Game/Art/Props/WoodenCrate.WoodenCrate"), FVector(-1210.f, 1030.f, 0.f), 80.f, -20.f);
 	SpawnProp(TEXT("/Game/Art/Props/trough.trough"), FVector(1500.f, -380.f, 0.f), 130.f);
