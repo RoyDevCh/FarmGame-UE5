@@ -39,6 +39,24 @@ namespace FarmQuests
 		Smelt.Target = 1;
 		Quests.Add(Smelt);
 
+		FQuestState Axe;
+		Axe.Title = TEXT("Craft an axe");
+		Axe.ItemId = TEXT("axe");
+		Axe.Target = 1;
+		Quests.Add(Axe);
+
+		FQuestState Corn;
+		Corn.Title = TEXT("Harvest 5 corn");
+		Corn.ItemId = TEXT("corn");
+		Corn.Target = 5;
+		Quests.Add(Corn);
+
+		FQuestState Steel;
+		Steel.Title = TEXT("Smelt 3 iron ingots");
+		Steel.ItemId = TEXT("ingot");
+		Steel.Target = 3;
+		Quests.Add(Steel);
+
 		return Quests;
 	}
 

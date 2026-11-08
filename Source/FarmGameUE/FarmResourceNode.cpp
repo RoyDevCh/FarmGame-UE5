@@ -122,13 +122,21 @@ void AFarmResourceNode::Interact(AFarmCharacter* Character)
 	if (Type == EResourceType::Rock) Yield = TEXT("stone");
 	else if (Type == EResourceType::Ore) Yield = TEXT("ore");
 
-	const bool bHasTool = Inventory->GetCount(Type == EResourceType::Tree ? TEXT("axe") : TEXT("pickaxe")) > 0;
-	const int32 Amount = FarmLogic::GatherYield(bHasTool);
+	int32 Tier = 0;
+	if (Type == EResourceType::Tree)
+	{
+		Tier = Inventory->GetCount(TEXT("steel_axe")) > 0 ? 2 : (Inventory->GetCount(TEXT("axe")) > 0 ? 1 : 0);
+	}
+	else
+	{
+		Tier = Inventory->GetCount(TEXT("steel_pickaxe")) > 0 ? 2 : (Inventory->GetCount(TEXT("pickaxe")) > 0 ? 1 : 0);
+	}
+	const int32 Amount = FarmLogic::GatherYield(Tier);
 	Inventory->AddItem(Yield, Amount);
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: gathered %s x%d (%d left)"), *Yield.ToString(), Amount, Remaining);
 	if (PC)
 	{
-		PC->ShowToast(FString::Printf(TEXT("+%d %s%s"), Amount, *FarmItems::LabelOf(Yield), bHasTool ? TEXT(" (tool)") : TEXT("")));
+		PC->ShowToast(FString::Printf(TEXT("+%d %s%s"), Amount, *FarmItems::LabelOf(Yield), Tier > 0 ? TEXT(" (tool)") : TEXT("")));
 	}
 	if (Remaining <= 0)
 	{

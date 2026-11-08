@@ -48,7 +48,9 @@ namespace FarmItems
 			{ TEXT("furnace_kit"), TEXT("Furnace Kit"), EItemKind::Material, 0, 0 },
 			{ TEXT("chest_kit"), TEXT("Chest Kit"), EItemKind::Material, 0, 0 },
 			{ TEXT("axe"), TEXT("Axe"), EItemKind::Material, 0, 0 },
-			{ TEXT("pickaxe"), TEXT("Pickaxe"), EItemKind::Material, 0, 0 }
+			{ TEXT("pickaxe"), TEXT("Pickaxe"), EItemKind::Material, 0, 0 },
+			{ TEXT("steel_axe"), TEXT("Steel Axe"), EItemKind::Material, 0, 0 },
+			{ TEXT("steel_pickaxe"), TEXT("Steel Pickaxe"), EItemKind::Material, 0, 0 }
 		};
 		return Items;
 	}

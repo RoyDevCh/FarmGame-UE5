@@ -439,7 +439,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmQuestAdvanceTest, "FarmGame.Quests.Advance
 bool FFarmQuestAdvanceTest::RunTest(const FString& Parameters)
 {
 	TArray<FQuestState> Quests = FarmQuests::MakeDefault();
-	TestEqual(TEXT("three objectives"), Quests.Num(), 3);
+	TestEqual(TEXT("six objectives"), Quests.Num(), 6);
 
 	FQuestState& Quest = Quests[0];
 	TestFalse(TEXT("no completion before target"), FarmQuests::Advance(Quest, 1));
@@ -471,8 +471,9 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmGatherYieldTest, "FarmGame.Tools.GatherYie
 
 bool FFarmGatherYieldTest::RunTest(const FString& Parameters)
 {
-	TestEqual(TEXT("bare hands yield one"), FarmLogic::GatherYield(false), 1);
-	TestEqual(TEXT("tool yields two"), FarmLogic::GatherYield(true), 2);
+	TestEqual(TEXT("bare hands yield one"), FarmLogic::GatherYield(0), 1);
+	TestEqual(TEXT("tool yields two"), FarmLogic::GatherYield(1), 2);
+	TestEqual(TEXT("steel yields three"), FarmLogic::GatherYield(2), 3);
 	return true;
 }
 
@@ -481,7 +482,7 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmToolsCatalogTest, "FarmGame.Tools.CatalogH
 
 bool FFarmToolsCatalogTest::RunTest(const FString& Parameters)
 {
-	for (const TCHAR* Id : { TEXT("axe"), TEXT("pickaxe") })
+	for (const TCHAR* Id : { TEXT("axe"), TEXT("pickaxe"), TEXT("steel_axe"), TEXT("steel_pickaxe") })
 	{
 		TestNotNull(FString::Printf(TEXT("%s in item catalog"), Id), FarmItems::Find(Id));
 		const FCraftRecipe* Recipe = FarmRecipes::Find(Id);
