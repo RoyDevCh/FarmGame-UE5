@@ -10,6 +10,9 @@
 #include "FarmMenuWidget.h"
 #include "FarmShop.h"
 #include "FarmShopWidget.h"
+#include "FarmSceneDoor.h"
+#include "FarmBed.h"
+#include "EngineUtils.h"
 #include "FarmSettingsWidget.h"
 #include "GameFramework/GameUserSettings.h"
 #include "AudioDevice.h"
@@ -28,6 +31,22 @@
 AFarmPlayerController::AFarmPlayerController()
 {
 	PrimaryActorTick.bCanEverTick = true;
+}
+
+void AFarmPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if (GEngine && GEngine->GameViewport)
+	{
+		TSharedPtr<SWidget> Widgets[] = { InventoryWidget, MenuWidget, ShopWidget, SettingsWidget };
+		for (const TSharedPtr<SWidget>& Widget : Widgets)
+		{
+			if (Widget.IsValid())
+			{
+				GEngine->GameViewport->RemoveViewportWidgetContent(Widget.ToSharedRef());
+			}
+		}
+	}
+	Super::EndPlay(EndPlayReason);
 }
 
 void AFarmPlayerController::BeginPlay()
@@ -61,13 +80,18 @@ void AFarmPlayerController::BeginPlay()
 		SAssignNew(MenuWidget, SFarmMenuWidget).PlayerController(this);
 		GEngine->GameViewport->AddViewportWidgetContent(MenuWidget.ToSharedRef());
 		MenuWidget->SetVisibility(EVisibility::Collapsed);
-		ShowMenu(true);
-
-		if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+		AFarmGameMode* BootGM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
+		if (BootGM && BootGM->IsGameStarted())
 		{
-			if (GM->ConsumeSkipMenu())
+			OnAutostart();
+			UE_LOG(LogTemp, Log, TEXT("FarmGame: menu skipped (already started)"));
+		}
+		else
+		{
+			ShowMenu(true);
+			if (BootGM && BootGM->ConsumeSkipMenu())
 			{
-				GM->StartGame();
+				BootGM->StartGame();
 				HideMenu();
 				UE_LOG(LogTemp, Log, TEXT("FarmGame: menu skipped (autostart)"));
 			}
@@ -185,6 +209,25 @@ void AFarmPlayerController::UpdateTarget()
 			CurrentTarget = Shop;
 		}
 	}
+
+	for (TActorIterator<AFarmSceneDoor> It(GetWorld()); It; ++It)
+	{
+		const float Dist = FVector::Dist2D(PawnLocation, It->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = *It;
+		}
+	}
+	for (TActorIterator<AFarmBed> It(GetWorld()); It; ++It)
+	{
+		const float Dist = FVector::Dist2D(PawnLocation, It->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = *It;
+		}
+	}
 }
 
 void AFarmPlayerController::UpdateGhost()
@@ -276,6 +319,14 @@ FString AFarmPlayerController::GetPromptText() const
 	{
 		return Shop->GetPrompt(this);
 	}
+	if (const AFarmSceneDoor* Door = Cast<AFarmSceneDoor>(CurrentTarget.Get()))
+	{
+		return Door->GetPrompt(this);
+	}
+	if (const AFarmBed* Bed = Cast<AFarmBed>(CurrentTarget.Get()))
+	{
+		return Bed->GetPrompt(this);
+	}
 	return FString();
 }
 
@@ -335,6 +386,14 @@ void AFarmPlayerController::Interact()
 	else if (AFarmShop* Shop = Cast<AFarmShop>(Target))
 	{
 		Shop->Interact(Farmer);
+	}
+	else if (AFarmSceneDoor* Door = Cast<AFarmSceneDoor>(Target))
+	{
+		Door->Interact(Farmer);
+	}
+	else if (AFarmBed* Bed = Cast<AFarmBed>(Target))
+	{
+		Bed->Interact(Farmer);
 	}
 }
 
@@ -685,6 +744,16 @@ void AFarmPlayerController::ShowMenu(bool bStartMode)
 	{
 		GM->SetGamePaused(true);
 	}
+}
+
+void AFarmPlayerController::OnAutostart()
+{
+	if (MenuWidget.IsValid())
+	{
+		MenuWidget->SetVisibility(EVisibility::Collapsed);
+	}
+	bShowMouseCursor = false;
+	SetInputMode(FInputModeGameOnly());
 }
 
 void AFarmPlayerController::HideMenu()

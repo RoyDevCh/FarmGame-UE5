@@ -10,6 +10,9 @@
 #include "FarmPlot.h"
 #include "FarmPortal.h"
 #include "FarmShop.h"
+#include "FarmSceneDoor.h"
+#include "FarmPlayerController.h"
+#include "FarmBed.h"
 #include "FarmResourceNode.h"
 #include "FarmSaveGame.h"
 
@@ -56,21 +59,54 @@ AFarmGameMode::AFarmGameMode()
 void AFarmGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	if (UGameplayStatics::HasOption(OptionsString, TEXT("autostart")))
+	FString NormalizedOptions = OptionsString;
+	if (!NormalizedOptions.IsEmpty() && !NormalizedOptions.StartsWith(TEXT("?")))
+	{
+		NormalizedOptions = TEXT("?") + NormalizedOptions;
+	}
+	if (NormalizedOptions.Contains(TEXT("autostart")))
 	{
 		bGameStarted = true;
 		bSkipMenuOnStart = true;
+		for (FConstPlayerControllerIterator It = GetWorld()->GetPlayerControllerIterator(); It; ++It)
+		{
+			if (AFarmPlayerController* PC = Cast<AFarmPlayerController>(It->Get()))
+			{
+				PC->OnAutostart();
+			}
+		}
 		UE_LOG(LogTemp, Log, TEXT("FarmGame: autostart from URL option"));
 	}
 	// Start the first day around 09:00 so the farm is lit on spawn.
 	DayTimer = DayLengthSeconds * (3.f / 18.f);
-	BuildWorld();
+	if (GetWorld() && GetWorld()->GetMapName().Contains(TEXT("House")))
+	{
+		BuildHouseWorld();
+	}
+	else
+	{
+		BuildWorld();
+	}
 }
 
 APawn* AFarmGameMode::SpawnDefaultPawnAtTransform_Implementation(AController* NewPlayer, const FTransform& SpawnTransform)
 {
-	const FTransform FarmSpawn(FRotator::ZeroRotator, FVector(0.f, -520.f, 140.f));
-	return Super::SpawnDefaultPawnAtTransform_Implementation(NewPlayer, FarmSpawn);
+	const bool bHouse = GetWorld() && GetWorld()->GetMapName().Contains(TEXT("House"));
+	FVector SpawnLocation = bHouse ? FVector(0.f, 0.f, 150.f) : FVector(0.f, -520.f, 140.f);
+	if (!bHouse)
+	{
+		FString NormalizedSpawnOptions = OptionsString;
+		if (!NormalizedSpawnOptions.IsEmpty() && !NormalizedSpawnOptions.StartsWith(TEXT("?")))
+		{
+			NormalizedSpawnOptions = TEXT("?") + NormalizedSpawnOptions;
+		}
+		const bool bFarmhouseSpawn = NormalizedSpawnOptions.Contains(TEXT("farmhouse"));
+		if (bFarmhouseSpawn)
+		{
+			SpawnLocation = FVector(1150.f, -1000.f, 150.f);
+		}
+	}
+	return Super::SpawnDefaultPawnAtTransform_Implementation(NewPlayer, FTransform(FRotator::ZeroRotator, SpawnLocation));
 }
 
 const FCropDef* AFarmGameMode::FindCrop(FName Id) const
@@ -265,6 +301,59 @@ void AFarmGameMode::NotifyProduced(FName ItemId, int32 Amount)
 	}
 }
 
+void AFarmGameMode::BuildHouseWorld()
+{
+	UWorld* World = GetWorld();
+	if (!World) return;
+
+	UStaticMesh* Plane = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Plane.Plane"));
+	UStaticMesh* Cube = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cube.Cube"));
+
+	if (Plane)
+	{
+		AStaticMeshActor* Floor = World->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+		if (Floor)
+		{
+			Floor->GetStaticMeshComponent()->SetStaticMesh(Plane);
+			Floor->SetActorScale3D(FVector(12.f, 12.f, 1.f));
+		}
+	}
+	if (Cube)
+	{
+		const FVector Walls[] = { FVector(600.f, 0.f, 150.f), FVector(-600.f, 0.f, 150.f), FVector(0.f, 600.f, 150.f), FVector(0.f, -600.f, 150.f) };
+		const FVector Scales[] = { FVector(0.2f, 12.f, 3.f), FVector(0.2f, 12.f, 3.f), FVector(12.f, 0.2f, 3.f), FVector(12.f, 0.2f, 3.f) };
+		for (int32 i = 0; i < 4; ++i)
+		{
+			AStaticMeshActor* Wall = World->SpawnActor<AStaticMeshActor>(AStaticMeshActor::StaticClass(), Walls[i], FRotator::ZeroRotator);
+			if (Wall)
+			{
+				Wall->GetStaticMeshComponent()->SetStaticMesh(Cube);
+				Wall->SetActorScale3D(Scales[i]);
+			}
+		}
+	}
+
+	if (APointLight* Lamp = World->SpawnActor<APointLight>(APointLight::StaticClass(), FVector(0.f, 0.f, 320.f), FRotator::ZeroRotator))
+	{
+		if (UPointLightComponent* Comp = Cast<UPointLightComponent>(Lamp->GetLightComponent()))
+		{
+			Comp->SetMobility(EComponentMobility::Movable);
+			Comp->SetIntensity(120000.f);
+			Comp->SetAttenuationRadius(2500.f);
+		}
+	}
+
+	World->SpawnActor<AFarmBed>(AFarmBed::StaticClass(), FVector(300.f, 0.f, 0.f), FRotator::ZeroRotator);
+
+	AFarmSceneDoor* Exit = World->SpawnActor<AFarmSceneDoor>(AFarmSceneDoor::StaticClass(), FVector(-520.f, 0.f, 0.f), FRotator::ZeroRotator);
+	if (Exit)
+	{
+		Exit->TargetMap = TEXT("/Game/Maps/Farm");
+		Exit->SpawnOption = TEXT("farmhouse");
+	}
+	UE_LOG(LogTemp, Log, TEXT("FarmGame: house world built"));
+}
+
 void AFarmGameMode::BuildWorld()
 {
 	SpawnEnvironment();
@@ -448,6 +537,13 @@ void AFarmGameMode::BuildWorld()
 
 	// Village props imported from the original project.
 	SpawnProp(TEXT("/Game/Art/Props/Well.Well"), FVector(700.f, 1000.f, 0.f), 240.f, 15.f);
+	AFarmSceneDoor* HouseDoor = World->SpawnActor<AFarmSceneDoor>(AFarmSceneDoor::StaticClass(), FVector(1250.f, -1100.f, 0.f), FRotator::ZeroRotator);
+	if (HouseDoor)
+	{
+		HouseDoor->TargetMap = TEXT("/Game/Maps/House");
+		HouseDoor->SpawnOption = TEXT("house");
+	}
+
 	Shop = World->SpawnActor<AFarmShop>(AFarmShop::StaticClass(), FVector(320.f, 1000.f, 0.f), FRotator(0.f, 100.f, 0.f));
 	if (Shop) UE_LOG(LogTemp, Log, TEXT("FarmGame: shop spawned"));
 	SpawnProp(TEXT("/Game/Art/Props/Bench.Bench"), FVector(950.f, 820.f, 0.f), 130.f, -35.f);

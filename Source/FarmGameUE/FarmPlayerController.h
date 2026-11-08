@@ -21,6 +21,7 @@ public:
 	AFarmPlayerController();
 
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void SetupInputComponent() override;
 	virtual void Tick(float DeltaSeconds) override;
 
@@ -78,6 +79,8 @@ public:
 	bool HasSaveInSlot(int32 Slot) const;
 	void ShowMenu(bool bStartMode);
 	void HideMenu();
+	/** Called by the game mode when the level was loaded with autostart. */
+	void OnAutostart();
 	void ToggleBuildMode();
 	void ToggleCraftMenu();
 	void CancelMode();
