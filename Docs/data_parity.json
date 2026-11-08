@@ -1,0 +1,7497 @@
+{
+ "generated": "2026-11-09T06:55:47+08:00",
+ "source": {
+  "unity_assets": "C:\\Users\\rjq51\\Documents\\GameDev\\FarmGame\\vygylstkyfaalplp_FarmGame源工程\\Assets\\FarmingEngine\\Resources",
+  "unity_scripts": "C:\\Users\\rjq51\\Documents\\GameDev\\FarmGame\\vygylstkyfaalplp_FarmGame源工程\\Assets\\FarmingEngine\\Scripts\\Data",
+  "ue_items": "Source/FarmGameUE/FarmItems.h",
+  "ue_recipes": "Source/FarmGameUE/FarmRecipes.h"
+ },
+ "stats": {
+  "assets_parsed": 348,
+  "asset_types": {
+   "AssetData": 1,
+   "GameData": 1,
+   "Action*": 52,
+   "AttributeData": 5,
+   "BonusEffectData": 6,
+   "CharacterData": 27,
+   "ConstructionData": 29,
+   "SpawnData": 1,
+   "GroupData": 39,
+   "ItemData": 141,
+   "LevelData": 18,
+   "LootData": 4,
+   "PlantData": 21,
+   "WeatherData": 3
+  },
+  "orig_items": 141,
+  "matched_items": 25,
+  "missing_items": 116,
+  "ue_items": 34,
+  "ue_only_items": 9,
+  "orig_recipes": 81,
+  "matched_recipes": 9,
+  "missing_recipes": 72,
+  "ue_recipes": 16,
+  "ue_only_recipes": 7,
+  "icons_resolved": 141,
+  "item_icon_total": 141,
+  "actor_conversions": 5
+ },
+ "items": [
+  {
+   "id": "chick_item",
+   "m_name": "ChickItem",
+   "label": "Chick",
+   "buy": 5,
+   "sell": 5,
+   "icon": "chicken_small.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Animals",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Animals/ChickItem.asset"
+  },
+  {
+   "id": "cow_item",
+   "m_name": "CowItem",
+   "label": "Cow",
+   "buy": 10,
+   "sell": 10,
+   "icon": "cow_small.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Animals",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Animals/CowItem.asset"
+  },
+  {
+   "id": "horse_item",
+   "m_name": "HorseItem",
+   "label": "Horse",
+   "buy": 40,
+   "sell": 40,
+   "icon": "horse_small.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Animals",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Animals/HorseItem.asset"
+  },
+  {
+   "id": "pig_item",
+   "m_name": "PigItem",
+   "label": "Pig",
+   "buy": 10,
+   "sell": 10,
+   "icon": "pig_small.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Animals",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Animals/PigItem.asset"
+  },
+  {
+   "id": "rabbit_item",
+   "m_name": "RabbitItem",
+   "label": "Rabbit",
+   "buy": 5,
+   "sell": 5,
+   "icon": "rabbit_small.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Animals",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Animals/RabbitItem.asset"
+  },
+  {
+   "id": "sheep_item",
+   "m_name": "SheepItem",
+   "label": "Sheep",
+   "buy": 10,
+   "sell": 10,
+   "icon": "sheep_small.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Animals",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Animals/SheepItem.asset"
+  },
+  {
+   "id": "bread",
+   "m_name": "Bread",
+   "label": "Bread",
+   "buy": 4,
+   "sell": 4,
+   "icon": "Bread.png",
+   "matched": true,
+   "ue_id": "bread",
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": 4,
+    "sell": 0
+   },
+   "file": "Items/Cooking/Bread.asset"
+  },
+  {
+   "id": "chicken_curry",
+   "m_name": "ChickenCurry",
+   "label": "Chicken Curry",
+   "buy": 5,
+   "sell": 5,
+   "icon": "chicken-curry.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/ChickenCurry.asset"
+  },
+  {
+   "id": "fish_n_chip",
+   "m_name": "FishNChip",
+   "label": "Fish & Chips",
+   "buy": 5,
+   "sell": 5,
+   "icon": "Fish N Chips.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/FishNChip.asset"
+  },
+  {
+   "id": "ham_brunch",
+   "m_name": "HamBrunch",
+   "label": "Ham Brunch",
+   "buy": 5,
+   "sell": 5,
+   "icon": "HamBrunch.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/HamBrunch.asset"
+  },
+  {
+   "id": "nachos",
+   "m_name": "Nachos",
+   "label": "Nachos N Salsa",
+   "buy": 5,
+   "sell": 5,
+   "icon": "NachosSalsa.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/Nachos.asset"
+  },
+  {
+   "id": "pokebowl",
+   "m_name": "Pokebowl",
+   "label": "Pokebowl",
+   "buy": 5,
+   "sell": 5,
+   "icon": "PokeBowl.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/Pokebowl.asset"
+  },
+  {
+   "id": "pop_corn",
+   "m_name": "Popcorn",
+   "label": "Pop Corn",
+   "buy": 3,
+   "sell": 3,
+   "icon": "PopCorn.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/Popcorn.asset"
+  },
+  {
+   "id": "skewer",
+   "m_name": "Skewer",
+   "label": "Skewer",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Meat Skewer.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/Skewer.asset"
+  },
+  {
+   "id": "soup",
+   "m_name": "Soup",
+   "label": "Soup",
+   "buy": 5,
+   "sell": 5,
+   "icon": "Soup.png",
+   "matched": true,
+   "ue_id": "soup",
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -5,
+    "sell": 17
+   },
+   "file": "Items/Cooking/Soup.asset"
+  },
+  {
+   "id": "spaghetti",
+   "m_name": "Spaghetti",
+   "label": "Spaghetti Bolognese",
+   "buy": 5,
+   "sell": 5,
+   "icon": "Spaghetti.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/Spaghetti.asset"
+  },
+  {
+   "id": "taco",
+   "m_name": "Taco",
+   "label": "Beef Taco",
+   "buy": 5,
+   "sell": 5,
+   "icon": "Beef Taco.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Cooking",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Cooking/Taco.asset"
+  },
+  {
+   "id": "armor_metal",
+   "m_name": "ArmorMetal",
+   "label": "Metal Armor",
+   "buy": 1,
+   "sell": 1,
+   "icon": "ArmorStone.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/ArmorMetal.asset"
+  },
+  {
+   "id": "armor_wood",
+   "m_name": "ArmorWood",
+   "label": "Wood Armor",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Armor.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/ArmorWood.asset"
+  },
+  {
+   "id": "axe",
+   "m_name": "Axe",
+   "label": "Axe",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Axe.png",
+   "matched": true,
+   "ue_id": "axe",
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -1,
+    "sell": -1
+   },
+   "file": "Items/Equipment/Axe.asset"
+  },
+  {
+   "id": "backpack",
+   "m_name": "Backpack",
+   "label": "Backpack",
+   "buy": 1,
+   "sell": 1,
+   "icon": "backpack.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Backpack.asset"
+  },
+  {
+   "id": "baseball_bat",
+   "m_name": "BaseballBat",
+   "label": "Baseball Bat",
+   "buy": 1,
+   "sell": 1,
+   "icon": "bat.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/BaseballBat.asset"
+  },
+  {
+   "id": "battle_axe",
+   "m_name": "BattleAxe",
+   "label": "Battle Axe",
+   "buy": 1,
+   "sell": 1,
+   "icon": "AxeDouble.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/BattleAxe.asset"
+  },
+  {
+   "id": "boots",
+   "m_name": "Boots",
+   "label": "Boots",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Boots.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Boots.asset"
+  },
+  {
+   "id": "bow",
+   "m_name": "Bow",
+   "label": "Bow",
+   "buy": 1,
+   "sell": 1,
+   "icon": "BowIcon.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Bow.asset"
+  },
+  {
+   "id": "cleaver",
+   "m_name": "Cleaver",
+   "label": "Cleaver",
+   "buy": 1,
+   "sell": 1,
+   "icon": "cleaver.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Cleaver.asset"
+  },
+  {
+   "id": "fish_rod",
+   "m_name": "FishRod",
+   "label": "Fishing Rod",
+   "buy": 1,
+   "sell": 1,
+   "icon": "FishingRod.png",
+   "matched": true,
+   "ue_id": "fishing_rod",
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": "alias-exact",
+   "price_delta": {
+    "buy": -1,
+    "sell": -1
+   },
+   "file": "Items/Equipment/FishRod.asset"
+  },
+  {
+   "id": "hammer",
+   "m_name": "Hammer",
+   "label": "Hammer",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Hammer.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Hammer.asset"
+  },
+  {
+   "id": "hat",
+   "m_name": "Hat",
+   "label": "Hat",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Hat.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Hat.asset"
+  },
+  {
+   "id": "hat_halloween",
+   "m_name": "HatHalloween",
+   "label": "Hat Halloween",
+   "buy": 5,
+   "sell": 5,
+   "icon": "witch_hat.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/HatHalloween.asset"
+  },
+  {
+   "id": "helmet_metal",
+   "m_name": "HelmetMetal",
+   "label": "Metal Helmet",
+   "buy": 1,
+   "sell": 1,
+   "icon": "HelmetRock.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/HelmetMetal.asset"
+  },
+  {
+   "id": "helmet_wood",
+   "m_name": "HelmetWood",
+   "label": "Wood Helmet",
+   "buy": 1,
+   "sell": 1,
+   "icon": "HelmetWood.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/HelmetWood.asset"
+  },
+  {
+   "id": "hoe",
+   "m_name": "Hoe",
+   "label": "Hoe",
+   "buy": 1,
+   "sell": 1,
+   "icon": "hoe.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Hoe.asset"
+  },
+  {
+   "id": "nutgun",
+   "m_name": "Nutgun",
+   "label": "Nut-gun",
+   "buy": 1,
+   "sell": 1,
+   "icon": "gun.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Nutgun.asset"
+  },
+  {
+   "id": "pickaxe",
+   "m_name": "Pickaxe",
+   "label": "Pickaxe",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Pickaxe.png",
+   "matched": true,
+   "ue_id": "pickaxe",
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -1,
+    "sell": -1
+   },
+   "file": "Items/Equipment/Pickaxe.asset"
+  },
+  {
+   "id": "pitchfork",
+   "m_name": "Pitchfork",
+   "label": "Pitchfork",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Pitchfork.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Pitchfork.asset"
+  },
+  {
+   "id": "ring",
+   "m_name": "RingPower",
+   "label": "Ring",
+   "buy": 1,
+   "sell": 1,
+   "icon": "ring.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/RingPower.asset"
+  },
+  {
+   "id": "santa_hat",
+   "m_name": "SantaHat",
+   "label": "Santa Hat",
+   "buy": 5,
+   "sell": 5,
+   "icon": "winter_hat.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/SantaHat.asset"
+  },
+  {
+   "id": "scythe",
+   "m_name": "Scythe",
+   "label": "Scythe",
+   "buy": 1,
+   "sell": 1,
+   "icon": "scythe.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Scythe.asset"
+  },
+  {
+   "id": "shovel",
+   "m_name": "Shovel",
+   "label": "Shovel",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Shovel.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Shovel.asset"
+  },
+  {
+   "id": "slingshot",
+   "m_name": "Slingshot",
+   "label": "Slingshot",
+   "buy": 1,
+   "sell": 1,
+   "icon": "slingshoot.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Slingshot.asset"
+  },
+  {
+   "id": "sword",
+   "m_name": "Sword",
+   "label": "Sword",
+   "buy": 4,
+   "sell": 4,
+   "icon": "SwordIcon.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Sword.asset"
+  },
+  {
+   "id": "torch",
+   "m_name": "Torch",
+   "label": "Torch",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Torch.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Torch.asset"
+  },
+  {
+   "id": "vest",
+   "m_name": "Vest",
+   "label": "Vest",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Vest.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Vest.asset"
+  },
+  {
+   "id": "watering_can",
+   "m_name": "WateringCan",
+   "label": "Watering Can",
+   "buy": 1,
+   "sell": 1,
+   "icon": "WaterCan.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/WateringCan.asset"
+  },
+  {
+   "id": "watering_can_full",
+   "m_name": "WateringCanFull",
+   "label": "Watering Can",
+   "buy": 1,
+   "sell": 1,
+   "icon": "WaterCanFull.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/WateringCanFull.asset"
+  },
+  {
+   "id": "wheat",
+   "m_name": "Wheat",
+   "label": "Wheat",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Wheat.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/Wheat.asset"
+  },
+  {
+   "id": "winter_boots",
+   "m_name": "WinterBoots",
+   "label": "Winter Boots",
+   "buy": 1,
+   "sell": 1,
+   "icon": "winter_boots.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Equipment",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Equipment/WinterBoots.asset"
+  },
+  {
+   "id": "acorn",
+   "m_name": "Acorn",
+   "label": "Acorn",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Acorn.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Acorn.asset"
+  },
+  {
+   "id": "apple",
+   "m_name": "Apple",
+   "label": "Apple",
+   "buy": 3,
+   "sell": 3,
+   "icon": "Apple.png",
+   "matched": true,
+   "ue_id": "apple",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": 2,
+    "sell": 0
+   },
+   "file": "Items/Food/Apple.asset"
+  },
+  {
+   "id": "bacon",
+   "m_name": "Bacon",
+   "label": "Bacon",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Bacon.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Bacon.asset"
+  },
+  {
+   "id": "bean",
+   "m_name": "Bean",
+   "label": "Bean",
+   "buy": 2,
+   "sell": 2,
+   "icon": "bean fuit.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Bean.asset"
+  },
+  {
+   "id": "blueberry",
+   "m_name": "Blueberry",
+   "label": "Blueberries",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Blueberry.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Blueberry.asset"
+  },
+  {
+   "id": "candy_black",
+   "m_name": "CandyBlack",
+   "label": "Candy",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Candy.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/CandyBlack.asset"
+  },
+  {
+   "id": "candy_cane",
+   "m_name": "CandyCane",
+   "label": "Candy Cane",
+   "buy": 1,
+   "sell": 1,
+   "icon": "cane.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/CandyCane.asset"
+  },
+  {
+   "id": "candy_orange",
+   "m_name": "CandyOrange",
+   "label": "Candy",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Candy2.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/CandyOrange.asset"
+  },
+  {
+   "id": "carrot",
+   "m_name": "Carrot",
+   "label": "Carrot",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Carrot.png",
+   "matched": true,
+   "ue_id": "carrot",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -2,
+    "sell": 6
+   },
+   "file": "Items/Food/Carrot.asset"
+  },
+  {
+   "id": "cherry",
+   "m_name": "Cherry",
+   "label": "Cherry",
+   "buy": 3,
+   "sell": 3,
+   "icon": "cherry.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Cherry.asset"
+  },
+  {
+   "id": "chicken_cooked",
+   "m_name": "ChickenCooked",
+   "label": "Chicken",
+   "buy": 2,
+   "sell": 2,
+   "icon": "batak.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/ChickenCooked.asset"
+  },
+  {
+   "id": "chicken_raw",
+   "m_name": "ChickenRaw",
+   "label": "Raw Chicken",
+   "buy": 1,
+   "sell": 1,
+   "icon": "batak_raw.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/ChickenRaw.asset"
+  },
+  {
+   "id": "coconut",
+   "m_name": "Coconut",
+   "label": "Coconut",
+   "buy": 4,
+   "sell": 4,
+   "icon": "Coconut.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Coconut.asset"
+  },
+  {
+   "id": "coconut_half",
+   "m_name": "CoconutHalf",
+   "label": "Coconut",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Coconut Halfs.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/CoconutHalf.asset"
+  },
+  {
+   "id": "corn",
+   "m_name": "Corn",
+   "label": "Corn",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Corn.png",
+   "matched": true,
+   "ue_id": "corn",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -2,
+    "sell": 10
+   },
+   "file": "Items/Food/Corn.asset"
+  },
+  {
+   "id": "egg",
+   "m_name": "Egg",
+   "label": "Egg",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Egg.png",
+   "matched": true,
+   "ue_id": "egg",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -2,
+    "sell": 8
+   },
+   "file": "Items/Food/Egg.asset"
+  },
+  {
+   "id": "egg_cooked",
+   "m_name": "EggCooked",
+   "label": "Egg",
+   "buy": 1,
+   "sell": 1,
+   "icon": "EggCook.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/EggCooked.asset"
+  },
+  {
+   "id": "fish_cooked",
+   "m_name": "FishCooked",
+   "label": "Fish",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Fish.png",
+   "matched": true,
+   "ue_id": "cooked_fish",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "token",
+   "price_delta": {
+    "buy": -2,
+    "sell": 18
+   },
+   "file": "Items/Food/FishCooked.asset"
+  },
+  {
+   "id": "fish_raw",
+   "m_name": "FishRaw",
+   "label": "Raw Fish",
+   "buy": 2,
+   "sell": 2,
+   "icon": "FishRaw.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/FishRaw.asset"
+  },
+  {
+   "id": "flour",
+   "m_name": "Flour",
+   "label": "Flour",
+   "buy": 2,
+   "sell": 2,
+   "icon": "flour.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Flour.asset"
+  },
+  {
+   "id": "ham_cooked",
+   "m_name": "HamCooked",
+   "label": "Ham",
+   "buy": 2,
+   "sell": 2,
+   "icon": "ham.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/HamCooked.asset"
+  },
+  {
+   "id": "ham_raw",
+   "m_name": "HamRaw",
+   "label": "Raw Ham",
+   "buy": 1,
+   "sell": 1,
+   "icon": "ham_raw.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/HamRaw.asset"
+  },
+  {
+   "id": "honey",
+   "m_name": "Honey",
+   "label": "Honey",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Honey.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Honey.asset"
+  },
+  {
+   "id": "meat_cooked",
+   "m_name": "MeatCooked",
+   "label": "Meat",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Meat.png",
+   "matched": true,
+   "ue_id": "meat",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "label",
+   "price_delta": {
+    "buy": -2,
+    "sell": 10
+   },
+   "file": "Items/Food/MeatCooked.asset"
+  },
+  {
+   "id": "meat_raw",
+   "m_name": "MeatRaw",
+   "label": "Raw Meat",
+   "buy": 2,
+   "sell": 2,
+   "icon": "MeatRaw.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/MeatRaw.asset"
+  },
+  {
+   "id": "milk",
+   "m_name": "Milk",
+   "label": "Milk",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Milk Container.png",
+   "matched": true,
+   "ue_id": "milk",
+   "stack": 5,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -2,
+    "sell": 14
+   },
+   "file": "Items/Food/Milk.asset"
+  },
+  {
+   "id": "mushroom_black",
+   "m_name": "MushroomBlack",
+   "label": "Mushroom",
+   "buy": 66,
+   "sell": 66,
+   "icon": "MushroomBlack.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/MushroomBlack.asset"
+  },
+  {
+   "id": "mushroom_green",
+   "m_name": "MushroomGreen",
+   "label": "Mushroom",
+   "buy": 6,
+   "sell": 6,
+   "icon": "MushroomGreen.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/MushroomGreen.asset"
+  },
+  {
+   "id": "mushroom_red",
+   "m_name": "MushroomRed",
+   "label": "Mushroom",
+   "buy": 6,
+   "sell": 6,
+   "icon": "MushroomRed.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/MushroomRed.asset"
+  },
+  {
+   "id": "orange",
+   "m_name": "Orange",
+   "label": "Orange",
+   "buy": 3,
+   "sell": 3,
+   "icon": "orange.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Orange.asset"
+  },
+  {
+   "id": "pepper",
+   "m_name": "Pepper",
+   "label": "Pepper",
+   "buy": 2,
+   "sell": 2,
+   "icon": "RedPepper.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Pepper.asset"
+  },
+  {
+   "id": "potato",
+   "m_name": "Potato",
+   "label": "Potato",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Potato.png",
+   "matched": true,
+   "ue_id": "potato",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -2,
+    "sell": 12
+   },
+   "file": "Items/Food/Potato.asset"
+  },
+  {
+   "id": "potion_black",
+   "m_name": "PotionBlack",
+   "label": "Black Potion",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-black.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionBlack.asset"
+  },
+  {
+   "id": "potion_vial",
+   "m_name": "PotionEmpty",
+   "label": "Vial",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-empty.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionEmpty.asset"
+  },
+  {
+   "id": "potion_green",
+   "m_name": "PotionGreen",
+   "label": "Green Potion",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-green.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionGreen.asset"
+  },
+  {
+   "id": "potion_orange",
+   "m_name": "PotionOrange",
+   "label": "Orange Potion",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-orange.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionOrange.asset"
+  },
+  {
+   "id": "potion_purple",
+   "m_name": "PotionPurple",
+   "label": "Purple Potion",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-purple.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionPurple.asset"
+  },
+  {
+   "id": "potion_red",
+   "m_name": "PotionRed",
+   "label": "Red Potion",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-red.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionRed.asset"
+  },
+  {
+   "id": "potion_water",
+   "m_name": "PotionWater",
+   "label": "Blue Potion",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-blue.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionWater.asset"
+  },
+  {
+   "id": "potion_white",
+   "m_name": "PotionWhite",
+   "label": "White Potion",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-white.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionWhite.asset"
+  },
+  {
+   "id": "potion_yellow",
+   "m_name": "PotionYellow",
+   "label": "Yellow Potion",
+   "buy": 5,
+   "sell": 5,
+   "icon": "potion-yellow.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/PotionYellow.asset"
+  },
+  {
+   "id": "pumpkin",
+   "m_name": "Pumpkin",
+   "label": "Pumpkin",
+   "buy": 3,
+   "sell": 3,
+   "icon": "Pumpkin.png",
+   "matched": true,
+   "ue_id": "pumpkin",
+   "stack": 5,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -3,
+    "sell": 23
+   },
+   "file": "Items/Food/Pumpkin.asset"
+  },
+  {
+   "id": "raspberry",
+   "m_name": "Raspberry",
+   "label": "Raspberries",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Raspberry.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Raspberry.asset"
+  },
+  {
+   "id": "rice",
+   "m_name": "Rice",
+   "label": "Rice",
+   "buy": 2,
+   "sell": 2,
+   "icon": "RiceGrain.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Rice.asset"
+  },
+  {
+   "id": "seed_apple",
+   "m_name": "SeedApple",
+   "label": "Apple Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "seed_tree.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedApple.asset"
+  },
+  {
+   "id": "seed_bean",
+   "m_name": "SeedBean",
+   "label": "Bean Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "bean.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedBean.asset"
+  },
+  {
+   "id": "seed_blueberry",
+   "m_name": "SeedBlueberry",
+   "label": "Blueberry Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedBlueberry.asset"
+  },
+  {
+   "id": "seed_carrot",
+   "m_name": "SeedCarrot",
+   "label": "Carrot Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": true,
+   "ue_id": "carrot_seed",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "token",
+   "price_delta": {
+    "buy": 2,
+    "sell": 0
+   },
+   "file": "Items/Food/SeedCarrot.asset"
+  },
+  {
+   "id": "seed_cherry",
+   "m_name": "SeedCherry",
+   "label": "Cherry Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "seed_tree.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedCherry.asset"
+  },
+  {
+   "id": "seed_corn",
+   "m_name": "SeedCorn",
+   "label": "Corn Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": true,
+   "ue_id": "corn_seed",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "token",
+   "price_delta": {
+    "buy": 5,
+    "sell": 1
+   },
+   "file": "Items/Food/SeedCorn.asset"
+  },
+  {
+   "id": "seed_orange",
+   "m_name": "SeedOrange",
+   "label": "Orange Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "seed_tree.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedOrange.asset"
+  },
+  {
+   "id": "seed_pepper",
+   "m_name": "SeedPepper",
+   "label": "Seed Pepper",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedPepper.asset"
+  },
+  {
+   "id": "seed_potato",
+   "m_name": "SeedPotato",
+   "label": "Potato Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": true,
+   "ue_id": "potato_seed",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "token",
+   "price_delta": {
+    "buy": 4,
+    "sell": 1
+   },
+   "file": "Items/Food/SeedPotato.asset"
+  },
+  {
+   "id": "seed_pumpkin",
+   "m_name": "SeedPumpkin",
+   "label": "Seed Pumpkin",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": true,
+   "ue_id": "pumpkin_seed",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "token",
+   "price_delta": {
+    "buy": 9,
+    "sell": 3
+   },
+   "file": "Items/Food/SeedPumpkin.asset"
+  },
+  {
+   "id": "seed_rice",
+   "m_name": "SeedRice",
+   "label": "Rice Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedRice.asset"
+  },
+  {
+   "id": "seed_strawberry",
+   "m_name": "SeedStrawberry",
+   "label": "Strawberry Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedStrawberry.asset"
+  },
+  {
+   "id": "seed_tomato",
+   "m_name": "SeedTomato",
+   "label": "Tomato Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": true,
+   "ue_id": "tomato_seed",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": 6,
+    "sell": 2
+   },
+   "file": "Items/Food/SeedTomato.asset"
+  },
+  {
+   "id": "seed_tulip",
+   "m_name": "SeedTulip",
+   "label": "Tulip Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedTulip.asset"
+  },
+  {
+   "id": "seed_wheat",
+   "m_name": "SeedWheat",
+   "label": "Wheat Seed",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Seeds.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/SeedWheat.asset"
+  },
+  {
+   "id": "strawberry",
+   "m_name": "Strawberry",
+   "label": "Strawberry",
+   "buy": 2,
+   "sell": 2,
+   "icon": "strawberry.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Strawberry.asset"
+  },
+  {
+   "id": "tomato",
+   "m_name": "Tomato",
+   "label": "Tomato",
+   "buy": 2,
+   "sell": 2,
+   "icon": "Tomato.png",
+   "matched": true,
+   "ue_id": "tomato",
+   "stack": 20,
+   "category": "Food",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": -2,
+    "sell": 16
+   },
+   "file": "Items/Food/Tomato.asset"
+  },
+  {
+   "id": "water",
+   "m_name": "Water",
+   "label": "Water",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Water Container Full 2.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Food",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Food/Water.asset"
+  },
+  {
+   "id": "arrow",
+   "m_name": "Arrow",
+   "label": "Arrow",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Arrows.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Arrow.asset"
+  },
+  {
+   "id": "candle_item",
+   "m_name": "CandleItem",
+   "label": "Candle",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Candle.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/CandleItem.asset"
+  },
+  {
+   "id": "diamond",
+   "m_name": "Diamond",
+   "label": "Diamond",
+   "buy": 100,
+   "sell": 100,
+   "icon": "Diamond.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Diamond.asset"
+  },
+  {
+   "id": "flag_item",
+   "m_name": "FlagItem",
+   "label": "Flag",
+   "buy": 1,
+   "sell": 1,
+   "icon": "flag.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/FlagItem.asset"
+  },
+  {
+   "id": "gift",
+   "m_name": "Gift",
+   "label": "Gift",
+   "buy": 1,
+   "sell": 1,
+   "icon": "gift.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Gift.asset"
+  },
+  {
+   "id": "gold_ore",
+   "m_name": "Gold",
+   "label": "Gold",
+   "buy": 10,
+   "sell": 10,
+   "icon": "RockGold.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Gold.asset"
+  },
+  {
+   "id": "gold_bar",
+   "m_name": "GoldBar",
+   "label": "Gold Bar",
+   "buy": 20,
+   "sell": 20,
+   "icon": "GoldBar.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/GoldBar.asset"
+  },
+  {
+   "id": "coin",
+   "m_name": "GoldCoin",
+   "label": "Gold Coin",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Gold.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 999,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/GoldCoin.asset"
+  },
+  {
+   "id": "grass",
+   "m_name": "Grass",
+   "label": "Grass",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Grass.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Grass.asset"
+  },
+  {
+   "id": "halloween_note",
+   "m_name": "HalloweenNote",
+   "label": "Happy Halloween!",
+   "buy": 1,
+   "sell": 1,
+   "icon": "scroll.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/HalloweenNote.asset"
+  },
+  {
+   "id": "hay",
+   "m_name": "Hay",
+   "label": "Hay",
+   "buy": 1,
+   "sell": 1,
+   "icon": "hay item.png",
+   "matched": true,
+   "ue_id": "hay",
+   "stack": 20,
+   "category": "Other",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": 3,
+    "sell": 0
+   },
+   "file": "Items/Other/Hay.asset"
+  },
+  {
+   "id": "healing_mix",
+   "m_name": "HealingMix",
+   "label": "Healing Mixture",
+   "buy": 1,
+   "sell": 1,
+   "icon": "HealingHerbs.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/HealingMix.asset"
+  },
+  {
+   "id": "herbs",
+   "m_name": "Herbs",
+   "label": "Herbs",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Herb.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Herbs.asset"
+  },
+  {
+   "id": "jug",
+   "m_name": "Jug",
+   "label": "Jug",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Container Empty.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Jug.asset"
+  },
+  {
+   "id": "lure_item",
+   "m_name": "LureItem",
+   "label": "Lure",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Lure.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/LureItem.asset"
+  },
+  {
+   "id": "map",
+   "m_name": "Map",
+   "label": "Treasure Map",
+   "buy": 0,
+   "sell": 0,
+   "icon": "map.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Map.asset"
+  },
+  {
+   "id": "mask_halloween",
+   "m_name": "MaskHalloween",
+   "label": "Halloween Mask",
+   "buy": 5,
+   "sell": 5,
+   "icon": "mask_halloween.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 1,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/MaskHalloween.asset"
+  },
+  {
+   "id": "metal_ore",
+   "m_name": "Metal",
+   "label": "Metal",
+   "buy": 4,
+   "sell": 4,
+   "icon": "RockMetal.png",
+   "matched": true,
+   "ue_id": "ore",
+   "stack": 20,
+   "category": "Other",
+   "match_method": "alias-exact",
+   "price_delta": {
+    "buy": -4,
+    "sell": 0
+   },
+   "file": "Items/Other/Metal.asset"
+  },
+  {
+   "id": "metal_bar",
+   "m_name": "MetalBar",
+   "label": "Metal Bar",
+   "buy": 8,
+   "sell": 8,
+   "icon": "MetalBar.png",
+   "matched": true,
+   "ue_id": "ingot",
+   "stack": 20,
+   "category": "Other",
+   "match_method": "alias-exact",
+   "price_delta": {
+    "buy": -8,
+    "sell": 10
+   },
+   "file": "Items/Other/MetalBar.asset"
+  },
+  {
+   "id": "repair_kit",
+   "m_name": "RepairKit",
+   "label": "Repair Kit",
+   "buy": 5,
+   "sell": 5,
+   "icon": "RepairKit.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/RepairKit.asset"
+  },
+  {
+   "id": "rock",
+   "m_name": "Rock",
+   "label": "Rock",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Rock.png",
+   "matched": true,
+   "ue_id": "stone",
+   "stack": 20,
+   "category": "Other",
+   "match_method": "alias-exact",
+   "price_delta": {
+    "buy": 2,
+    "sell": 0
+   },
+   "file": "Items/Other/Rock.asset"
+  },
+  {
+   "id": "rope",
+   "m_name": "Rope",
+   "label": "Rope",
+   "buy": 1,
+   "sell": 1,
+   "icon": "rope.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Rope.asset"
+  },
+  {
+   "id": "scroll",
+   "m_name": "Scroll",
+   "label": "Scroll",
+   "buy": 1,
+   "sell": 1,
+   "icon": "scroll.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Scroll.asset"
+  },
+  {
+   "id": "scroll_alchemy",
+   "m_name": "ScrollAlchemy",
+   "label": "Alchemy Blueprint",
+   "buy": 1,
+   "sell": 1,
+   "icon": "scroll.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/ScrollAlchemy.asset"
+  },
+  {
+   "id": "scroll_gun",
+   "m_name": "ScrollGun",
+   "label": "Nutgun Blueprint",
+   "buy": 1,
+   "sell": 1,
+   "icon": "scroll.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/ScrollGun.asset"
+  },
+  {
+   "id": "skin",
+   "m_name": "Skin",
+   "label": "Skin",
+   "buy": 1,
+   "sell": 1,
+   "icon": "SkinIcon.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Skin.asset"
+  },
+  {
+   "id": "snowball",
+   "m_name": "Snowball",
+   "label": "Snowball",
+   "buy": 0,
+   "sell": 0,
+   "icon": "snowball.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Snowball.asset"
+  },
+  {
+   "id": "trap_item",
+   "m_name": "TrapItem",
+   "label": "Trap",
+   "buy": 1,
+   "sell": 1,
+   "icon": "BearTrap.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 5,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/TrapItem.asset"
+  },
+  {
+   "id": "tulip",
+   "m_name": "Tulip",
+   "label": "Tulip",
+   "buy": 2,
+   "sell": 2,
+   "icon": "tulip.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Tulip.asset"
+  },
+  {
+   "id": "wood",
+   "m_name": "Wood",
+   "label": "Wood",
+   "buy": 1,
+   "sell": 1,
+   "icon": "Wood.png",
+   "matched": true,
+   "ue_id": "wood",
+   "stack": 20,
+   "category": "Other",
+   "match_method": "exact",
+   "price_delta": {
+    "buy": 1,
+    "sell": 0
+   },
+   "file": "Items/Other/Wood.asset"
+  },
+  {
+   "id": "wool",
+   "m_name": "Wool",
+   "label": "Wool",
+   "buy": 2,
+   "sell": 2,
+   "icon": "wool.png",
+   "matched": false,
+   "ue_id": null,
+   "stack": 20,
+   "category": "Other",
+   "match_method": null,
+   "price_delta": {
+    "buy": null,
+    "sell": null
+   },
+   "file": "Items/Other/Wool.asset"
+  }
+ ],
+ "recipes": [
+  {
+   "id": "bbq",
+   "m_name": "BBQ",
+   "label": "BBQ",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "rock",
+     "count": 2
+    }
+   ],
+   "output": "bbq",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/BBQ.asset"
+  },
+  {
+   "id": "barn",
+   "m_name": "Barn",
+   "label": "Barn",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 7
+    },
+    {
+     "id": "grass",
+     "count": 5
+    }
+   ],
+   "output": "barn",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": false,
+   "fillers": [],
+   "requirements": [
+    "?91a4afcd"
+   ],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Barn.asset"
+  },
+  {
+   "id": "bed",
+   "m_name": "Bed",
+   "label": "Bed",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "bed",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Bed.asset"
+  },
+  {
+   "id": "candle",
+   "m_name": "Candle",
+   "label": "Candle",
+   "inputs": [
+    {
+     "id": "grass",
+     "count": 2
+    }
+   ],
+   "output": "candle",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": null,
+   "file": "Constructions/Candle.asset"
+  },
+  {
+   "id": "chair",
+   "m_name": "Chair",
+   "label": "Chair",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 2
+    }
+   ],
+   "output": "chair",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Chair.asset"
+  },
+  {
+   "id": "chest_stone",
+   "m_name": "ChestStone",
+   "label": "Stone Chest",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 4
+    },
+    {
+     "id": "metal_ore",
+     "count": 1
+    }
+   ],
+   "output": "chest_stone",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [
+    "chest_wood"
+   ],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/ChestStone.asset"
+  },
+  {
+   "id": "chest_wood",
+   "m_name": "ChestWood",
+   "label": "Wood Chest",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 4
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "chest_wood",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/ChestWood.asset"
+  },
+  {
+   "id": "fence",
+   "m_name": "Fence",
+   "label": "Fence",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "fence",
+   "count": 1,
+   "matched": true,
+   "ue_id": "fence_kit",
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": "strip-kit",
+   "file": "Constructions/Fence.asset"
+  },
+  {
+   "id": "fence_door",
+   "m_name": "FenceDoor",
+   "label": "Fence Door",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 5
+    }
+   ],
+   "output": "fence_door",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/FenceDoor.asset"
+  },
+  {
+   "id": "firepit",
+   "m_name": "Firepit",
+   "label": "Firepit",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "rock",
+     "count": 2
+    }
+   ],
+   "output": "firepit",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": false,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Firepit.asset"
+  },
+  {
+   "id": "flag",
+   "m_name": "Flag",
+   "label": "Flag",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "flag",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Flag.asset"
+  },
+  {
+   "id": "fridge",
+   "m_name": "Fridge",
+   "label": "Fridge",
+   "inputs": [
+    {
+     "id": "metal_ore",
+     "count": 3
+    }
+   ],
+   "output": "fridge",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": false,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Fridge.asset"
+  },
+  {
+   "id": "furnace",
+   "m_name": "Furnace",
+   "label": "Furnace",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 3
+    },
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "furnace",
+   "count": 1,
+   "matched": true,
+   "ue_id": "furnace_kit",
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": "strip-kit",
+   "file": "Constructions/Furnace.asset"
+  },
+  {
+   "id": "furnacemix",
+   "m_name": "FurnaceMix",
+   "label": "FurnaceMix",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 3
+    },
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "furnacemix",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": false,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/FurnaceMix.asset"
+  },
+  {
+   "id": "hay_trough",
+   "m_name": "HayTrough",
+   "label": "Hay Trough",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 2
+    }
+   ],
+   "output": "hay_trough",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/HayTrough.asset"
+  },
+  {
+   "id": "house",
+   "m_name": "House",
+   "label": "House",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 7
+    },
+    {
+     "id": "grass",
+     "count": 5
+    }
+   ],
+   "output": "house",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": false,
+   "fillers": [],
+   "requirements": [
+    "?91a4afcd"
+   ],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/House.asset"
+  },
+  {
+   "id": "lure",
+   "m_name": "Lure",
+   "label": "Lure",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "carrot",
+     "count": 1
+    }
+   ],
+   "output": "lure",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Lure.asset"
+  },
+  {
+   "id": "plant_pot",
+   "m_name": "PlantPot",
+   "label": "Plant Pot",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "plant_pot",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/PlantPot.asset"
+  },
+  {
+   "id": "roof",
+   "m_name": "Roof",
+   "label": "Roof",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "roof",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Roof.asset"
+  },
+  {
+   "id": "sprinkler",
+   "m_name": "Sprinkler",
+   "label": "Sprinkler",
+   "inputs": [
+    {
+     "id": "metal_ore",
+     "count": 3
+    }
+   ],
+   "output": "sprinkler",
+   "count": 1,
+   "matched": true,
+   "ue_id": "sprinkler_kit",
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": "strip-kit",
+   "file": "Constructions/Sprinkler.asset"
+  },
+  {
+   "id": "stairs",
+   "m_name": "Stairs",
+   "label": "Stairs",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "stairs",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Stairs.asset"
+  },
+  {
+   "id": "station_alchemy",
+   "m_name": "StationAlchemy",
+   "label": "'Alchemy Station '",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "gold_ore",
+     "count": 2
+    }
+   ],
+   "output": "station_alchemy",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/StationAlchemy.asset"
+  },
+  {
+   "id": "station_workshop",
+   "m_name": "StationWorkshop",
+   "label": "Workshop Station",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "station_workshop",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/StationWorkshop.asset"
+  },
+  {
+   "id": "table",
+   "m_name": "Table",
+   "label": "Table",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "table",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Table.asset"
+  },
+  {
+   "id": "trap",
+   "m_name": "Trap",
+   "label": "trap",
+   "inputs": [
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "trap",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Trap.asset"
+  },
+  {
+   "id": "wall",
+   "m_name": "Wall",
+   "label": "Wall",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "wall",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Wall.asset"
+  },
+  {
+   "id": "well",
+   "m_name": "Well",
+   "label": "Well",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 5
+    }
+   ],
+   "output": "well",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [
+    "shovel"
+   ],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Well.asset"
+  },
+  {
+   "id": "windmill",
+   "m_name": "Windmill",
+   "label": "Windmill",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 3
+    },
+    {
+     "id": "wood",
+     "count": 2
+    },
+    {
+     "id": "metal_ore",
+     "count": 1
+    }
+   ],
+   "output": "windmill",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "construction",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Constructions/Windmill.asset"
+  },
+  {
+   "id": "bread",
+   "m_name": "Bread",
+   "label": "Bread",
+   "inputs": [
+    {
+     "id": "flour",
+     "count": 1
+    },
+    {
+     "id": "water",
+     "count": 1
+    }
+   ],
+   "output": "bread",
+   "count": 1,
+   "matched": true,
+   "ue_id": "bread",
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": "exact",
+   "file": "Items/Cooking/Bread.asset"
+  },
+  {
+   "id": "chicken_curry",
+   "m_name": "ChickenCurry",
+   "label": "Chicken Curry",
+   "inputs": [
+    {
+     "id": "chicken_raw",
+     "count": 1
+    },
+    {
+     "id": "coconut_half",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    }
+   ],
+   "output": "chicken_curry",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": null,
+   "file": "Items/Cooking/ChickenCurry.asset"
+  },
+  {
+   "id": "fish_n_chip",
+   "m_name": "FishNChip",
+   "label": "Fish & Chips",
+   "inputs": [
+    {
+     "id": "fish_raw",
+     "count": 1
+    },
+    {
+     "id": "potato",
+     "count": 1
+    }
+   ],
+   "output": "fish_n_chip",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": null,
+   "file": "Items/Cooking/FishNChip.asset"
+  },
+  {
+   "id": "ham_brunch",
+   "m_name": "HamBrunch",
+   "label": "Ham Brunch",
+   "inputs": [
+    {
+     "id": "ham_raw",
+     "count": 1
+    },
+    {
+     "id": "egg",
+     "count": 1
+    },
+    {
+     "id": "potato",
+     "count": 1
+    }
+   ],
+   "output": "ham_brunch",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": null,
+   "file": "Items/Cooking/HamBrunch.asset"
+  },
+  {
+   "id": "nachos",
+   "m_name": "Nachos",
+   "label": "Nachos N Salsa",
+   "inputs": [
+    {
+     "id": "corn",
+     "count": 1
+    },
+    {
+     "id": "tomato",
+     "count": 1
+    }
+   ],
+   "output": "nachos",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Cooking/Nachos.asset"
+  },
+  {
+   "id": "pokebowl",
+   "m_name": "Pokebowl",
+   "label": "Pokebowl",
+   "inputs": [
+    {
+     "id": "fish_raw",
+     "count": 1
+    },
+    {
+     "id": "rice",
+     "count": 1
+    },
+    {
+     "id": "carrot",
+     "count": 1
+    },
+    {
+     "id": "coconut_half",
+     "count": 1
+    }
+   ],
+   "output": "pokebowl",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Cooking/Pokebowl.asset"
+  },
+  {
+   "id": "pop_corn",
+   "m_name": "Popcorn",
+   "label": "Pop Corn",
+   "inputs": [
+    {
+     "id": "corn",
+     "count": 2
+    }
+   ],
+   "output": "pop_corn",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": null,
+   "file": "Items/Cooking/Popcorn.asset"
+  },
+  {
+   "id": "skewer",
+   "m_name": "Skewer",
+   "label": "Skewer",
+   "inputs": [
+    {
+     "id": "meat_raw",
+     "count": 1
+    }
+   ],
+   "output": "skewer",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [
+    {
+     "group": "Veggie",
+     "count": 1
+    }
+   ],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": null,
+   "file": "Items/Cooking/Skewer.asset"
+  },
+  {
+   "id": "soup",
+   "m_name": "Soup",
+   "label": "Soup",
+   "inputs": [
+    {
+     "id": "water",
+     "count": 1
+    }
+   ],
+   "output": "soup",
+   "count": 1,
+   "matched": true,
+   "ue_id": "soup",
+   "kind": "item",
+   "craftable": true,
+   "fillers": [
+    {
+     "group": "Veggie",
+     "count": 2
+    }
+   ],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": "exact",
+   "file": "Items/Cooking/Soup.asset"
+  },
+  {
+   "id": "spaghetti",
+   "m_name": "Spaghetti",
+   "label": "Spaghetti Bolognese",
+   "inputs": [
+    {
+     "id": "wheat",
+     "count": 1
+    },
+    {
+     "id": "tomato",
+     "count": 1
+    },
+    {
+     "id": "meat_raw",
+     "count": 1
+    }
+   ],
+   "output": "spaghetti",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": null,
+   "file": "Items/Cooking/Spaghetti.asset"
+  },
+  {
+   "id": "taco",
+   "m_name": "Taco",
+   "label": "Beef Taco",
+   "inputs": [
+    {
+     "id": "corn",
+     "count": 1
+    },
+    {
+     "id": "meat_raw",
+     "count": 1
+    }
+   ],
+   "output": "taco",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [
+    "Fire"
+   ],
+   "match_method": null,
+   "file": "Items/Cooking/Taco.asset"
+  },
+  {
+   "id": "armor_metal",
+   "m_name": "ArmorMetal",
+   "label": "Metal Armor",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 1
+    },
+    {
+     "id": "metal_bar",
+     "count": 2
+    }
+   ],
+   "output": "armor_metal",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/ArmorMetal.asset"
+  },
+  {
+   "id": "armor_wood",
+   "m_name": "ArmorWood",
+   "label": "Wood Armor",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 2
+    },
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "armor_wood",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/ArmorWood.asset"
+  },
+  {
+   "id": "axe",
+   "m_name": "Axe",
+   "label": "Axe",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "axe",
+   "count": 1,
+   "matched": true,
+   "ue_id": "axe",
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": "exact",
+   "file": "Items/Equipment/Axe.asset"
+  },
+  {
+   "id": "backpack",
+   "m_name": "Backpack",
+   "label": "Backpack",
+   "inputs": [
+    {
+     "id": "rope",
+     "count": 1
+    },
+    {
+     "id": "skin",
+     "count": 2
+    }
+   ],
+   "output": "backpack",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Backpack.asset"
+  },
+  {
+   "id": "baseball_bat",
+   "m_name": "BaseballBat",
+   "label": "Baseball Bat",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 2
+    }
+   ],
+   "output": "baseball_bat",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/BaseballBat.asset"
+  },
+  {
+   "id": "battle_axe",
+   "m_name": "BattleAxe",
+   "label": "Battle Axe",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "metal_bar",
+     "count": 3
+    }
+   ],
+   "output": "battle_axe",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/BattleAxe.asset"
+  },
+  {
+   "id": "boots",
+   "m_name": "Boots",
+   "label": "Boots",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 2
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "boots",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Boots.asset"
+  },
+  {
+   "id": "bow",
+   "m_name": "Bow",
+   "label": "Bow",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rope",
+     "count": 1
+    }
+   ],
+   "output": "bow",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Bow.asset"
+  },
+  {
+   "id": "cleaver",
+   "m_name": "Cleaver",
+   "label": "Cleaver",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "cleaver",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Cleaver.asset"
+  },
+  {
+   "id": "fish_rod",
+   "m_name": "FishRod",
+   "label": "Fishing Rod",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "fish_rod",
+   "count": 1,
+   "matched": true,
+   "ue_id": "fishing_rod",
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": "alias-output",
+   "file": "Items/Equipment/FishRod.asset"
+  },
+  {
+   "id": "hammer",
+   "m_name": "Hammer",
+   "label": "Hammer",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "hammer",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Hammer.asset"
+  },
+  {
+   "id": "hat",
+   "m_name": "Hat",
+   "label": "Hat",
+   "inputs": [
+    {
+     "id": "grass",
+     "count": 5
+    }
+   ],
+   "output": "hat",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Hat.asset"
+  },
+  {
+   "id": "helmet_metal",
+   "m_name": "HelmetMetal",
+   "label": "Metal Helmet",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 1
+    },
+    {
+     "id": "metal_bar",
+     "count": 1
+    }
+   ],
+   "output": "helmet_metal",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/HelmetMetal.asset"
+  },
+  {
+   "id": "helmet_wood",
+   "m_name": "HelmetWood",
+   "label": "Wood Helmet",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "helmet_wood",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/HelmetWood.asset"
+  },
+  {
+   "id": "hoe",
+   "m_name": "Hoe",
+   "label": "Hoe",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "hoe",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Hoe.asset"
+  },
+  {
+   "id": "nutgun",
+   "m_name": "Nutgun",
+   "label": "Nut-gun",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "metal_ore",
+     "count": 1
+    },
+    {
+     "id": "gold_ore",
+     "count": 1
+    },
+    {
+     "id": "acorn",
+     "count": 1
+    }
+   ],
+   "output": "nutgun",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": false,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Nutgun.asset"
+  },
+  {
+   "id": "pickaxe",
+   "m_name": "Pickaxe",
+   "label": "Pickaxe",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "pickaxe",
+   "count": 1,
+   "matched": true,
+   "ue_id": "pickaxe",
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": "exact",
+   "file": "Items/Equipment/Pickaxe.asset"
+  },
+  {
+   "id": "pitchfork",
+   "m_name": "Pitchfork",
+   "label": "Pitchfork",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "pitchfork",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Pitchfork.asset"
+  },
+  {
+   "id": "ring",
+   "m_name": "RingPower",
+   "label": "Ring",
+   "inputs": [
+    {
+     "id": "gold_bar",
+     "count": 1
+    },
+    {
+     "id": "diamond",
+     "count": 1
+    }
+   ],
+   "output": "ring",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/RingPower.asset"
+  },
+  {
+   "id": "santa_hat",
+   "m_name": "SantaHat",
+   "label": "Santa Hat",
+   "inputs": [
+    {
+     "id": "grass",
+     "count": 5
+    }
+   ],
+   "output": "santa_hat",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": false,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/SantaHat.asset"
+  },
+  {
+   "id": "scythe",
+   "m_name": "Scythe",
+   "label": "Scythe",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "scythe",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Scythe.asset"
+  },
+  {
+   "id": "shovel",
+   "m_name": "Shovel",
+   "label": "Shovel",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "shovel",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Shovel.asset"
+  },
+  {
+   "id": "slingshot",
+   "m_name": "Slingshot",
+   "label": "Slingshot",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "slingshot",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Slingshot.asset"
+  },
+  {
+   "id": "sword",
+   "m_name": "Sword",
+   "label": "Sword",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "sword",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Sword.asset"
+  },
+  {
+   "id": "torch",
+   "m_name": "Torch",
+   "label": "Torch",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "grass",
+     "count": 2
+    }
+   ],
+   "output": "torch",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Torch.asset"
+  },
+  {
+   "id": "vest",
+   "m_name": "Vest",
+   "label": "Vest",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 1
+    }
+   ],
+   "output": "vest",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/Vest.asset"
+  },
+  {
+   "id": "watering_can",
+   "m_name": "WateringCan",
+   "label": "Watering Can",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 1
+    },
+    {
+     "id": "metal_ore",
+     "count": 1
+    }
+   ],
+   "output": "watering_can",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/WateringCan.asset"
+  },
+  {
+   "id": "winter_boots",
+   "m_name": "WinterBoots",
+   "label": "Winter Boots",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 2
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "winter_boots",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": false,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Equipment/WinterBoots.asset"
+  },
+  {
+   "id": "potion_black",
+   "m_name": "PotionBlack",
+   "label": "Black Potion",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "mushroom_black",
+     "count": 1
+    }
+   ],
+   "output": "potion_black",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Food/PotionBlack.asset"
+  },
+  {
+   "id": "potion_vial",
+   "m_name": "PotionEmpty",
+   "label": "Vial",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "potion_vial",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Food/PotionEmpty.asset"
+  },
+  {
+   "id": "potion_green",
+   "m_name": "PotionGreen",
+   "label": "Green Potion",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "mushroom_green",
+     "count": 1
+    }
+   ],
+   "output": "potion_green",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Food/PotionGreen.asset"
+  },
+  {
+   "id": "potion_orange",
+   "m_name": "PotionOrange",
+   "label": "Orange Potion",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "carrot",
+     "count": 1
+    }
+   ],
+   "output": "potion_orange",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Food/PotionOrange.asset"
+  },
+  {
+   "id": "potion_purple",
+   "m_name": "PotionPurple",
+   "label": "Purple Potion",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "blueberry",
+     "count": 1
+    }
+   ],
+   "output": "potion_purple",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Food/PotionPurple.asset"
+  },
+  {
+   "id": "potion_red",
+   "m_name": "PotionRed",
+   "label": "Red Potion",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "mushroom_red",
+     "count": 1
+    }
+   ],
+   "output": "potion_red",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Food/PotionRed.asset"
+  },
+  {
+   "id": "potion_white",
+   "m_name": "PotionWhite",
+   "label": "White Potion",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "coconut_half",
+     "count": 1
+    }
+   ],
+   "output": "potion_white",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Food/PotionWhite.asset"
+  },
+  {
+   "id": "potion_yellow",
+   "m_name": "PotionYellow",
+   "label": "Yellow Potion",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "corn",
+     "count": 1
+    }
+   ],
+   "output": "potion_yellow",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Food/PotionYellow.asset"
+  },
+  {
+   "id": "arrow",
+   "m_name": "Arrow",
+   "label": "Arrow",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "arrow",
+   "count": 5,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Other/Arrow.asset"
+  },
+  {
+   "id": "gold_bar",
+   "m_name": "GoldBar",
+   "label": "Gold Bar",
+   "inputs": [
+    {
+     "id": "gold_ore",
+     "count": 3
+    }
+   ],
+   "output": "gold_bar",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Other/GoldBar.asset"
+  },
+  {
+   "id": "healing_mix",
+   "m_name": "HealingMix",
+   "label": "Healing Mixture",
+   "inputs": [
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "water",
+     "count": 1
+    }
+   ],
+   "output": "healing_mix",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Other/HealingMix.asset"
+  },
+  {
+   "id": "jug",
+   "m_name": "Jug",
+   "label": "Jug",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "jug",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Other/Jug.asset"
+  },
+  {
+   "id": "metal_bar",
+   "m_name": "MetalBar",
+   "label": "Metal Bar",
+   "inputs": [
+    {
+     "id": "metal_ore",
+     "count": 3
+    }
+   ],
+   "output": "metal_bar",
+   "count": 1,
+   "matched": true,
+   "ue_id": "ingot",
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [],
+   "near": [],
+   "match_method": "alias-output",
+   "file": "Items/Other/MetalBar.asset"
+  },
+  {
+   "id": "rope",
+   "m_name": "Rope",
+   "label": "Rope",
+   "inputs": [
+    {
+     "id": "grass",
+     "count": 3
+    }
+   ],
+   "output": "rope",
+   "count": 1,
+   "matched": false,
+   "ue_id": null,
+   "kind": "item",
+   "craftable": true,
+   "fillers": [],
+   "requirements": [
+    "axe"
+   ],
+   "near": [],
+   "match_method": null,
+   "file": "Items/Other/Rope.asset"
+  }
+ ],
+ "missing": [
+  {
+   "kind": "item",
+   "id": "chick_item",
+   "label": "Chick",
+   "buy": 5,
+   "sell": 5,
+   "stack": 1,
+   "category": "Animals",
+   "icon": "chicken_small.png"
+  },
+  {
+   "kind": "item",
+   "id": "cow_item",
+   "label": "Cow",
+   "buy": 10,
+   "sell": 10,
+   "stack": 1,
+   "category": "Animals",
+   "icon": "cow_small.png"
+  },
+  {
+   "kind": "item",
+   "id": "horse_item",
+   "label": "Horse",
+   "buy": 40,
+   "sell": 40,
+   "stack": 1,
+   "category": "Animals",
+   "icon": "horse_small.png"
+  },
+  {
+   "kind": "item",
+   "id": "pig_item",
+   "label": "Pig",
+   "buy": 10,
+   "sell": 10,
+   "stack": 1,
+   "category": "Animals",
+   "icon": "pig_small.png"
+  },
+  {
+   "kind": "item",
+   "id": "rabbit_item",
+   "label": "Rabbit",
+   "buy": 5,
+   "sell": 5,
+   "stack": 1,
+   "category": "Animals",
+   "icon": "rabbit_small.png"
+  },
+  {
+   "kind": "item",
+   "id": "sheep_item",
+   "label": "Sheep",
+   "buy": 10,
+   "sell": 10,
+   "stack": 1,
+   "category": "Animals",
+   "icon": "sheep_small.png"
+  },
+  {
+   "kind": "item",
+   "id": "chicken_curry",
+   "label": "Chicken Curry",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "chicken-curry.png"
+  },
+  {
+   "kind": "item",
+   "id": "fish_n_chip",
+   "label": "Fish & Chips",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "Fish N Chips.png"
+  },
+  {
+   "kind": "item",
+   "id": "ham_brunch",
+   "label": "Ham Brunch",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "HamBrunch.png"
+  },
+  {
+   "kind": "item",
+   "id": "nachos",
+   "label": "Nachos N Salsa",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "NachosSalsa.png"
+  },
+  {
+   "kind": "item",
+   "id": "pokebowl",
+   "label": "Pokebowl",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "PokeBowl.png"
+  },
+  {
+   "kind": "item",
+   "id": "pop_corn",
+   "label": "Pop Corn",
+   "buy": 3,
+   "sell": 3,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "PopCorn.png"
+  },
+  {
+   "kind": "item",
+   "id": "skewer",
+   "label": "Skewer",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "Meat Skewer.png"
+  },
+  {
+   "kind": "item",
+   "id": "spaghetti",
+   "label": "Spaghetti Bolognese",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "Spaghetti.png"
+  },
+  {
+   "kind": "item",
+   "id": "taco",
+   "label": "Beef Taco",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Cooking",
+   "icon": "Beef Taco.png"
+  },
+  {
+   "kind": "item",
+   "id": "armor_metal",
+   "label": "Metal Armor",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "ArmorStone.png"
+  },
+  {
+   "kind": "item",
+   "id": "armor_wood",
+   "label": "Wood Armor",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "Armor.png"
+  },
+  {
+   "kind": "item",
+   "id": "backpack",
+   "label": "Backpack",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "backpack.png"
+  },
+  {
+   "kind": "item",
+   "id": "baseball_bat",
+   "label": "Baseball Bat",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "bat.png"
+  },
+  {
+   "kind": "item",
+   "id": "battle_axe",
+   "label": "Battle Axe",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "AxeDouble.png"
+  },
+  {
+   "kind": "item",
+   "id": "boots",
+   "label": "Boots",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "Boots.png"
+  },
+  {
+   "kind": "item",
+   "id": "bow",
+   "label": "Bow",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "BowIcon.png"
+  },
+  {
+   "kind": "item",
+   "id": "cleaver",
+   "label": "Cleaver",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "cleaver.png"
+  },
+  {
+   "kind": "item",
+   "id": "hammer",
+   "label": "Hammer",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "Hammer.png"
+  },
+  {
+   "kind": "item",
+   "id": "hat",
+   "label": "Hat",
+   "buy": 2,
+   "sell": 2,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "Hat.png"
+  },
+  {
+   "kind": "item",
+   "id": "hat_halloween",
+   "label": "Hat Halloween",
+   "buy": 5,
+   "sell": 5,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "witch_hat.png"
+  },
+  {
+   "kind": "item",
+   "id": "helmet_metal",
+   "label": "Metal Helmet",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "HelmetRock.png"
+  },
+  {
+   "kind": "item",
+   "id": "helmet_wood",
+   "label": "Wood Helmet",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "HelmetWood.png"
+  },
+  {
+   "kind": "item",
+   "id": "hoe",
+   "label": "Hoe",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "hoe.png"
+  },
+  {
+   "kind": "item",
+   "id": "nutgun",
+   "label": "Nut-gun",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "gun.png"
+  },
+  {
+   "kind": "item",
+   "id": "pitchfork",
+   "label": "Pitchfork",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "Pitchfork.png"
+  },
+  {
+   "kind": "item",
+   "id": "ring",
+   "label": "Ring",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "ring.png"
+  },
+  {
+   "kind": "item",
+   "id": "santa_hat",
+   "label": "Santa Hat",
+   "buy": 5,
+   "sell": 5,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "winter_hat.png"
+  },
+  {
+   "kind": "item",
+   "id": "scythe",
+   "label": "Scythe",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "scythe.png"
+  },
+  {
+   "kind": "item",
+   "id": "shovel",
+   "label": "Shovel",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "Shovel.png"
+  },
+  {
+   "kind": "item",
+   "id": "slingshot",
+   "label": "Slingshot",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "slingshoot.png"
+  },
+  {
+   "kind": "item",
+   "id": "sword",
+   "label": "Sword",
+   "buy": 4,
+   "sell": 4,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "SwordIcon.png"
+  },
+  {
+   "kind": "item",
+   "id": "torch",
+   "label": "Torch",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "Torch.png"
+  },
+  {
+   "kind": "item",
+   "id": "vest",
+   "label": "Vest",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "Vest.png"
+  },
+  {
+   "kind": "item",
+   "id": "watering_can",
+   "label": "Watering Can",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "WaterCan.png"
+  },
+  {
+   "kind": "item",
+   "id": "watering_can_full",
+   "label": "Watering Can",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "WaterCanFull.png"
+  },
+  {
+   "kind": "item",
+   "id": "wheat",
+   "label": "Wheat",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Equipment",
+   "icon": "Wheat.png"
+  },
+  {
+   "kind": "item",
+   "id": "winter_boots",
+   "label": "Winter Boots",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Equipment",
+   "icon": "winter_boots.png"
+  },
+  {
+   "kind": "item",
+   "id": "acorn",
+   "label": "Acorn",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Acorn.png"
+  },
+  {
+   "kind": "item",
+   "id": "bacon",
+   "label": "Bacon",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Bacon.png"
+  },
+  {
+   "kind": "item",
+   "id": "bean",
+   "label": "Bean",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "bean fuit.png"
+  },
+  {
+   "kind": "item",
+   "id": "blueberry",
+   "label": "Blueberries",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Blueberry.png"
+  },
+  {
+   "kind": "item",
+   "id": "candy_black",
+   "label": "Candy",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Candy.png"
+  },
+  {
+   "kind": "item",
+   "id": "candy_cane",
+   "label": "Candy Cane",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "cane.png"
+  },
+  {
+   "kind": "item",
+   "id": "candy_orange",
+   "label": "Candy",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Candy2.png"
+  },
+  {
+   "kind": "item",
+   "id": "cherry",
+   "label": "Cherry",
+   "buy": 3,
+   "sell": 3,
+   "stack": 20,
+   "category": "Food",
+   "icon": "cherry.png"
+  },
+  {
+   "kind": "item",
+   "id": "chicken_cooked",
+   "label": "Chicken",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "batak.png"
+  },
+  {
+   "kind": "item",
+   "id": "chicken_raw",
+   "label": "Raw Chicken",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "batak_raw.png"
+  },
+  {
+   "kind": "item",
+   "id": "coconut",
+   "label": "Coconut",
+   "buy": 4,
+   "sell": 4,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Coconut.png"
+  },
+  {
+   "kind": "item",
+   "id": "coconut_half",
+   "label": "Coconut",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Coconut Halfs.png"
+  },
+  {
+   "kind": "item",
+   "id": "egg_cooked",
+   "label": "Egg",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "EggCook.png"
+  },
+  {
+   "kind": "item",
+   "id": "fish_raw",
+   "label": "Raw Fish",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "FishRaw.png"
+  },
+  {
+   "kind": "item",
+   "id": "flour",
+   "label": "Flour",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "flour.png"
+  },
+  {
+   "kind": "item",
+   "id": "ham_cooked",
+   "label": "Ham",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "ham.png"
+  },
+  {
+   "kind": "item",
+   "id": "ham_raw",
+   "label": "Raw Ham",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "ham_raw.png"
+  },
+  {
+   "kind": "item",
+   "id": "honey",
+   "label": "Honey",
+   "buy": 2,
+   "sell": 2,
+   "stack": 5,
+   "category": "Food",
+   "icon": "Honey.png"
+  },
+  {
+   "kind": "item",
+   "id": "meat_raw",
+   "label": "Raw Meat",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "MeatRaw.png"
+  },
+  {
+   "kind": "item",
+   "id": "mushroom_black",
+   "label": "Mushroom",
+   "buy": 66,
+   "sell": 66,
+   "stack": 20,
+   "category": "Food",
+   "icon": "MushroomBlack.png"
+  },
+  {
+   "kind": "item",
+   "id": "mushroom_green",
+   "label": "Mushroom",
+   "buy": 6,
+   "sell": 6,
+   "stack": 20,
+   "category": "Food",
+   "icon": "MushroomGreen.png"
+  },
+  {
+   "kind": "item",
+   "id": "mushroom_red",
+   "label": "Mushroom",
+   "buy": 6,
+   "sell": 6,
+   "stack": 20,
+   "category": "Food",
+   "icon": "MushroomRed.png"
+  },
+  {
+   "kind": "item",
+   "id": "orange",
+   "label": "Orange",
+   "buy": 3,
+   "sell": 3,
+   "stack": 20,
+   "category": "Food",
+   "icon": "orange.png"
+  },
+  {
+   "kind": "item",
+   "id": "pepper",
+   "label": "Pepper",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "RedPepper.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_black",
+   "label": "Black Potion",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-black.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_vial",
+   "label": "Vial",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-empty.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_green",
+   "label": "Green Potion",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-green.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_orange",
+   "label": "Orange Potion",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-orange.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_purple",
+   "label": "Purple Potion",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-purple.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_red",
+   "label": "Red Potion",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-red.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_water",
+   "label": "Blue Potion",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-blue.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_white",
+   "label": "White Potion",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-white.png"
+  },
+  {
+   "kind": "item",
+   "id": "potion_yellow",
+   "label": "Yellow Potion",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Food",
+   "icon": "potion-yellow.png"
+  },
+  {
+   "kind": "item",
+   "id": "raspberry",
+   "label": "Raspberries",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Raspberry.png"
+  },
+  {
+   "kind": "item",
+   "id": "rice",
+   "label": "Rice",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "RiceGrain.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_apple",
+   "label": "Apple Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "seed_tree.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_bean",
+   "label": "Bean Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "bean.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_blueberry",
+   "label": "Blueberry Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Seeds.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_cherry",
+   "label": "Cherry Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "seed_tree.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_orange",
+   "label": "Orange Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "seed_tree.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_pepper",
+   "label": "Seed Pepper",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Seeds.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_rice",
+   "label": "Rice Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Seeds.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_strawberry",
+   "label": "Strawberry Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Seeds.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_tulip",
+   "label": "Tulip Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Seeds.png"
+  },
+  {
+   "kind": "item",
+   "id": "seed_wheat",
+   "label": "Wheat Seed",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Food",
+   "icon": "Seeds.png"
+  },
+  {
+   "kind": "item",
+   "id": "strawberry",
+   "label": "Strawberry",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Food",
+   "icon": "strawberry.png"
+  },
+  {
+   "kind": "item",
+   "id": "water",
+   "label": "Water",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Food",
+   "icon": "Water Container Full 2.png"
+  },
+  {
+   "kind": "item",
+   "id": "arrow",
+   "label": "Arrow",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Other",
+   "icon": "Arrows.png"
+  },
+  {
+   "kind": "item",
+   "id": "candle_item",
+   "label": "Candle",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Other",
+   "icon": "Candle.png"
+  },
+  {
+   "kind": "item",
+   "id": "diamond",
+   "label": "Diamond",
+   "buy": 100,
+   "sell": 100,
+   "stack": 20,
+   "category": "Other",
+   "icon": "Diamond.png"
+  },
+  {
+   "kind": "item",
+   "id": "flag_item",
+   "label": "Flag",
+   "buy": 1,
+   "sell": 1,
+   "stack": 1,
+   "category": "Other",
+   "icon": "flag.png"
+  },
+  {
+   "kind": "item",
+   "id": "gift",
+   "label": "Gift",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Other",
+   "icon": "gift.png"
+  },
+  {
+   "kind": "item",
+   "id": "gold_ore",
+   "label": "Gold",
+   "buy": 10,
+   "sell": 10,
+   "stack": 20,
+   "category": "Other",
+   "icon": "RockGold.png"
+  },
+  {
+   "kind": "item",
+   "id": "gold_bar",
+   "label": "Gold Bar",
+   "buy": 20,
+   "sell": 20,
+   "stack": 20,
+   "category": "Other",
+   "icon": "GoldBar.png"
+  },
+  {
+   "kind": "item",
+   "id": "coin",
+   "label": "Gold Coin",
+   "buy": 1,
+   "sell": 1,
+   "stack": 999,
+   "category": "Other",
+   "icon": "Gold.png"
+  },
+  {
+   "kind": "item",
+   "id": "grass",
+   "label": "Grass",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Other",
+   "icon": "Grass.png"
+  },
+  {
+   "kind": "item",
+   "id": "halloween_note",
+   "label": "Happy Halloween!",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Other",
+   "icon": "scroll.png"
+  },
+  {
+   "kind": "item",
+   "id": "healing_mix",
+   "label": "Healing Mixture",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Other",
+   "icon": "HealingHerbs.png"
+  },
+  {
+   "kind": "item",
+   "id": "herbs",
+   "label": "Herbs",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Other",
+   "icon": "Herb.png"
+  },
+  {
+   "kind": "item",
+   "id": "jug",
+   "label": "Jug",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Other",
+   "icon": "Container Empty.png"
+  },
+  {
+   "kind": "item",
+   "id": "lure_item",
+   "label": "Lure",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Other",
+   "icon": "Lure.png"
+  },
+  {
+   "kind": "item",
+   "id": "map",
+   "label": "Treasure Map",
+   "buy": 0,
+   "sell": 0,
+   "stack": 1,
+   "category": "Other",
+   "icon": "map.png"
+  },
+  {
+   "kind": "item",
+   "id": "mask_halloween",
+   "label": "Halloween Mask",
+   "buy": 5,
+   "sell": 5,
+   "stack": 1,
+   "category": "Other",
+   "icon": "mask_halloween.png"
+  },
+  {
+   "kind": "item",
+   "id": "repair_kit",
+   "label": "Repair Kit",
+   "buy": 5,
+   "sell": 5,
+   "stack": 20,
+   "category": "Other",
+   "icon": "RepairKit.png"
+  },
+  {
+   "kind": "item",
+   "id": "rope",
+   "label": "Rope",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Other",
+   "icon": "rope.png"
+  },
+  {
+   "kind": "item",
+   "id": "scroll",
+   "label": "Scroll",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Other",
+   "icon": "scroll.png"
+  },
+  {
+   "kind": "item",
+   "id": "scroll_alchemy",
+   "label": "Alchemy Blueprint",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Other",
+   "icon": "scroll.png"
+  },
+  {
+   "kind": "item",
+   "id": "scroll_gun",
+   "label": "Nutgun Blueprint",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Other",
+   "icon": "scroll.png"
+  },
+  {
+   "kind": "item",
+   "id": "skin",
+   "label": "Skin",
+   "buy": 1,
+   "sell": 1,
+   "stack": 20,
+   "category": "Other",
+   "icon": "SkinIcon.png"
+  },
+  {
+   "kind": "item",
+   "id": "snowball",
+   "label": "Snowball",
+   "buy": 0,
+   "sell": 0,
+   "stack": 20,
+   "category": "Other",
+   "icon": "snowball.png"
+  },
+  {
+   "kind": "item",
+   "id": "trap_item",
+   "label": "Trap",
+   "buy": 1,
+   "sell": 1,
+   "stack": 5,
+   "category": "Other",
+   "icon": "BearTrap.png"
+  },
+  {
+   "kind": "item",
+   "id": "tulip",
+   "label": "Tulip",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Other",
+   "icon": "tulip.png"
+  },
+  {
+   "kind": "item",
+   "id": "wool",
+   "label": "Wool",
+   "buy": 2,
+   "sell": 2,
+   "stack": 20,
+   "category": "Other",
+   "icon": "wool.png"
+  },
+  {
+   "kind": "recipe",
+   "id": "bbq",
+   "label": "BBQ",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "rock",
+     "count": 2
+    }
+   ],
+   "output": "bbq",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "barn",
+   "label": "Barn",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 7
+    },
+    {
+     "id": "grass",
+     "count": 5
+    }
+   ],
+   "output": "barn",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "bed",
+   "label": "Bed",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "bed",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "candle",
+   "label": "Candle",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "grass",
+     "count": 2
+    }
+   ],
+   "output": "candle",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "chair",
+   "label": "Chair",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 2
+    }
+   ],
+   "output": "chair",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "chest_stone",
+   "label": "Stone Chest",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 4
+    },
+    {
+     "id": "metal_ore",
+     "count": 1
+    }
+   ],
+   "output": "chest_stone",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "chest_wood",
+   "label": "Wood Chest",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 4
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "chest_wood",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "fence_door",
+   "label": "Fence Door",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 5
+    }
+   ],
+   "output": "fence_door",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "firepit",
+   "label": "Firepit",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "rock",
+     "count": 2
+    }
+   ],
+   "output": "firepit",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "flag",
+   "label": "Flag",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "flag",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "fridge",
+   "label": "Fridge",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "metal_ore",
+     "count": 3
+    }
+   ],
+   "output": "fridge",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "furnacemix",
+   "label": "FurnaceMix",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 3
+    },
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "furnacemix",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "hay_trough",
+   "label": "Hay Trough",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 2
+    }
+   ],
+   "output": "hay_trough",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "house",
+   "label": "House",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 7
+    },
+    {
+     "id": "grass",
+     "count": 5
+    }
+   ],
+   "output": "house",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "lure",
+   "label": "Lure",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "carrot",
+     "count": 1
+    }
+   ],
+   "output": "lure",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "plant_pot",
+   "label": "Plant Pot",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "plant_pot",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "roof",
+   "label": "Roof",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "roof",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "stairs",
+   "label": "Stairs",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "stairs",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "station_alchemy",
+   "label": "'Alchemy Station '",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "gold_ore",
+     "count": 2
+    }
+   ],
+   "output": "station_alchemy",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "station_workshop",
+   "label": "Workshop Station",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "station_workshop",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "table",
+   "label": "Table",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "table",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "trap",
+   "label": "trap",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "trap",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "wall",
+   "label": "Wall",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "wall",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "well",
+   "label": "Well",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 5
+    }
+   ],
+   "output": "well",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "windmill",
+   "label": "Windmill",
+   "recipe_kind": "construction",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 3
+    },
+    {
+     "id": "wood",
+     "count": 2
+    },
+    {
+     "id": "metal_ore",
+     "count": 1
+    }
+   ],
+   "output": "windmill",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "chicken_curry",
+   "label": "Chicken Curry",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "chicken_raw",
+     "count": 1
+    },
+    {
+     "id": "coconut_half",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    }
+   ],
+   "output": "chicken_curry",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "fish_n_chip",
+   "label": "Fish & Chips",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "fish_raw",
+     "count": 1
+    },
+    {
+     "id": "potato",
+     "count": 1
+    }
+   ],
+   "output": "fish_n_chip",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "ham_brunch",
+   "label": "Ham Brunch",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "ham_raw",
+     "count": 1
+    },
+    {
+     "id": "egg",
+     "count": 1
+    },
+    {
+     "id": "potato",
+     "count": 1
+    }
+   ],
+   "output": "ham_brunch",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "nachos",
+   "label": "Nachos N Salsa",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "corn",
+     "count": 1
+    },
+    {
+     "id": "tomato",
+     "count": 1
+    }
+   ],
+   "output": "nachos",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "pokebowl",
+   "label": "Pokebowl",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "fish_raw",
+     "count": 1
+    },
+    {
+     "id": "rice",
+     "count": 1
+    },
+    {
+     "id": "carrot",
+     "count": 1
+    },
+    {
+     "id": "coconut_half",
+     "count": 1
+    }
+   ],
+   "output": "pokebowl",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "pop_corn",
+   "label": "Pop Corn",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "corn",
+     "count": 2
+    }
+   ],
+   "output": "pop_corn",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "skewer",
+   "label": "Skewer",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "meat_raw",
+     "count": 1
+    }
+   ],
+   "output": "skewer",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "spaghetti",
+   "label": "Spaghetti Bolognese",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wheat",
+     "count": 1
+    },
+    {
+     "id": "tomato",
+     "count": 1
+    },
+    {
+     "id": "meat_raw",
+     "count": 1
+    }
+   ],
+   "output": "spaghetti",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "taco",
+   "label": "Beef Taco",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "corn",
+     "count": 1
+    },
+    {
+     "id": "meat_raw",
+     "count": 1
+    }
+   ],
+   "output": "taco",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "armor_metal",
+   "label": "Metal Armor",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 1
+    },
+    {
+     "id": "metal_bar",
+     "count": 2
+    }
+   ],
+   "output": "armor_metal",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "armor_wood",
+   "label": "Wood Armor",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 2
+    },
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "armor_wood",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "backpack",
+   "label": "Backpack",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "rope",
+     "count": 1
+    },
+    {
+     "id": "skin",
+     "count": 2
+    }
+   ],
+   "output": "backpack",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "baseball_bat",
+   "label": "Baseball Bat",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 2
+    }
+   ],
+   "output": "baseball_bat",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "battle_axe",
+   "label": "Battle Axe",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "metal_bar",
+     "count": 3
+    }
+   ],
+   "output": "battle_axe",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "boots",
+   "label": "Boots",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 2
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "boots",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "bow",
+   "label": "Bow",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rope",
+     "count": 1
+    }
+   ],
+   "output": "bow",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "cleaver",
+   "label": "Cleaver",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "cleaver",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "hammer",
+   "label": "Hammer",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "hammer",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "hat",
+   "label": "Hat",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "grass",
+     "count": 5
+    }
+   ],
+   "output": "hat",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "helmet_metal",
+   "label": "Metal Helmet",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 1
+    },
+    {
+     "id": "metal_bar",
+     "count": 1
+    }
+   ],
+   "output": "helmet_metal",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "helmet_wood",
+   "label": "Wood Helmet",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "helmet_wood",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "hoe",
+   "label": "Hoe",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "hoe",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "nutgun",
+   "label": "Nut-gun",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "metal_ore",
+     "count": 1
+    },
+    {
+     "id": "gold_ore",
+     "count": 1
+    },
+    {
+     "id": "acorn",
+     "count": 1
+    }
+   ],
+   "output": "nutgun",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "pitchfork",
+   "label": "Pitchfork",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "pitchfork",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "ring",
+   "label": "Ring",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "gold_bar",
+     "count": 1
+    },
+    {
+     "id": "diamond",
+     "count": 1
+    }
+   ],
+   "output": "ring",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "santa_hat",
+   "label": "Santa Hat",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "grass",
+     "count": 5
+    }
+   ],
+   "output": "santa_hat",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "scythe",
+   "label": "Scythe",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "scythe",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "shovel",
+   "label": "Shovel",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "shovel",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "slingshot",
+   "label": "Slingshot",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "slingshot",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "sword",
+   "label": "Sword",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "metal_ore",
+     "count": 2
+    }
+   ],
+   "output": "sword",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "torch",
+   "label": "Torch",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 1
+    },
+    {
+     "id": "grass",
+     "count": 2
+    }
+   ],
+   "output": "torch",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "vest",
+   "label": "Vest",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 1
+    }
+   ],
+   "output": "vest",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "watering_can",
+   "label": "Watering Can",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 1
+    },
+    {
+     "id": "metal_ore",
+     "count": 1
+    }
+   ],
+   "output": "watering_can",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "winter_boots",
+   "label": "Winter Boots",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "skin",
+     "count": 2
+    },
+    {
+     "id": "grass",
+     "count": 1
+    }
+   ],
+   "output": "winter_boots",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "potion_black",
+   "label": "Black Potion",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "mushroom_black",
+     "count": 1
+    }
+   ],
+   "output": "potion_black",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "potion_vial",
+   "label": "Vial",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "potion_vial",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "potion_green",
+   "label": "Green Potion",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "mushroom_green",
+     "count": 1
+    }
+   ],
+   "output": "potion_green",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "potion_orange",
+   "label": "Orange Potion",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "carrot",
+     "count": 1
+    }
+   ],
+   "output": "potion_orange",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "potion_purple",
+   "label": "Purple Potion",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "blueberry",
+     "count": 1
+    }
+   ],
+   "output": "potion_purple",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "potion_red",
+   "label": "Red Potion",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "mushroom_red",
+     "count": 1
+    }
+   ],
+   "output": "potion_red",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "potion_white",
+   "label": "White Potion",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "coconut_half",
+     "count": 1
+    }
+   ],
+   "output": "potion_white",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "potion_yellow",
+   "label": "Yellow Potion",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "potion_vial",
+     "count": 1
+    },
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "corn",
+     "count": 1
+    }
+   ],
+   "output": "potion_yellow",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "arrow",
+   "label": "Arrow",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "wood",
+     "count": 3
+    }
+   ],
+   "output": "arrow",
+   "count": 5
+  },
+  {
+   "kind": "recipe",
+   "id": "gold_bar",
+   "label": "Gold Bar",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "gold_ore",
+     "count": 3
+    }
+   ],
+   "output": "gold_bar",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "healing_mix",
+   "label": "Healing Mixture",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "herbs",
+     "count": 1
+    },
+    {
+     "id": "water",
+     "count": 1
+    }
+   ],
+   "output": "healing_mix",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "jug",
+   "label": "Jug",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "rock",
+     "count": 1
+    }
+   ],
+   "output": "jug",
+   "count": 1
+  },
+  {
+   "kind": "recipe",
+   "id": "rope",
+   "label": "Rope",
+   "recipe_kind": "item",
+   "inputs": [
+    {
+     "id": "grass",
+     "count": 3
+    }
+   ],
+   "output": "rope",
+   "count": 1
+  }
+ ],
+ "ue_only": {
+  "items": [
+   {
+    "id": "fence_kit",
+    "label": "Fence Kit",
+    "kind": "Material",
+    "buy": 0,
+    "sell": 0
+   },
+   {
+    "id": "furnace_kit",
+    "label": "Furnace Kit",
+    "kind": "Material",
+    "buy": 0,
+    "sell": 0
+   },
+   {
+    "id": "chest_kit",
+    "label": "Chest Kit",
+    "kind": "Material",
+    "buy": 0,
+    "sell": 0
+   },
+   {
+    "id": "sprinkler_kit",
+    "label": "Sprinkler Kit",
+    "kind": "Material",
+    "buy": 0,
+    "sell": 0
+   },
+   {
+    "id": "mixing_pot_kit",
+    "label": "Mixing Pot Kit",
+    "kind": "Material",
+    "buy": 0,
+    "sell": 0
+   },
+   {
+    "id": "fish",
+    "label": "Fish",
+    "kind": "Food",
+    "buy": 0,
+    "sell": 12
+   },
+   {
+    "id": "cheese",
+    "label": "Cheese",
+    "kind": "Food",
+    "buy": 0,
+    "sell": 14
+   },
+   {
+    "id": "steel_axe",
+    "label": "Steel Axe",
+    "kind": "Material",
+    "buy": 0,
+    "sell": 0
+   },
+   {
+    "id": "steel_pickaxe",
+    "label": "Steel Pickaxe",
+    "kind": "Material",
+    "buy": 0,
+    "sell": 0
+   }
+  ],
+  "recipes": [
+   {
+    "id": "chest_kit",
+    "label": "Storage Chest Kit (build with G)",
+    "inputs": [
+     {
+      "id": "wood",
+      "count": 12
+     }
+    ],
+    "output": "chest_kit",
+    "count": 1
+   },
+   {
+    "id": "steel_axe",
+    "label": "Steel Axe (triple wood per chop)",
+    "inputs": [
+     {
+      "id": "axe",
+      "count": 1
+     },
+     {
+      "id": "ore",
+      "count": 5
+     }
+    ],
+    "output": "steel_axe",
+    "count": 1
+   },
+   {
+    "id": "steel_pickaxe",
+    "label": "Steel Pickaxe (triple stone/ore)",
+    "inputs": [
+     {
+      "id": "pickaxe",
+      "count": 1
+     },
+     {
+      "id": "ore",
+      "count": 5
+     }
+    ],
+    "output": "steel_pickaxe",
+    "count": 1
+   },
+   {
+    "id": "hay_bundle",
+    "label": "Hay Bundle (animal feed)",
+    "inputs": [
+     {
+      "id": "corn",
+      "count": 2
+     }
+    ],
+    "output": "hay",
+    "count": 2
+   },
+   {
+    "id": "mixing_pot_kit",
+    "label": "Mixing Pot Kit (build with G)",
+    "inputs": [
+     {
+      "id": "stone",
+      "count": 8
+     },
+     {
+      "id": "wood",
+      "count": 6
+     }
+    ],
+    "output": "mixing_pot_kit",
+    "count": 1
+   },
+   {
+    "id": "cheese",
+    "label": "Cheese (at mixing pot)",
+    "inputs": [
+     {
+      "id": "milk",
+      "count": 2
+     }
+    ],
+    "output": "cheese",
+    "count": 1
+   },
+   {
+    "id": "cooked_fish",
+    "label": "Cooked Fish (at mixing pot)",
+    "inputs": [
+     {
+      "id": "fish",
+      "count": 1
+     }
+    ],
+    "output": "cooked_fish",
+    "count": 1
+   }
+  ]
+ },
+ "recipe_input_comparison": [
+  {
+   "id": "fence",
+   "ue_id": "fence_kit",
+   "method": "strip-kit",
+   "orig_inputs": {
+    "wood": 3
+   },
+   "ue_inputs": {
+    "wood": 5
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [],
+   "near": [],
+   "ue_needs_furnace": false,
+   "ue_needs_mixing_pot": false
+  },
+  {
+   "id": "furnace",
+   "ue_id": "furnace_kit",
+   "method": "strip-kit",
+   "orig_inputs": {
+    "stone": 3,
+    "ore": 2
+   },
+   "ue_inputs": {
+    "stone": 10,
+    "wood": 5
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [],
+   "near": [],
+   "ue_needs_furnace": false,
+   "ue_needs_mixing_pot": false
+  },
+  {
+   "id": "sprinkler",
+   "ue_id": "sprinkler_kit",
+   "method": "strip-kit",
+   "orig_inputs": {
+    "ore": 3
+   },
+   "ue_inputs": {
+    "stone": 6,
+    "ore": 2
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [],
+   "near": [],
+   "ue_needs_furnace": false,
+   "ue_needs_mixing_pot": false
+  },
+  {
+   "id": "bread",
+   "ue_id": "bread",
+   "method": "exact",
+   "orig_inputs": {
+    "flour": 1,
+    "water": 1
+   },
+   "ue_inputs": {
+    "corn": 2
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [],
+   "near": [
+    "Fire"
+   ],
+   "ue_needs_furnace": false,
+   "ue_needs_mixing_pot": true
+  },
+  {
+   "id": "soup",
+   "ue_id": "soup",
+   "method": "exact",
+   "orig_inputs": {
+    "water": 1
+   },
+   "ue_inputs": {
+    "carrot": 1,
+    "potato": 1
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [
+    {
+     "group": "Veggie",
+     "count": 2
+    }
+   ],
+   "near": [
+    "Fire"
+   ],
+   "ue_needs_furnace": false,
+   "ue_needs_mixing_pot": true
+  },
+  {
+   "id": "axe",
+   "ue_id": "axe",
+   "method": "exact",
+   "orig_inputs": {
+    "wood": 1,
+    "stone": 1
+   },
+   "ue_inputs": {
+    "wood": 4,
+    "ore": 1
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [],
+   "near": [],
+   "ue_needs_furnace": false,
+   "ue_needs_mixing_pot": false
+  },
+  {
+   "id": "fish_rod",
+   "ue_id": "fishing_rod",
+   "method": "alias-output",
+   "orig_inputs": {
+    "wood": 1,
+    "grass": 1
+   },
+   "ue_inputs": {
+    "wood": 4,
+    "ore": 1
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [],
+   "near": [],
+   "ue_needs_furnace": false,
+   "ue_needs_mixing_pot": false
+  },
+  {
+   "id": "pickaxe",
+   "ue_id": "pickaxe",
+   "method": "exact",
+   "orig_inputs": {
+    "wood": 1,
+    "stone": 1
+   },
+   "ue_inputs": {
+    "wood": 4,
+    "ore": 2
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [],
+   "near": [],
+   "ue_needs_furnace": false,
+   "ue_needs_mixing_pot": false
+  },
+  {
+   "id": "metal_bar",
+   "ue_id": "ingot",
+   "method": "alias-output",
+   "orig_inputs": {
+    "ore": 3
+   },
+   "ue_inputs": {
+    "ore": 2
+   },
+   "inputs_match": false,
+   "orig_output_count": 1,
+   "ue_output_count": 1,
+   "fillers": [],
+   "near": [],
+   "ue_needs_furnace": true,
+   "ue_needs_mixing_pot": false
+  }
+ ],
+ "unmodeled_conversions": [
+  {
+   "from": "chicken_raw",
+   "to": "chicken_cooked",
+   "station_group": "Fire",
+   "action_file": "Actions/CookChicken.asset"
+  },
+  {
+   "from": "egg",
+   "to": "egg_cooked",
+   "station_group": "Fire",
+   "action_file": "Actions/CookEgg.asset"
+  },
+  {
+   "from": "fish_raw",
+   "to": "fish_cooked",
+   "station_group": "Fire",
+   "action_file": "Actions/CookFish.asset"
+  },
+  {
+   "from": "ham_raw",
+   "to": "ham_cooked",
+   "station_group": "Fire",
+   "action_file": "Actions/CookHam.asset"
+  },
+  {
+   "from": "meat_raw",
+   "to": "meat_cooked",
+   "station_group": "Fire",
+   "action_file": "Actions/CookMeat.asset"
+  }
+ ],
+ "parse_issues": [],
+ "notes": [
+  "No CraftData or AnimalData assets exist: crafting fields live on ItemData / ConstructionData / PlantData (CraftData is the shared base class); animals are ItemData entries that point at CharacterData.",
+  "Craft cost is a flat array of item GUIDs; duplicates encode the count (there is no count field).",
+  "PlantData carries no craft cost; planting uses the seed ItemData.plant_data reference, so plants are not craft recipes.",
+  "All 141 item icon GUIDs resolve to Assets/FarmingEngine/Sprites/Icons/*.png through their .meta files.",
+  "UE FItemDef has no stack-size field, so original inventory_max cannot be compared.",
+  "One dangling GUID: barn and house list craft_requirements 91a4afcd... which has no .meta anywhere under Assets (deleted asset); it is emitted as ??91a4afcd in this file."
+ ]
+}

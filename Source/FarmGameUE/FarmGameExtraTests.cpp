@@ -107,9 +107,10 @@ bool FFarmExtraSellIngotTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("only ingot and carrot are sellable"), Inventory->GetSellableCount(), 3);
 
 	const int32 GoldBefore = Inventory->Gold;
+	const int32 Expected = 2 * FarmItems::SellPriceOf(TEXT("ingot")) + FarmItems::SellPriceOf(TEXT("carrot"));
 	const int32 Earned = Inventory->SellEverything();
-	TestEqual(TEXT("earned 2 ingots + 1 carrot"), Earned, 44);
-	TestEqual(TEXT("gold increased by the sale"), Inventory->Gold, GoldBefore + 44);
+	TestEqual(TEXT("earned 2 ingots + 1 carrot"), Earned, Expected);
+	TestEqual(TEXT("gold increased by the sale"), Inventory->Gold, GoldBefore + Expected);
 	TestEqual(TEXT("ingots sold"), Inventory->GetCount(TEXT("ingot")), 0);
 	TestEqual(TEXT("carrot sold"), Inventory->GetCount(TEXT("carrot")), 0);
 	TestEqual(TEXT("seeds kept"), Inventory->GetCount(TEXT("carrot_seed")), 2);

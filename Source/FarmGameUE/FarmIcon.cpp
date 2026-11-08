@@ -1,4 +1,5 @@
 #include "FarmIcon.h"
+#include "FarmIconNames.h"
 #include "Engine/Texture2D.h"
 #include "UObject/StrongObjectPtr.h"
 
@@ -18,6 +19,7 @@ namespace
 			{ TEXT("cooked_fish"), TEXT("Fish") }
 		};
 		if (const FString* Found = Overrides.Find(ItemId)) return *Found;
+		if (const FString* Generated = FarmIconTables::Icons().Find(ItemId)) return *Generated;
 
 		FString Name = ItemId.ToString();
 		if (!Name.IsEmpty())

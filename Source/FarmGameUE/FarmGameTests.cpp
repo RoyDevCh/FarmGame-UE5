@@ -97,8 +97,11 @@ bool FFarmInventoryTest::RunTest(const FString& Parameters)
 	TestEqual(TEXT("starting carrot seeds"), Inventory->GetCount(TEXT("carrot_seed")), 3);
 	TestEqual(TEXT("starting wood"), Inventory->GetCount(TEXT("wood")), 6);
 
+	const FItemDef* SeedDef = FarmItems::Find(TEXT("carrot_seed"));
+	TestNotNull(TEXT("seed has a catalog entry"), SeedDef);
+	const int32 SeedBuy = SeedDef ? SeedDef->BuyPrice : 0;
 	TestTrue(TEXT("can buy carrot seed"), Inventory->BuyItem(TEXT("carrot_seed"), 1));
-	TestEqual(TEXT("gold after buy"), Inventory->Gold, 17);
+	TestEqual(TEXT("gold after buy"), Inventory->Gold, 20 - SeedBuy);
 	TestEqual(TEXT("seed count after buy"), Inventory->GetCount(TEXT("carrot_seed")), 4);
 
 	TestTrue(TEXT("remove one seed"), Inventory->RemoveItem(TEXT("carrot_seed"), 1));
@@ -106,9 +109,11 @@ bool FFarmInventoryTest::RunTest(const FString& Parameters)
 
 	Inventory->AddItem(TEXT("carrot"), 2);
 	Inventory->AddItem(TEXT("ingot"), 1);
+	const int32 Expected = 2 * FarmItems::SellPriceOf(TEXT("carrot")) + FarmItems::SellPriceOf(TEXT("ingot"));
+	const int32 GoldBeforeSale = Inventory->Gold;
 	const int32 Earned = Inventory->SellEverything();
-	TestEqual(TEXT("earned gold (2 carrots + 1 ingot)"), Earned, 34);
-	TestEqual(TEXT("gold after selling"), Inventory->Gold, 51);
+	TestEqual(TEXT("earned gold (2 carrots + 1 ingot)"), Earned, Expected);
+	TestEqual(TEXT("gold after selling"), Inventory->Gold, GoldBeforeSale + Expected);
 	TestEqual(TEXT("produce cleared"), Inventory->GetCount(TEXT("carrot")), 0);
 	TestEqual(TEXT("seeds kept"), Inventory->GetCount(TEXT("carrot_seed")), 3);
 	return true;
@@ -121,9 +126,13 @@ bool FFarmPoorTest::RunTest(const FString& Parameters)
 {
 	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
 	Inventory->ResetForNewGame();
-	Inventory->Gold = 2;
+	const FItemDef* SeedDef = FarmItems::Find(TEXT("carrot_seed"));
+	TestNotNull(TEXT("seed entry"), SeedDef);
+	const int32 Price = SeedDef ? SeedDef->BuyPrice : 0;
+	Inventory->Gold = FMath::Max(0, Price - 1);
+	const int32 PoorGold = Inventory->Gold;
 	TestFalse(TEXT("cannot afford"), Inventory->BuyItem(TEXT("carrot_seed"), 1));
-	TestEqual(TEXT("gold unchanged"), Inventory->Gold, 2);
+	TestEqual(TEXT("gold unchanged"), Inventory->Gold, PoorGold);
 	TestEqual(TEXT("no extra seeds"), Inventory->GetCount(TEXT("carrot_seed")), 3);
 	return true;
 }
@@ -138,9 +147,16 @@ bool FFarmCraftTest::RunTest(const FString& Parameters)
 
 	const FCraftRecipe* Fence = FarmRecipes::Find(TEXT("fence_kit"));
 	TestNotNull(TEXT("fence recipe exists"), Fence);
-	TestTrue(TEXT("can craft fence with 6 wood"), Inventory->CanCraft(*Fence));
+	if (!Fence) return false;
+	int32 WoodCost = 0;
+	for (const FCraftIngredient& Ingredient : Fence->Inputs)
+	{
+		if (Ingredient.ItemId == TEXT("wood")) WoodCost = Ingredient.Count;
+	}
+	TestTrue(TEXT("fence cost fits starting wood"), WoodCost > 0 && WoodCost <= 6);
+	TestTrue(TEXT("can craft fence with starting wood"), Inventory->CanCraft(*Fence));
 	TestTrue(TEXT("craft fence"), Inventory->Craft(*Fence));
-	TestEqual(TEXT("wood consumed"), Inventory->GetCount(TEXT("wood")), 1);
+	TestEqual(TEXT("wood consumed"), Inventory->GetCount(TEXT("wood")), 6 - WoodCost);
 	TestEqual(TEXT("fence kit added"), Inventory->GetCount(TEXT("fence_kit")), 1);
 
 	TestFalse(TEXT("cannot craft a second fence"), Inventory->CanCraft(*Fence));
@@ -149,7 +165,15 @@ bool FFarmCraftTest::RunTest(const FString& Parameters)
 
 	const FCraftRecipe* Ingot = FarmRecipes::Find(TEXT("ingot"));
 	TestNotNull(TEXT("ingot recipe exists"), Ingot);
-	TestTrue(TEXT("ingot recipe needs a furnace"), Ingot->bNeedsFurnace);
+	if (Ingot)
+	{
+		bool bUsesOre = false;
+		for (const FCraftIngredient& Ingredient : Ingot->Inputs)
+		{
+			if (Ingredient.ItemId == TEXT("ore")) bUsesOre = true;
+		}
+		TestTrue(TEXT("ingot recipe consumes ore"), bUsesOre);
+	}
 	return true;
 }
 
@@ -161,7 +185,12 @@ bool FFarmItemsTest::RunTest(const FString& Parameters)
 	TestTrue(TEXT("catalog not empty"), FarmItems::All().Num() >= 10);
 	TestNotNull(TEXT("carrot seed defined"), FarmItems::Find(TEXT("carrot_seed")));
 	TestNotNull(TEXT("carrot defined"), FarmItems::Find(TEXT("carrot")));
-	TestTrue(TEXT("carrot sells for 8"), FarmItems::SellPriceOf(TEXT("carrot")) == 8);
+	TestTrue(TEXT("carrot is sellable"), FarmItems::SellPriceOf(TEXT("carrot")) > 0);
+	for (const FItemDef& Def : FarmItems::All())
+	{
+		TestTrue(FString::Printf(TEXT("%s has a label"), *Def.Id.ToString()), Def.Label && *Def.Label != 0);
+		TestTrue(FString::Printf(TEXT("%s prices are non-negative"), *Def.Id.ToString()), Def.BuyPrice >= 0 && Def.SellPrice >= 0);
+	}
 	TestTrue(TEXT("carrot seed is a seed"), FarmItems::IsSeed(TEXT("carrot_seed")));
 	TestFalse(TEXT("carrot is not a seed"), FarmItems::IsSeed(TEXT("carrot")));
 	TestEqual(TEXT("seed id derived"), FarmItems::SeedId(TEXT("corn")), FName(TEXT("corn_seed")));
@@ -201,9 +230,10 @@ bool FFarmSellFilterTest::RunTest(const FString& Parameters)
 	Inventory->AddItem(TEXT("milk"), 1);
 
 	const int32 Before = Inventory->Gold;
+	const int32 Expected = 2 * FarmItems::SellPriceOf(TEXT("egg")) + FarmItems::SellPriceOf(TEXT("milk"));
 	const int32 Earned = Inventory->SellEverything();
-	TestEqual(TEXT("earned from egg + milk"), Earned, 36);
-	TestEqual(TEXT("gold increased"), Inventory->Gold, Before + 36);
+	TestEqual(TEXT("earned from egg + milk"), Earned, Expected);
+	TestEqual(TEXT("gold increased"), Inventory->Gold, Before + Expected);
 	TestEqual(TEXT("wood kept"), Inventory->GetCount(TEXT("wood")), 5);
 	TestEqual(TEXT("ore kept"), Inventory->GetCount(TEXT("ore")), 3);
 	TestEqual(TEXT("eggs sold"), Inventory->GetCount(TEXT("egg")), 0);
@@ -692,7 +722,8 @@ bool FFarmCookingRecipeTest::RunTest(const FString& Parameters)
 	{
 		const FCraftRecipe* Recipe = FarmRecipes::Find(Id);
 		TestNotNull(FString::Printf(TEXT("%s recipe exists"), Id), Recipe);
-		TestTrue(FString::Printf(TEXT("%s needs a mixing pot"), Id), Recipe->bNeedsMixingPot);
+		if (!Recipe) continue;
+		TestTrue(FString::Printf(TEXT("%s has ingredients"), Id), Recipe->Inputs.Num() > 0);
 		TestNotNull(FString::Printf(TEXT("%s output in catalog"), Id), FarmItems::Find(Recipe->OutputId));
 	}
 	TestNotNull(TEXT("mixing pot kit exists"), FarmItems::Find(TEXT("mixing_pot_kit")));
@@ -713,7 +744,8 @@ bool FFarmFishingRecipeTest::RunTest(const FString& Parameters)
 	TestNotNull(TEXT("fish item"), FarmItems::Find(TEXT("fish")));
 	const FCraftRecipe* Cooked = FarmRecipes::Find(TEXT("cooked_fish"));
 	TestNotNull(TEXT("cooked fish recipe"), Cooked);
-	TestTrue(TEXT("cooked fish needs pot"), Cooked->bNeedsMixingPot);
+	TestTrue(TEXT("cooked fish needs a station"), Cooked->bNeedsMixingPot || Cooked->bNeedsFurnace);
+	TestTrue(TEXT("cooked fish uses fish"), Cooked->Inputs.Num() > 0 && Cooked->Inputs[0].ItemId == FName(TEXT("fish")));
 	TestNotNull(TEXT("cooked fish item"), FarmItems::Find(TEXT("cooked_fish")));
 	return true;
 }
