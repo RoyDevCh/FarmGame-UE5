@@ -24,6 +24,7 @@ public:
 	UFarmInventoryComponent* GetInventory() const { return Inventory; }
 
 	void ApplyDamage(int32 Amount, AActor* Source);
+	void Heal(int32 Amount);
 	void PlayAttackAnim();
 	virtual void Tick(float DeltaSeconds) override;
 	void SetHealth(int32 InHealth) { Health = FMath::Clamp(InHealth, 0, MaxHealth); }

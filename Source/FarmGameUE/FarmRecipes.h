@@ -28,6 +28,8 @@ namespace FarmRecipes
 			{ TEXT("fence_kit"), TEXT("Fence Kit (build with G)"), { { TEXT("wood"), 5 } }, TEXT("fence_kit"), 1, false },
 			{ TEXT("furnace_kit"), TEXT("Furnace Kit (build with G)"), { { TEXT("stone"), 10 }, { TEXT("wood"), 5 } }, TEXT("furnace_kit"), 1, false },
 			{ TEXT("chest_kit"), TEXT("Storage Chest Kit (build with G)"), { { TEXT("wood"), 12 } }, TEXT("chest_kit"), 1, false },
+			{ TEXT("axe"), TEXT("Axe (double wood per chop)"), { { TEXT("wood"), 4 }, { TEXT("ore"), 1 } }, TEXT("axe"), 1, false },
+			{ TEXT("pickaxe"), TEXT("Pickaxe (double stone/ore per hit)"), { { TEXT("wood"), 4 }, { TEXT("ore"), 2 } }, TEXT("pickaxe"), 1, false },
 			{ TEXT("ingot"), TEXT("Smelt Iron Ingot (at furnace)"), { { TEXT("ore"), 2 } }, TEXT("ingot"), 1, true },
 			{ TEXT("hay_bundle"), TEXT("Hay Bundle (animal feed)"), { { TEXT("corn"), 2 } }, TEXT("hay"), 2, false }
 		};

@@ -57,6 +57,7 @@ void AFarmPlayerController::SetupInputComponent()
 	InputComponent->BindAction(TEXT("Build"), IE_Pressed, this, &AFarmPlayerController::ToggleBuildMode);
 	InputComponent->BindAction(TEXT("CraftMenu"), IE_Pressed, this, &AFarmPlayerController::ToggleCraftMenu);
 	InputComponent->BindAction(TEXT("Inventory"), IE_Pressed, this, &AFarmPlayerController::ToggleInventory);
+	InputComponent->BindAction(TEXT("Eat"), IE_Pressed, this, &AFarmPlayerController::EatFood);
 	InputComponent->BindAction(TEXT("Cancel"), IE_Pressed, this, &AFarmPlayerController::CancelMode);
 
 	InputComponent->BindAction(TEXT("Craft1"), IE_Pressed, this, &AFarmPlayerController::Craft1);
@@ -414,6 +415,28 @@ void AFarmPlayerController::ToggleCraftMenu()
 	{
 		bInventoryOpen = false;
 	}
+}
+
+void AFarmPlayerController::EatFood()
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!Farmer || !Farmer->GetInventory()) return;
+	UFarmInventoryComponent* Inventory = Farmer->GetInventory();
+
+	struct FFood { FName Id; int32 Heal; };
+	const FFood Foods[] = { { TEXT("meat"), 15 }, { TEXT("egg"), 5 }, { TEXT("milk"), 8 } };
+	for (const FFood& Food : Foods)
+	{
+		if (Inventory->GetCount(Food.Id) > 0)
+		{
+			Inventory->RemoveItem(Food.Id, 1);
+			Farmer->Heal(Food.Heal);
+			FarmAudio::Play(this, TEXT("/Game/Art/Audio/pop.pop"), 0.8f);
+			ShowToast(FString::Printf(TEXT("Ate %s (+%d HP)"), *FarmItems::LabelOf(Food.Id), Food.Heal));
+			return;
+		}
+	}
+	ShowToast(TEXT("No food in the bag"));
 }
 
 void AFarmPlayerController::ShowMenu(bool bStartMode)

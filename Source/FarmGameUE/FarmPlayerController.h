@@ -41,6 +41,7 @@ public:
 
 	void Attack();
 	void ToggleInventory();
+	void EatFood();
 	bool IsInventoryOpen() const { return bInventoryOpen; }
 	bool IsSlateInventoryActive() const { return InventoryWidget.IsValid(); }
 

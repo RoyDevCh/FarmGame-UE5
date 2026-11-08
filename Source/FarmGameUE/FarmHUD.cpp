@@ -67,7 +67,7 @@ void AFarmHUD::DrawHUD()
 		Character->GetInventory()->GetCount(TEXT("furnace_kit"))),
 		FLinearColor(0.72f, 0.78f, 0.7f), Margin, Y, Small, 1.0f);
 
-	const FString Help = TEXT("WASD move | E interact/place | F attack | Q seed | B buy | C craft | G build | Tab bag | T sleep | Ctrl+S/Ctrl+L");
+	const FString Help = TEXT("WASD move | E interact | F attack | H eat | Q seed | B buy | C craft | G build | Tab bag | T sleep | Esc pause | Ctrl+S/L");
 	DrawText(Help, FLinearColor(0.55f, 0.6f, 0.65f), Margin, H - Margin - 22.f, Small, 1.0f);
 
 	if (PC->IsBuildMode())

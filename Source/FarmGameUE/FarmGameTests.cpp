@@ -465,4 +465,29 @@ bool FFarmQuestDefaultsTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmGatherYieldTest, "FarmGame.Tools.GatherYieldDoubles",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmGatherYieldTest::RunTest(const FString& Parameters)
+{
+	TestEqual(TEXT("bare hands yield one"), FarmLogic::GatherYield(false), 1);
+	TestEqual(TEXT("tool yields two"), FarmLogic::GatherYield(true), 2);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmToolsCatalogTest, "FarmGame.Tools.CatalogHasAxeAndPickaxe",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmToolsCatalogTest::RunTest(const FString& Parameters)
+{
+	for (const TCHAR* Id : { TEXT("axe"), TEXT("pickaxe") })
+	{
+		TestNotNull(FString::Printf(TEXT("%s in item catalog"), Id), FarmItems::Find(Id));
+		const FCraftRecipe* Recipe = FarmRecipes::Find(Id);
+		TestNotNull(FString::Printf(TEXT("%s recipe exists"), Id), Recipe);
+		TestEqual(TEXT("recipe outputs the tool"), Recipe->OutputId, FName(Id));
+	}
+	return true;
+}
+
 #endif

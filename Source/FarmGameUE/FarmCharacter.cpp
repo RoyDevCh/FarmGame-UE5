@@ -116,6 +116,12 @@ void AFarmCharacter::Tick(float DeltaSeconds)
 	}
 }
 
+void AFarmCharacter::Heal(int32 Amount)
+{
+	Health = FMath::Clamp(Health + Amount, 0, MaxHealth);
+	UE_LOG(LogTemp, Log, TEXT("FarmGame: healed %d -> HP %d"), Amount, Health);
+}
+
 void AFarmCharacter::PlayAttackAnim()
 {
 	if (!AttackAnim) return;

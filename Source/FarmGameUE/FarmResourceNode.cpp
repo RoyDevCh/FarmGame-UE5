@@ -1,5 +1,6 @@
 #include "FarmResourceNode.h"
 #include "FarmArt.h"
+#include "FarmTypes.h"
 #include "FarmCharacter.h"
 #include "FarmItems.h"
 #include "FarmInventoryComponent.h"
@@ -121,11 +122,13 @@ void AFarmResourceNode::Interact(AFarmCharacter* Character)
 	if (Type == EResourceType::Rock) Yield = TEXT("stone");
 	else if (Type == EResourceType::Ore) Yield = TEXT("ore");
 
-	Inventory->AddItem(Yield, 1);
-	UE_LOG(LogTemp, Log, TEXT("FarmGame: gathered %s (%d left)"), *Yield.ToString(), Remaining);
+	const bool bHasTool = Inventory->GetCount(Type == EResourceType::Tree ? TEXT("axe") : TEXT("pickaxe")) > 0;
+	const int32 Amount = FarmLogic::GatherYield(bHasTool);
+	Inventory->AddItem(Yield, Amount);
+	UE_LOG(LogTemp, Log, TEXT("FarmGame: gathered %s x%d (%d left)"), *Yield.ToString(), Amount, Remaining);
 	if (PC)
 	{
-		PC->ShowToast(FString::Printf(TEXT("+1 %s"), *FarmItems::LabelOf(Yield)));
+		PC->ShowToast(FString::Printf(TEXT("+%d %s%s"), Amount, *FarmItems::LabelOf(Yield), bHasTool ? TEXT(" (tool)") : TEXT("")));
 	}
 	if (Remaining <= 0)
 	{

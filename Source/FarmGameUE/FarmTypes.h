@@ -84,6 +84,9 @@ namespace FarmLogic
 	/** Stage a plot keeps after harvest; -1 means the crop is removed. */
 	inline int32 StageAfterHarvest(const FCropDef& Crop) { return Crop.bRegrowAfterHarvest ? 1 : -1; }
 
+	/** Gathering yield: 2 with the matching tool, otherwise 1. */
+	inline int32 GatherYield(bool bHasTool) { return bHasTool ? 2 : 1; }
+
 	/** Furnace tick: moves one ore to an ingot every SecondsPerOre. */
 	inline bool SmeltStep(int32& OreCount, int32& IngotCount, float& Timer, float DeltaSeconds, float SecondsPerOre)
 	{
