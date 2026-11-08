@@ -33,7 +33,7 @@ void SFarmMenuWidget::Construct(const FArguments& InArgs)
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 0, 0, 26)
 				[
 					SNew(STextBlock)
-					.Text(LOCTEXT("Body", "WASD move  |  E interact  |  F attack  |  H eat  |  Q seed  |  B buy  |  C craft  |  G build  |  Tab bag  |  T sleep  |  Esc pause"))
+					.Text(LOCTEXT("Body", "WASD move  |  E interact  |  F attack  |  H eat  |  Q seed  |  B buy  |  C craft  |  G build  |  Tab bag  |  T sleep  |  Esc pause\nC continue  |  N new game  |  S save slot  |  Q quit"))
 					.ColorAndOpacity(FLinearColor(0.8f, 0.85f, 0.78f))
 				]
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 4)
@@ -127,9 +127,24 @@ FReply SFarmMenuWidget::OnKeyDown(const FGeometry& InGeometry, const FKeyEvent& 
 			PlayerController->HandleMenuEscape();
 			return FReply::Handled();
 		}
-		if (Key == EKeys::Enter || Key == EKeys::SpaceBar)
+		if (Key == EKeys::Enter || Key == EKeys::SpaceBar || Key == EKeys::C)
 		{
 			PlayerController->HandleMenuPrimary();
+			return FReply::Handled();
+		}
+		if (Key == EKeys::N)
+		{
+			PlayerController->HandleMenuNewGame();
+			return FReply::Handled();
+		}
+		if (Key == EKeys::S)
+		{
+			PlayerController->HandleMenuCycleSlot();
+			return FReply::Handled();
+		}
+		if (Key == EKeys::Q)
+		{
+			PlayerController->HandleMenuQuit();
 			return FReply::Handled();
 		}
 	}

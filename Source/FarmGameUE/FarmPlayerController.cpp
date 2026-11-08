@@ -472,6 +472,10 @@ void AFarmPlayerController::OpenShop()
 	FInputModeUIOnly InputMode;
 	InputMode.SetWidgetToFocus(ShopWidget);
 	SetInputMode(InputMode);
+	if (FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().SetKeyboardFocus(ShopWidget, EFocusCause::SetDirectly);
+	}
 	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
 	{
 		GM->SetGamePaused(true);
@@ -544,6 +548,10 @@ void AFarmPlayerController::ShowMenu(bool bStartMode)
 	FInputModeUIOnly InputMode;
 	InputMode.SetWidgetToFocus(MenuWidget);
 	SetInputMode(InputMode);
+	if (FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().SetKeyboardFocus(MenuWidget, EFocusCause::SetDirectly);
+	}
 	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
 	{
 		GM->SetGamePaused(true);
