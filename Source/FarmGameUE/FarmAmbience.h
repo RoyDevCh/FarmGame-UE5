@@ -67,8 +67,12 @@ public:
 	UPROPERTY(VisibleAnywhere) USceneComponent* SceneRoot;
 	UPROPERTY(VisibleAnywhere) UAudioComponent* Audio;
 
-	/** Placeholder bed loaded from "/Game/Art/Audio/craft.craft" in BeginPlay. */
+	/** Music beds imported from the original Unity project (Content/Art/Audio/Music). */
+	UPROPERTY(Transient) USoundBase* DaySound = nullptr;
+	UPROPERTY(Transient) USoundBase* NightSound = nullptr;
+	UPROPERTY(Transient) USoundBase* HouseSound = nullptr;
 	UPROPERTY(Transient) USoundBase* PlaceholderSound = nullptr;
+	bool bHouseMode = false;
 
 private:
 	/** Track currently playing; bHasTrack is false until the game mode pushes the first state. */

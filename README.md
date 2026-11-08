@@ -69,7 +69,7 @@
 | 商店 | 村口水井旁的售卖亭 `AFarmShop`（`E` 打开 Slate 面板 `SFarmShopWidget`，打开期间暂停）：5 种种子、干草 4g、矿石 8g、木材 2g、石头 2g、苹果 5g、面包 8g；买不起时按钮灰显；另有 `Sell all goods` 一键卖货 |
 | 食物 | `apple` / `bread` 为 `EItemKind::Food`；`H` 按面包 +20 > 苹果 +10 > 肉 +15 > 奶 +8 > 蛋 +5 的顺序吃第一个拥有的，回血上限 100 |
 | 设置 | 开始/暂停菜单的 `Settings` 打开 Slate 面板 `SFarmSettingsWidget`：`Fullscreen`（窗口 ↔ 无边框全屏）、`Quality` 0..3、`Volume` 100/75/50/25/0、`Back`（Esc 返回）；设置持久化到 GameUserSettings.ini |
-| 音效 | 7 个原版 WAV：锄地 / 播种 / 浇水 / 收获 / 制作 / 建造 / 挥击 / 命中；2D 播放，缺失静默 |
+| 音效 / 音乐 | 9 个原版 WAV（锄地/播种/浇水/收获/制作/建造/挥击/命中/UI）+ 原版 BGM：`Farm_Day`、`Farm_Night`、`House_Warm`（按昼夜与场景切换，`Mine_Echo` 已导入备用） |
 | 测试 | 38 条 UE Automation（`FarmGameTests.cpp` 32 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
 | 打包 | `Scripts/package.ps1` 跑通 BuildCookRun，产出 `Saved/Archive/Windows/FarmGameUE.exe`（本机已实测可启动） |
 
@@ -218,7 +218,7 @@
 - 角色属性：体力 / 饥饿 / XP / 等级（`PlayerCharacterAttribute`、`XPBar`、`AttributeBar`）
 - 洒水器（`Sprinkler`）等自动浇水物件
 - 背包面板的拖拽/使用/装备交互（当前只读 + 制作）、手柄与触屏输入
-- 音频扩展：脚步 / UI / 环境音（当前只有 7 个动作音效，2D 播放）
+- 音频扩展：脚步与动物叫声；BGM 已接原版 3 首
 - 数据资产化：把 `FCropDef` / `FItemDef` / `FCraftRecipe` 换成 DataAsset 或 DataTable；背包容量与堆叠上限（`ItemStack`）
 - 美术继续替换：剩余建筑/树木/贴图与动画
 
