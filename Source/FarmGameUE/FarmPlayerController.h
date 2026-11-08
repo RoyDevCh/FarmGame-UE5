@@ -105,6 +105,7 @@ protected:
 	TSharedPtr<SFarmMenuWidget> MenuWidget;
 	TSharedPtr<SFarmShopWidget> ShopWidget;
 	TSharedPtr<SFarmSettingsWidget> SettingsWidget;
+	bool bSettingsFromMenu = false;
 	bool bShopOpen = false;
 	bool bMenuStartMode = true;
 	float AttackCooldown = 0.f;

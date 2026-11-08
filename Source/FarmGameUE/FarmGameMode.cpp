@@ -187,6 +187,18 @@ bool AFarmGameMode::HasSaveInSlot(int32 Slot) const
 	return UGameplayStatics::DoesSaveGameExist(FString::Printf(TEXT("FarmSlot%d"), Clamped), 0);
 }
 
+void AFarmGameMode::StartGame()
+{
+	bGameStarted = true;
+	UGameplayStatics::SetGamePaused(this, false);
+}
+
+void AFarmGameMode::SetGamePaused(bool bPaused)
+{
+	bGamePaused = bPaused;
+	UGameplayStatics::SetGamePaused(this, bPaused);
+}
+
 void AFarmGameMode::NewGame()
 {
 	UWorld* World = GetWorld();
@@ -542,6 +554,8 @@ void AFarmGameMode::SaveGame(AFarmCharacter* Character)
 			Save->Items = Inventory->Items;
 		}
 		Save->PlayerHealth = Character->GetHealth();
+	Save->Quests = Quests;
+	Save->ActiveQuestIndex = ActiveQuestIndex;
 	}
 	for (AFarmPlot* Plot : Plots)
 	{
@@ -593,6 +607,11 @@ bool AFarmGameMode::LoadGame(AFarmCharacter* Character)
 			Inventory->Items = Save->Items;
 		}
 		Character->SetHealth(Save->PlayerHealth);
+	if (Save->Quests.Num() > 0)
+	{
+		Quests = Save->Quests;
+		ActiveQuestIndex = FMath::Clamp(Save->ActiveQuestIndex, 0, Quests.Num());
+	}
 	}
 	for (const FPlotSaveData& Data : Save->Plots)
 	{

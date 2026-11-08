@@ -525,6 +525,7 @@ void AFarmPlayerController::OpenSettings()
 		SAssignNew(SettingsWidget, SFarmSettingsWidget).PlayerController(this);
 		GEngine->GameViewport->AddViewportWidgetContent(SettingsWidget.ToSharedRef());
 	}
+	bSettingsFromMenu = MenuWidget.IsValid() && MenuWidget->GetVisibility() == EVisibility::Visible;
 	if (!SettingsWidget.IsValid()) return;
 	SettingsWidget->Refresh();
 	SettingsWidget->SetVisibility(EVisibility::Visible);
@@ -546,6 +547,12 @@ void AFarmPlayerController::CloseSettings()
 {
 	if (!SettingsWidget.IsValid()) return;
 	SettingsWidget->SetVisibility(EVisibility::Collapsed);
+	if (bSettingsFromMenu)
+	{
+		bSettingsFromMenu = false;
+		ShowMenu(false);
+		return;
+	}
 	bShowMouseCursor = false;
 	SetInputMode(FInputModeGameOnly());
 	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)

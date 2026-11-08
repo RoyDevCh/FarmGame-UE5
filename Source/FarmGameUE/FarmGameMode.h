@@ -46,8 +46,8 @@ public:
 	int32 GetActiveQuestIndex() const { return ActiveQuestIndex; }
 
 	/** Starts the simulation (leaves the main menu). */
-	void StartGame() { bGameStarted = true; }
-	void SetGamePaused(bool bPaused) { bGamePaused = bPaused; }
+	void StartGame();
+	void SetGamePaused(bool bPaused);
 	bool IsGameStarted() const { return bGameStarted; }
 	bool IsGamePaused() const { return bGamePaused; }
 	AFarmBin* GetBin() const { return Bin; }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "FarmQuests.h"
 #include "GameFramework/SaveGame.h"
 #include "FarmTypes.h"
 #include "FarmSaveGame.generated.h"
@@ -20,4 +21,6 @@ public:
 	UPROPERTY() float DayTimer = 0.f;
 	UPROPERTY() bool bRaining = false;
 	UPROPERTY() int32 PlayerHealth = 100;
+	UPROPERTY() TArray<FQuestState> Quests;
+	UPROPERTY() int32 ActiveQuestIndex = 0;
 };

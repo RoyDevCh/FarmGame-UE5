@@ -492,7 +492,7 @@
 按钮行为（`AFarmPlayerController`）：
 
 - `HandleMenuPrimary()`：开始时若当前槽有存档 → `LoadGame(pawn)` + `StartGame()` + 隐藏菜单；**没有存档时**走 `NewGame()`。
-  暂停时只隐藏菜单（`HideMenu()` 解除暂停）。
+  暂停使用引擎级 `UGameplayStatics::SetGamePaused`，动物/建筑/日光等全部 Actor 一并冻结；`HideMenu()` 恢复。设置面板从暂停菜单打开，`Back (Esc)` 会回到暂停菜单而不是直接继续游戏。
 - `HandleMenuNewGame()`：`AFarmGameMode::NewGame()` 重新 `OpenLevel` 当前地图，选项 `autostart=1`；
   新 GameMode 在 `BeginPlay` 看到该选项就直接 `StartGame()`，玩家控制器用 `ConsumeSkipMenu()` 跳过菜单。
 - `HandleMenuCycleSlot()`：`SaveSlot = (SaveSlot % 3) + 1`，立即刷新 `(empty)/(has save)`。
@@ -545,13 +545,14 @@
 2. 按索引恢复地块（作物指针用 `FCropDef` 目录重新查一次）。
 3. **销毁并重建**全部建筑 Actor，再 `RestoreState` 回填矿石/铁锭、`RestoreStorage` 回填箱子库存。
 4. **销毁并重建**全部动物 Actor，再 `RestoreState` 回填喂养/产物/HP（HP 会被 clamp 到至少 1）。
-5. 找不到存档时 Toast `No save found`。
+5. 恢复目标链：`Quests` 与 `ActiveQuestIndex` 从存档回填（旧存档没有这两项时保持当前进度）。
+6. 找不到存档时 Toast `No save found`。
 
 ### 12.6 不保存的内容
 
 玩家位置（始终在出生点或读档时当前位置）、采集点剩余量与隐藏状态、当前选中的种子、太阳/相机状态（每帧重算）、
 Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后从存的位置重新开始漫游）、
-**目标链进度**（`Quests` / `ActiveQuestIndex` 没有写进 `UFarmSaveGame`：`Ctrl+L` 不恢复也不重置，重启后 Continue 才从第 1 段开始）、
+
 **当前存档槽**（每次启动/新游戏回到 `FarmSlot1`）、设置（全屏/画质走 `UGameUserSettings::ApplySettings`，代码没有调 `SaveSettings`，也不在存档里）。
 
 ## 13. HUD
