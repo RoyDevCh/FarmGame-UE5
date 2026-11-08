@@ -20,6 +20,7 @@
 #include "EngineUtils.h"
 #include "FarmSettingsWidget.h"
 #include "FarmStorageWidget.h"
+#include "FarmStatsComponent.h"
 #include "FarmEquipWidget.h"
 #include "FarmBuilding.h"
 #include "GameFramework/GameUserSettings.h"

@@ -20,6 +20,7 @@
 #include "FarmPet.h"
 #include "FarmRideable.h"
 #include "FarmWeather.h"
+#include "FarmStatsComponent.h"
 #include "FarmWater.h"
 #include "FarmLadder.h"
 #include "FarmResourceNode.h"
