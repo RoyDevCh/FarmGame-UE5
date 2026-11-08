@@ -61,6 +61,9 @@ public:
 	void CloseSettings();
 	void ToggleFullscreen();
 	void CycleQuality();
+	void CycleVolume();
+	int32 GetMasterVolumePercent() const { return FMath::RoundToInt(MasterVolume * 100.f); }
+	float GetMasterVolume() const { return MasterVolume; }
 	bool IsShopOpen() const { return bShopOpen; }
 
 	// Start / pause menu
@@ -106,6 +109,7 @@ protected:
 	TSharedPtr<SFarmShopWidget> ShopWidget;
 	TSharedPtr<SFarmSettingsWidget> SettingsWidget;
 	bool bSettingsFromMenu = false;
+	float MasterVolume = 1.f;
 	bool bShopOpen = false;
 	bool bMenuStartMode = true;
 	float AttackCooldown = 0.f;

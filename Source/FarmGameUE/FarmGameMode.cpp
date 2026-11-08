@@ -21,6 +21,7 @@
 #include "Engine/DirectionalLight.h"
 #include "Engine/PointLight.h"
 #include "Landscape.h"
+#include "Misc/ConfigCacheIni.h"
 #include "EngineUtils.h"
 #include "Engine/PostProcessVolume.h"
 #include "Engine/ExponentialHeightFog.h"
@@ -42,6 +43,14 @@ AFarmGameMode::AFarmGameMode()
 
 	Crops = FarmCrops::MakeDefaults();
 	Quests = FarmQuests::MakeDefault();
+	if (GConfig)
+	{
+		int32 SavedSlot = 1;
+		if (GConfig->GetInt(TEXT("FarmGame.Save"), TEXT("Slot"), SavedSlot, GGameUserSettingsIni))
+		{
+			SaveSlotIndex = FMath::Clamp(SavedSlot, 1, 3);
+		}
+	}
 }
 
 void AFarmGameMode::BeginPlay()
@@ -185,6 +194,16 @@ bool AFarmGameMode::HasSaveInSlot(int32 Slot) const
 {
 	const int32 Clamped = FMath::Clamp(Slot, 1, 3);
 	return UGameplayStatics::DoesSaveGameExist(FString::Printf(TEXT("FarmSlot%d"), Clamped), 0);
+}
+
+void AFarmGameMode::SetSaveSlot(int32 InSlot)
+{
+	SaveSlotIndex = FMath::Clamp(InSlot, 1, 3);
+	if (GConfig)
+	{
+		GConfig->SetInt(TEXT("FarmGame.Save"), TEXT("Slot"), SaveSlotIndex, GGameUserSettingsIni);
+		GConfig->Flush(false, GGameUserSettingsIni);
+	}
 }
 
 void AFarmGameMode::StartGame()

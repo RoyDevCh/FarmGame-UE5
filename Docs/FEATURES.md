@@ -553,7 +553,7 @@
 玩家位置（始终在出生点或读档时当前位置）、采集点剩余量与隐藏状态、当前选中的种子、太阳/相机状态（每帧重算）、
 Toast 与 UI 状态、野猪的巡逻位置（动物位置会存，但读档后从存的位置重新开始漫游）、
 
-**当前存档槽**（每次启动/新游戏回到 `FarmSlot1`）、设置（全屏/画质走 `UGameUserSettings::ApplySettings`，代码没有调 `SaveSettings`，也不在存档里）。
+设置（全屏/画质走 `UGameUserSettings::ApplySettings`；存档槽与音量写到 `GameUserSettings.ini` 的 `[FarmGame.Save]` / `[FarmGame.Audio]`，但不在游戏存档里）。
 
 ## 13. HUD
 

@@ -24,4 +24,5 @@ private:
 	TWeakObjectPtr<AFarmPlayerController> PlayerController;
 	TSharedPtr<STextBlock> FullscreenLabel;
 	TSharedPtr<STextBlock> QualityLabel;
+	TSharedPtr<STextBlock> VolumeLabel;
 };

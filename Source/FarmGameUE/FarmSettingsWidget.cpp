@@ -52,6 +52,17 @@ void SFarmSettingsWidget::Construct(const FArguments& InArgs)
 						]
 					]
 				]
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 4)
+				[
+					SNew(SButton)
+					.OnClicked_Lambda([this]() { if (PlayerController.IsValid()) PlayerController->CycleVolume(); return FReply::Handled(); })
+					[
+						SNew(SBox).WidthOverride(280.f).HeightOverride(38.f)
+						[
+							SAssignNew(VolumeLabel, STextBlock).Text(LOCTEXT("Volume", "Volume")).Justification(ETextJustify::Center)
+						]
+					]
+				]
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 14, 0, 0)
 				[
 					SNew(SButton)
@@ -84,6 +95,10 @@ void SFarmSettingsWidget::Refresh()
 		int32 Level = Settings->GetOverallScalabilityLevel();
 		if (Level < 0) Level = 2;
 		QualityLabel->SetText(FText::FromString(FString::Printf(TEXT("Quality: %d / 3"), Level)));
+	}
+	if (VolumeLabel.IsValid() && PlayerController.IsValid())
+	{
+		VolumeLabel->SetText(FText::FromString(FString::Printf(TEXT("Volume: %d%%"), PlayerController->GetMasterVolumePercent())));
 	}
 }
 

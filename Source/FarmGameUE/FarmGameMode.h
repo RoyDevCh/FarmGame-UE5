@@ -68,7 +68,7 @@ public:
 	void SaveGame(AFarmCharacter* Character);
 	bool LoadGame(AFarmCharacter* Character);
 
-	void SetSaveSlot(int32 InSlot) { SaveSlotIndex = FMath::Clamp(InSlot, 1, 3); }
+	void SetSaveSlot(int32 InSlot);
 	int32 GetSaveSlot() const { return SaveSlotIndex; }
 	FString SaveSlotName() const { return FString::Printf(TEXT("FarmSlot%d"), SaveSlotIndex); }
 	bool HasSaveInSlot(int32 Slot) const;

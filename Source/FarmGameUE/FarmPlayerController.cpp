@@ -12,6 +12,8 @@
 #include "FarmShopWidget.h"
 #include "FarmSettingsWidget.h"
 #include "GameFramework/GameUserSettings.h"
+#include "AudioDevice.h"
+#include "Misc/ConfigCacheIni.h"
 #include "FarmItems.h"
 #include "FarmPlot.h"
 #include "FarmPortal.h"
@@ -33,6 +35,22 @@ void AFarmPlayerController::BeginPlay()
 	Super::BeginPlay();
 	bShowMouseCursor = false;
 	SetInputMode(FInputModeGameOnly());
+
+	if (GConfig)
+	{
+		int32 SavedVolume = 100;
+		if (GConfig->GetInt(TEXT("FarmGame.Audio"), TEXT("Volume"), SavedVolume, GGameUserSettingsIni))
+		{
+			MasterVolume = FMath::Clamp(SavedVolume / 100.f, 0.f, 1.f);
+		}
+	}
+	if (GEngine)
+	{
+		if (FAudioDevice* Audio = GEngine->GetMainAudioDevice().GetAudioDevice())
+		{
+			Audio->SetTransientPrimaryVolume(MasterVolume);
+		}
+	}
 
 	if (GEngine && GEngine->GameViewport)
 	{
@@ -583,6 +601,31 @@ void AFarmPlayerController::CycleQuality()
 		Level = (Level + 1) % 4;
 		Settings->SetOverallScalabilityLevel(Level);
 		Settings->ApplySettings(false);
+	}
+	if (SettingsWidget.IsValid()) SettingsWidget->Refresh();
+}
+
+void AFarmPlayerController::CycleVolume()
+{
+	static const float Steps[] = { 1.f, 0.75f, 0.5f, 0.25f, 0.f };
+	int32 Current = 0;
+	for (int32 i = 0; i < UE_ARRAY_COUNT(Steps); ++i)
+	{
+		if (FMath::IsNearlyEqual(Steps[i], MasterVolume, 0.01f)) { Current = i; break; }
+	}
+	MasterVolume = Steps[(Current + 1) % UE_ARRAY_COUNT(Steps)];
+
+	if (GEngine)
+	{
+		if (FAudioDevice* Audio = GEngine->GetMainAudioDevice().GetAudioDevice())
+		{
+			Audio->SetTransientPrimaryVolume(MasterVolume);
+		}
+	}
+	if (GConfig)
+	{
+		GConfig->SetInt(TEXT("FarmGame.Audio"), TEXT("Volume"), GetMasterVolumePercent(), GGameUserSettingsIni);
+		GConfig->Flush(false, GGameUserSettingsIni);
 	}
 	if (SettingsWidget.IsValid()) SettingsWidget->Refresh();
 }

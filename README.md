@@ -66,7 +66,7 @@
 | 开始菜单 | Slate 全屏菜单：`Continue`（当前槽无存档时灰显）/ `New game`（重载地图并带 `?autostart=1`）/ `Save slot: 1..3`（显示 `(empty)/(has save)`）/ `Settings` / `Quit`；暂停菜单为 `Resume`，隐藏 New game；快捷键 `C/N/S/Q` |
 | 商店 | 村口水井旁的售卖亭 `AFarmShop`（`E` 打开 Slate 面板 `SFarmShopWidget`，打开期间暂停）：5 种种子、干草 4g、矿石 8g、木材 2g、石头 2g、苹果 5g、面包 8g；买不起时按钮灰显；另有 `Sell all goods` 一键卖货 |
 | 食物 | `apple` / `bread` 为 `EItemKind::Food`；`H` 按面包 +20 > 苹果 +10 > 肉 +15 > 奶 +8 > 蛋 +5 的顺序吃第一个拥有的，回血上限 100 |
-| 设置 | 开始/暂停菜单的 `Settings` 打开 Slate 面板 `SFarmSettingsWidget`：`Fullscreen` 切换（窗口 ↔ 无边框全屏）、`Quality` 0..3 循环、`Back`（Esc 返回） |
+| 设置 | 开始/暂停菜单的 `Settings` 打开 Slate 面板 `SFarmSettingsWidget`：`Fullscreen`（窗口 ↔ 无边框全屏）、`Quality` 0..3、`Volume` 100/75/50/25/0、`Back`（Esc 返回）；设置持久化到 GameUserSettings.ini |
 | 音效 | 7 个原版 WAV：锄地 / 播种 / 浇水 / 收获 / 制作 / 建造 / 挥击 / 命中；2D 播放，缺失静默 |
 | 测试 | 38 条 UE Automation（`FarmGameTests.cpp` 32 条 + `FarmGameExtraTests.cpp` 6 条），全部纯逻辑 / 组件级，不依赖世界与资产 |
 | 打包 | `Scripts/package.ps1` 跑通 BuildCookRun，产出 `Saved/Archive/Windows/FarmGameUE.exe`（本机已实测可启动） |
@@ -77,7 +77,7 @@
 - **没有独立 House 场景**：全工程只有 `/Game/Maps/Farm` 一张图，矿洞是同一张图东侧的一块空地，靠两个 `AFarmPortal` 往返。
 - **没有宠物、塔防、陷阱、洒水器、混合锅、体力/饥饿/XP、手柄与触屏输入**；商店是售卖亭而不是可对话 NPC，储物箱只收 Resource（木/石/矿/干草），不是通用容器。
 - **奖励只有金币且自动发放**：没有奖励选择、领取界面或任务日志；目标链是固定 8 段的线性链。
-- **设置面板只做桌面窗口**：Fullscreen 只在"窗口 ↔ 无边框全屏"之间切换，没有分辨率列表、音量、按键重绑；从设置按 `Back` 会回到暂停菜单（不会直接继续游戏）。
+- **设置面板只做桌面窗口**：Fullscreen 只在"窗口 ↔ 无边框全屏"之间切换；没有分辨率列表、按键重绑；音量是 5 档粗调。从设置按 `Back` 会回到暂停菜单。
 - **自动化测试不覆盖 UI 交互**：商店买卖点击、菜单/设置焦点、Slate 布局都没有 UI 级测试，只测纯逻辑与数据表。
 - **手持工具未校准**：工具模型挂到 `hand_R`，但相对位置/旋转清零、按 45 cm 高缩放，实际握持姿态未逐个调过；钢制工具复用普通斧/镐模型。
 - **食物美术大多未接入**：`Content/Art/Food` 下 80 个已导入资产，物品表只用了 `apple` / `bread`；其余建模没有对应物品与配方。
