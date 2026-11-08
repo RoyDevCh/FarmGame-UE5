@@ -47,6 +47,11 @@ AFarmGameMode::AFarmGameMode()
 void AFarmGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+	if (UGameplayStatics::HasOption(OptionsString, TEXT("autostart")))
+	{
+		bGameStarted = true;
+		bSkipMenuOnStart = true;
+	}
 	// Start the first day around 09:00 so the farm is lit on spawn.
 	DayTimer = DayLengthSeconds * (3.f / 18.f);
 	BuildWorld();
@@ -168,12 +173,10 @@ AFarmBuilding* AFarmGameMode::SpawnBuilding(EBuildingType Type, const FVector& L
 	return Building;
 }
 
-static bool GFarmSkipMenuOnce = false;
-
 bool AFarmGameMode::ConsumeSkipMenu()
 {
-	const bool bSkip = GFarmSkipMenuOnce;
-	GFarmSkipMenuOnce = false;
+	const bool bSkip = bSkipMenuOnStart;
+	bSkipMenuOnStart = false;
 	return bSkip;
 }
 
@@ -189,8 +192,7 @@ void AFarmGameMode::NewGame()
 	if (!World) return;
 	FString MapName = World->GetMapName();
 	MapName.RemoveFromStart(World->StreamingLevelsPrefix);
-	GFarmSkipMenuOnce = true;
-	UGameplayStatics::OpenLevel(this, FName(*MapName));
+	UGameplayStatics::OpenLevel(this, FName(*MapName), true, TEXT("autostart=1"));
 }
 
 void AFarmGameMode::NotifyProduced(FName ItemId, int32 Amount)

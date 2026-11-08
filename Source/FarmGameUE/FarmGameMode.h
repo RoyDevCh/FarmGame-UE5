@@ -84,6 +84,7 @@ protected:
 	UPROPERTY() TArray<FQuestState> Quests;
 	int32 ActiveQuestIndex = 0;
 	int32 SaveSlotIndex = 1;
+	bool bSkipMenuOnStart = false;
 	bool bGameStarted = false;
 	bool bGamePaused = false;
 	UPROPERTY() AFarmBin* Bin = nullptr;
