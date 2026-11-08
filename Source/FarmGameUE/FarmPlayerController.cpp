@@ -441,7 +441,8 @@ const TArray<AFarmPlayerController::FShopEntry>& AFarmPlayerController::GetShopS
 	static const TArray<FShopEntry> Stock = {
 		{ TEXT("carrot_seed"), 3 }, { TEXT("potato_seed"), 5 }, { TEXT("corn_seed"), 6 },
 		{ TEXT("tomato_seed"), 7 }, { TEXT("pumpkin_seed"), 10 },
-		{ TEXT("hay"), 4 }, { TEXT("ore"), 8 }, { TEXT("wood"), 2 }, { TEXT("stone"), 2 }
+		{ TEXT("hay"), 4 }, { TEXT("ore"), 8 }, { TEXT("wood"), 2 }, { TEXT("stone"), 2 },
+		{ TEXT("apple"), 5 }, { TEXT("bread"), 8 }
 	};
 	return Stock;
 }
@@ -504,7 +505,7 @@ void AFarmPlayerController::EatFood()
 	UFarmInventoryComponent* Inventory = Farmer->GetInventory();
 
 	struct FFood { FName Id; int32 Heal; };
-	const FFood Foods[] = { { TEXT("meat"), 15 }, { TEXT("egg"), 5 }, { TEXT("milk"), 8 } };
+	const FFood Foods[] = { { TEXT("bread"), 20 }, { TEXT("apple"), 10 }, { TEXT("meat"), 15 }, { TEXT("milk"), 8 }, { TEXT("egg"), 5 } };
 	for (const FFood& Food : Foods)
 	{
 		if (Inventory->GetCount(Food.Id) > 0)

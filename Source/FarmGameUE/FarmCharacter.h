@@ -26,6 +26,7 @@ public:
 	void ApplyDamage(int32 Amount, AActor* Source);
 	void Heal(int32 Amount);
 	void PlayAttackAnim();
+	void UpdateToolVisual();
 	virtual void Tick(float DeltaSeconds) override;
 	void SetHealth(int32 InHealth) { Health = FMath::Clamp(InHealth, 0, MaxHealth); }
 	void Respawn();
@@ -37,6 +38,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Farm") USpringArmComponent* SpringArm;
 	UPROPERTY(VisibleAnywhere, Category = "Farm") UCameraComponent* Camera;
 	UPROPERTY(VisibleAnywhere, Category = "Farm") UStaticMeshComponent* BodyMesh;
+	UPROPERTY(VisibleAnywhere, Category = "Farm") UStaticMeshComponent* ToolMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Farm") UFarmInventoryComponent* Inventory;
 
 	UPROPERTY(VisibleAnywhere, Category = "Farm") int32 Health = 100;

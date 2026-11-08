@@ -75,7 +75,8 @@ void SFarmInventoryWidget::Refresh()
 		{ EItemKind::Produce, TEXT("Harvest") },
 		{ EItemKind::AnimalProduct, TEXT("Animal goods") },
 		{ EItemKind::Resource, TEXT("Resources") },
-		{ EItemKind::Material, TEXT("Materials / kits") }
+		{ EItemKind::Material, TEXT("Materials / kits") },
+		{ EItemKind::Food, TEXT("Food") }
 	};
 
 	for (const FGroupDef& Group : Groups)

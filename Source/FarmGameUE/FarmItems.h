@@ -9,7 +9,8 @@ enum class EItemKind : uint8
 	Produce,
 	Resource,
 	AnimalProduct,
-	Material
+	Material,
+	Food
 };
 
 struct FItemDef
@@ -50,6 +51,8 @@ namespace FarmItems
 			{ TEXT("axe"), TEXT("Axe"), EItemKind::Material, 0, 0 },
 			{ TEXT("pickaxe"), TEXT("Pickaxe"), EItemKind::Material, 0, 0 },
 			{ TEXT("steel_axe"), TEXT("Steel Axe"), EItemKind::Material, 0, 0 },
+			{ TEXT("apple"), TEXT("Apple"), EItemKind::Food, 5, 3 },
+			{ TEXT("bread"), TEXT("Bread"), EItemKind::Food, 8, 4 },
 			{ TEXT("steel_pickaxe"), TEXT("Steel Pickaxe"), EItemKind::Material, 0, 0 }
 		};
 		return Items;

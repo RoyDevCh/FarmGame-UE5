@@ -127,7 +127,8 @@ void AFarmHUD::DrawHUD()
 			{ EItemKind::Produce, TEXT("Harvest") },
 			{ EItemKind::AnimalProduct, TEXT("Animal goods") },
 			{ EItemKind::Resource, TEXT("Resources") },
-			{ EItemKind::Material, TEXT("Materials / kits") }
+			{ EItemKind::Material, TEXT("Materials / kits") },
+			{ EItemKind::Food, TEXT("Food") }
 		};
 
 		float ColY = PY + 56.f;

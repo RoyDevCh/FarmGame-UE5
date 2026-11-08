@@ -25,6 +25,11 @@ AFarmCharacter::AFarmCharacter()
 
 	GetMesh()->SetVisibility(false);
 
+	ToolMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("ToolMesh"));
+	ToolMesh->SetupAttachment(GetMesh());
+	ToolMesh->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	ToolMesh->SetVisibility(false);
+
 	BodyMesh = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("Body"));
 	BodyMesh->SetupAttachment(GetCapsuleComponent());
 	BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, -88.f));
@@ -71,6 +76,11 @@ void AFarmCharacter::BeginPlay()
 			RunAnim = LoadObject<UAnimSequence>(nullptr, TEXT("/Game/Art/Character/character_run.character_run"));
 			AttackAnim = LoadObject<UAnimSequence>(nullptr, TEXT("/Game/Art/Character/character_attack.character_attack"));
 			if (IdleAnim) Skel->PlayAnimation(IdleAnim, true);
+
+			if (ToolMesh)
+			{
+				ToolMesh->AttachToComponent(Skel, FAttachmentTransformRules::SnapToTargetNotIncludingScale, TEXT("hand_R"));
+			}
 		}
 		else if (FarmArt::ApplyHeight(BodyMesh, TEXT("/Game/Art/Character/FarmerBoy.FarmerBoy"), 170.f))
 		{
@@ -92,9 +102,47 @@ void AFarmCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 	PlayerInputComponent->BindAxis(TEXT("MoveRight"), this, &AFarmCharacter::MoveRight);
 }
 
+void AFarmCharacter::UpdateToolVisual()
+{
+	if (!ToolMesh) return;
+	UFarmInventoryComponent* Bag = GetInventory();
+	if (!Bag) return;
+
+	const TCHAR* Path = nullptr;
+	if (Bag->GetCount(TEXT("steel_axe")) > 0 || Bag->GetCount(TEXT("axe")) > 0)
+	{
+		Path = TEXT("/Game/Art/Props/Axe.Axe");
+	}
+	else if (Bag->GetCount(TEXT("steel_pickaxe")) > 0 || Bag->GetCount(TEXT("pickaxe")) > 0)
+	{
+		Path = TEXT("/Game/Art/Props/Pickaxe.Pickaxe");
+	}
+
+	if (!Path)
+	{
+		ToolMesh->SetVisibility(false);
+		return;
+	}
+
+	if (!ToolMesh->GetStaticMesh() || ToolMesh->GetStaticMesh()->GetPathName() != Path)
+	{
+		if (UStaticMesh* ToolAsset = LoadObject<UStaticMesh>(nullptr, Path))
+		{
+			ToolMesh->SetStaticMesh(ToolAsset);
+			const FVector Size = ToolAsset->GetBoundingBox().GetSize();
+			const float Scale = Size.Z > 1.f ? 45.f / Size.Z : 1.f;
+			ToolMesh->SetRelativeScale3D(FVector(Scale));
+			ToolMesh->SetRelativeLocation(FVector::ZeroVector);
+			ToolMesh->SetRelativeRotation(FRotator::ZeroRotator);
+		}
+	}
+	ToolMesh->SetVisibility(true);
+}
+
 void AFarmCharacter::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
+	UpdateToolVisual();
 
 	USkeletalMeshComponent* Skel = GetMesh();
 	if (!Skel || !Skel->GetSkeletalMeshAsset()) return;
