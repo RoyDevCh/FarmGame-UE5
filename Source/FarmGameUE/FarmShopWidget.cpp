@@ -42,6 +42,17 @@ void SFarmShopWidget::Construct(const FArguments& InArgs)
 				[
 					SAssignNew(Rows, SVerticalBox)
 				]
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 10, 0, 0)
+				[
+					SNew(SButton)
+					.OnClicked_Lambda([this]() { if (PlayerController.IsValid()) PlayerController->SellAllAtShop(); return FReply::Handled(); })
+					[
+						SNew(SBox).WidthOverride(260.f).HeightOverride(34.f)
+						[
+							SNew(STextBlock).Text(LOCTEXT("SellAll", "Sell all goods")).Justification(ETextJustify::Center)
+						]
+					]
+				]
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 14, 0, 0)
 				[
 					SNew(SButton)

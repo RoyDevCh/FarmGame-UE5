@@ -204,7 +204,17 @@ void AFarmGameMode::NotifyProduced(FName ItemId, int32 Amount)
 
 	if (FarmQuests::Advance(Quest, Amount))
 	{
-		UE_LOG(LogTemp, Log, TEXT("FarmGame: quest complete %s"), *Quest.Title);
+		if (UWorld* World = GetWorld())
+		{
+			if (APlayerController* PC = World->GetFirstPlayerController())
+			{
+				if (AFarmCharacter* Farmer = Cast<AFarmCharacter>(PC->GetPawn()))
+				{
+					if (Farmer->GetInventory()) Farmer->GetInventory()->AddGold(Quest.Reward);
+				}
+			}
+		}
+		UE_LOG(LogTemp, Log, TEXT("FarmGame: quest complete %s (+%dg)"), *Quest.Title, Quest.Reward);
 		ActiveQuestIndex++;
 		if (Quests.IsValidIndex(ActiveQuestIndex))
 		{

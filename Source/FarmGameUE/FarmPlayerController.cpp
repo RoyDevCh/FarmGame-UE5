@@ -10,6 +10,8 @@
 #include "FarmMenuWidget.h"
 #include "FarmShop.h"
 #include "FarmShopWidget.h"
+#include "FarmSettingsWidget.h"
+#include "GameFramework/GameUserSettings.h"
 #include "FarmItems.h"
 #include "FarmPlot.h"
 #include "FarmPortal.h"
@@ -513,6 +515,78 @@ void AFarmPlayerController::BuyFromShop(FName ItemId, int32 Price)
 	}
 	FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"), 0.7f);
 	ShowToast(FString::Printf(TEXT("Bought %s"), *FarmItems::LabelOf(ItemId)));
+	if (ShopWidget.IsValid()) ShopWidget->Refresh();
+}
+
+void AFarmPlayerController::OpenSettings()
+{
+	if (!SettingsWidget.IsValid() && GEngine && GEngine->GameViewport)
+	{
+		SAssignNew(SettingsWidget, SFarmSettingsWidget).PlayerController(this);
+		GEngine->GameViewport->AddViewportWidgetContent(SettingsWidget.ToSharedRef());
+	}
+	if (!SettingsWidget.IsValid()) return;
+	SettingsWidget->Refresh();
+	SettingsWidget->SetVisibility(EVisibility::Visible);
+	bShowMouseCursor = true;
+	FInputModeUIOnly InputMode;
+	InputMode.SetWidgetToFocus(SettingsWidget);
+	SetInputMode(InputMode);
+	if (FSlateApplication::IsInitialized())
+	{
+		FSlateApplication::Get().SetKeyboardFocus(SettingsWidget, EFocusCause::SetDirectly);
+	}
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(true);
+	}
+}
+
+void AFarmPlayerController::CloseSettings()
+{
+	if (!SettingsWidget.IsValid()) return;
+	SettingsWidget->SetVisibility(EVisibility::Collapsed);
+	bShowMouseCursor = false;
+	SetInputMode(FInputModeGameOnly());
+	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)
+	{
+		GM->SetGamePaused(false);
+	}
+}
+
+void AFarmPlayerController::ToggleFullscreen()
+{
+	if (!GEngine) return;
+	if (UGameUserSettings* Settings = GEngine->GetGameUserSettings())
+	{
+		const bool bWasFullscreen = Settings->GetFullscreenMode() != EWindowMode::Windowed;
+		Settings->SetFullscreenMode(bWasFullscreen ? EWindowMode::Windowed : EWindowMode::WindowedFullscreen);
+		Settings->ApplySettings(false);
+	}
+	if (SettingsWidget.IsValid()) SettingsWidget->Refresh();
+}
+
+void AFarmPlayerController::CycleQuality()
+{
+	if (!GEngine) return;
+	if (UGameUserSettings* Settings = GEngine->GetGameUserSettings())
+	{
+		int32 Level = Settings->GetOverallScalabilityLevel();
+		if (Level < 0) Level = 2;
+		Level = (Level + 1) % 4;
+		Settings->SetOverallScalabilityLevel(Level);
+		Settings->ApplySettings(false);
+	}
+	if (SettingsWidget.IsValid()) SettingsWidget->Refresh();
+}
+
+void AFarmPlayerController::SellAllAtShop()
+{
+	AFarmCharacter* Farmer = Cast<AFarmCharacter>(GetPawn());
+	if (!Farmer || !Farmer->GetInventory()) return;
+	const int32 Earned = Farmer->GetInventory()->SellEverything();
+	ShowToast(Earned > 0 ? FString::Printf(TEXT("Sold goods for %dg"), Earned) : TEXT("Nothing to sell"));
+	FarmAudio::Play(this, TEXT("/Game/Art/Audio/craft.craft"), 0.7f);
 	if (ShopWidget.IsValid()) ShopWidget->Refresh();
 }
 

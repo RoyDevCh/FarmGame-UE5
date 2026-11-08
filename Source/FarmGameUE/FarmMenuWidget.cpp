@@ -77,6 +77,17 @@ void SFarmMenuWidget::Construct(const FArguments& InArgs)
 				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 4)
 				[
 					SNew(SButton)
+					.OnClicked_Lambda([this]() { if (PlayerController.IsValid()) PlayerController->OpenSettings(); return FReply::Handled(); })
+					[
+						SNew(SBox).WidthOverride(280.f).HeightOverride(32.f)
+						[
+							SNew(STextBlock).Text(LOCTEXT("Settings", "Settings")).Justification(ETextJustify::Center)
+						]
+					]
+				]
+				+ SVerticalBox::Slot().AutoHeight().HAlign(HAlign_Center).Padding(0, 4)
+				[
+					SNew(SButton)
 					.OnClicked_Lambda([this]() { if (PlayerController.IsValid()) PlayerController->HandleMenuQuit(); return FReply::Handled(); })
 					[
 						SNew(SBox).WidthOverride(280.f).HeightOverride(32.f)

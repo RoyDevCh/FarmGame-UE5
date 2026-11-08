@@ -10,6 +10,7 @@ class AFarmBuilding;
 class SFarmInventoryWidget;
 class SFarmMenuWidget;
 class SFarmShopWidget;
+class SFarmSettingsWidget;
 
 UCLASS()
 class FARMGAMEUE_API AFarmPlayerController : public APlayerController
@@ -55,6 +56,11 @@ public:
 	void OpenShop();
 	void CloseShop();
 	void BuyFromShop(FName ItemId, int32 Price);
+	void SellAllAtShop();
+	void OpenSettings();
+	void CloseSettings();
+	void ToggleFullscreen();
+	void CycleQuality();
 	bool IsShopOpen() const { return bShopOpen; }
 
 	// Start / pause menu
@@ -98,6 +104,7 @@ protected:
 	TSharedPtr<SFarmInventoryWidget> InventoryWidget;
 	TSharedPtr<SFarmMenuWidget> MenuWidget;
 	TSharedPtr<SFarmShopWidget> ShopWidget;
+	TSharedPtr<SFarmSettingsWidget> SettingsWidget;
 	bool bShopOpen = false;
 	bool bMenuStartMode = true;
 	float AttackCooldown = 0.f;

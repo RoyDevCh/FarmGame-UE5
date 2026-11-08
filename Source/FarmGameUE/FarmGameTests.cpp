@@ -507,4 +507,145 @@ bool FFarmShopStockTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmFoodCatalogTest, "FarmGame.Food.CatalogHasAppleAndBread",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmFoodCatalogTest::RunTest(const FString& Parameters)
+{
+	for (const TCHAR* Id : { TEXT("apple"), TEXT("bread") })
+	{
+		const FItemDef* Def = FarmItems::Find(Id);
+		TestNotNull(FString::Printf(TEXT("%s in item catalog"), Id), Def);
+		if (!Def)
+		{
+			continue;
+		}
+		TestTrue(FString::Printf(TEXT("%s is food"), Id), Def->Kind == EItemKind::Food);
+		TestTrue(FString::Printf(TEXT("%s has a buy price"), Id), Def->BuyPrice > 0);
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmShopFoodTest, "FarmGame.Food.ShopStockIncludesFood",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmShopFoodTest::RunTest(const FString& Parameters)
+{
+	const TArray<AFarmPlayerController::FShopEntry>& Stock = AFarmPlayerController::GetShopStock();
+	for (const TCHAR* Id : { TEXT("apple"), TEXT("bread") })
+	{
+		const FName ItemId(Id);
+		const AFarmPlayerController::FShopEntry* Entry = Stock.FindByPredicate(
+			[ItemId](const AFarmPlayerController::FShopEntry& Candidate) { return Candidate.Id == ItemId; });
+		TestNotNull(FString::Printf(TEXT("%s is stocked"), Id), Entry);
+		if (!Entry)
+		{
+			continue;
+		}
+		TestTrue(FString::Printf(TEXT("%s has a positive price"), Id), Entry->Price > 0);
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmSteelRecipeTest, "FarmGame.Tools.SteelRecipesConsumeBaseTool",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmSteelRecipeTest::RunTest(const FString& Parameters)
+{
+	struct FSteelCase
+	{
+		const TCHAR* RecipeId;
+		const TCHAR* BaseToolId;
+	};
+
+	const FSteelCase Cases[] = {
+		{ TEXT("steel_axe"), TEXT("axe") },
+		{ TEXT("steel_pickaxe"), TEXT("pickaxe") }
+	};
+
+	for (const FSteelCase& Case : Cases)
+	{
+		const FCraftRecipe* Recipe = FarmRecipes::Find(Case.RecipeId);
+		TestNotNull(FString::Printf(TEXT("%s recipe exists"), Case.RecipeId), Recipe);
+		if (!Recipe)
+		{
+			continue;
+		}
+		TestEqual(FString::Printf(TEXT("%s has two inputs"), Case.RecipeId), Recipe->Inputs.Num(), 2);
+
+		const FName BaseToolId(Case.BaseToolId);
+		const FCraftIngredient* ToolIngredient = Recipe->Inputs.FindByPredicate(
+			[BaseToolId](const FCraftIngredient& Ingredient) { return Ingredient.ItemId == BaseToolId; });
+		TestNotNull(FString::Printf(TEXT("%s takes a %s"), Case.RecipeId, Case.BaseToolId), ToolIngredient);
+		if (ToolIngredient)
+		{
+			TestEqual(FString::Printf(TEXT("%s consumes one %s"), Case.RecipeId, Case.BaseToolId), ToolIngredient->Count, 1);
+		}
+
+		const FCraftIngredient* OreIngredient = Recipe->Inputs.FindByPredicate(
+			[](const FCraftIngredient& Ingredient) { return Ingredient.ItemId == FName(TEXT("ore")); });
+		TestNotNull(FString::Printf(TEXT("%s takes ore"), Case.RecipeId), OreIngredient);
+		if (OreIngredient)
+		{
+			TestEqual(FString::Printf(TEXT("%s consumes five ore"), Case.RecipeId), OreIngredient->Count, 5);
+		}
+	}
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmQuestLastObjectiveTest, "FarmGame.Quests.LastObjectiveIsSteelAxe",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmQuestLastObjectiveTest::RunTest(const FString& Parameters)
+{
+	const TArray<FQuestState> Quests = FarmQuests::MakeDefault();
+	TestEqual(TEXT("eight objectives"), Quests.Num(), 8);
+	if (Quests.Num() < 8)
+	{
+		return false;
+	}
+	TestEqual(TEXT("second to last objective is the apple"), Quests[6].ItemId, FName(TEXT("apple")));
+	TestEqual(TEXT("last objective is the steel axe"), Quests[7].ItemId, FName(TEXT("steel_axe")));
+	TestTrue(TEXT("steel axe quest needs one"), Quests[7].Target == 1);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmSpendGoldTest, "FarmGame.Inventory.SpendGoldIsAtomic",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmSpendGoldTest::RunTest(const FString& Parameters)
+{
+	UFarmInventoryComponent* Inventory = NewObject<UFarmInventoryComponent>();
+	TestNotNull(TEXT("inventory created"), Inventory);
+	if (!Inventory)
+	{
+		return false;
+	}
+	Inventory->ResetForNewGame();
+	TestEqual(TEXT("starting gold"), Inventory->Gold, 20);
+
+	const int32 Before = Inventory->Gold;
+	TestTrue(TEXT("can spend 5 gold"), Inventory->SpendGold(5));
+	TestEqual(TEXT("gold reduced by five"), Inventory->Gold, Before - 5);
+
+	const int32 AfterSmallSpend = Inventory->Gold;
+	TestFalse(TEXT("cannot spend more gold than the wallet holds"), Inventory->SpendGold(999999));
+	TestEqual(TEXT("gold unchanged after a failed spend"), Inventory->Gold, AfterSmallSpend);
+	return true;
+}
+
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmRecipeOutputsTest, "FarmGame.Recipes.AllOutputsExistInCatalog",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmRecipeOutputsTest::RunTest(const FString& Parameters)
+{
+	TestTrue(TEXT("recipe catalog not empty"), FarmRecipes::All().Num() > 0);
+	for (const FCraftRecipe& Recipe : FarmRecipes::All())
+	{
+		TestNotNull(FString::Printf(TEXT("output %s of %s exists in the item catalog"), *Recipe.OutputId.ToString(), *Recipe.Id.ToString()), FarmItems::Find(Recipe.OutputId));
+		TestTrue(FString::Printf(TEXT("%s produces at least one item"), *Recipe.Id.ToString()), Recipe.OutputCount >= 1);
+	}
+	return true;
+}
+
 #endif

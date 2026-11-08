@@ -162,7 +162,7 @@ void AFarmHUD::DrawHUD()
 		FString Line = TEXT("Objective: all complete");
 		if (Quests.IsValidIndex(Index))
 		{
-			Line = FString::Printf(TEXT("Objective: %s  (%d/%d)"), *Quests[Index].Title, Quests[Index].Progress, Quests[Index].Target);
+			Line = FString::Printf(TEXT("Objective: %s  (%d/%d)   +%dg"), *Quests[Index].Title, Quests[Index].Progress, Quests[Index].Target, Quests[Index].Reward);
 		}
 		DrawText(Line, FLinearColor(1.f, 0.85f, 0.45f), W * 0.02f, H * 0.34f, Small, 1.05f);
 	}
