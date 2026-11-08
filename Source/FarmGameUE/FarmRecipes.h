@@ -18,6 +18,8 @@ struct FCraftRecipe
 	int32 OutputCount;
 	/** Requires standing near a furnace. */
 	bool bNeedsFurnace;
+	/** Requires standing near a mixing pot. */
+	bool bNeedsMixingPot = false;
 };
 
 namespace FarmRecipes
@@ -34,7 +36,11 @@ namespace FarmRecipes
 			{ TEXT("steel_axe"), TEXT("Steel Axe (triple wood per chop)"), { { TEXT("axe"), 1 }, { TEXT("ore"), 5 } }, TEXT("steel_axe"), 1, false },
 			{ TEXT("steel_pickaxe"), TEXT("Steel Pickaxe (triple stone/ore)"), { { TEXT("pickaxe"), 1 }, { TEXT("ore"), 5 } }, TEXT("steel_pickaxe"), 1, false },
 			{ TEXT("ingot"), TEXT("Smelt Iron Ingot (at furnace)"), { { TEXT("ore"), 2 } }, TEXT("ingot"), 1, true },
-			{ TEXT("hay_bundle"), TEXT("Hay Bundle (animal feed)"), { { TEXT("corn"), 2 } }, TEXT("hay"), 2, false }
+			{ TEXT("hay_bundle"), TEXT("Hay Bundle (animal feed)"), { { TEXT("corn"), 2 } }, TEXT("hay"), 2, false },
+			{ TEXT("mixing_pot_kit"), TEXT("Mixing Pot Kit (build with G)"), { { TEXT("stone"), 8 }, { TEXT("wood"), 6 } }, TEXT("mixing_pot_kit"), 1, false },
+			{ TEXT("bread"), TEXT("Bread (at mixing pot)"), { { TEXT("corn"), 2 } }, TEXT("bread"), 1, false, true },
+			{ TEXT("cheese"), TEXT("Cheese (at mixing pot)"), { { TEXT("milk"), 2 } }, TEXT("cheese"), 1, false, true },
+			{ TEXT("soup"), TEXT("Soup (at mixing pot)"), { { TEXT("carrot"), 1 }, { TEXT("potato"), 1 } }, TEXT("soup"), 1, false, true }
 		};
 		return Recipes;
 	}

@@ -683,4 +683,23 @@ bool FFarmEquipTierTest::RunTest(const FString& Parameters)
 	return true;
 }
 
+IMPLEMENT_SIMPLE_AUTOMATION_TEST(FFarmCookingRecipeTest, "FarmGame.Crafting.CookingRecipesNeedMixingPot",
+	EAutomationTestFlags::EditorContext | EAutomationTestFlags::EngineFilter)
+
+bool FFarmCookingRecipeTest::RunTest(const FString& Parameters)
+{
+	for (const TCHAR* Id : { TEXT("bread"), TEXT("cheese"), TEXT("soup") })
+	{
+		const FCraftRecipe* Recipe = FarmRecipes::Find(Id);
+		TestNotNull(FString::Printf(TEXT("%s recipe exists"), Id), Recipe);
+		TestTrue(FString::Printf(TEXT("%s needs a mixing pot"), Id), Recipe->bNeedsMixingPot);
+		TestNotNull(FString::Printf(TEXT("%s output in catalog"), Id), FarmItems::Find(Recipe->OutputId));
+	}
+	TestNotNull(TEXT("mixing pot kit exists"), FarmItems::Find(TEXT("mixing_pot_kit")));
+	const FCraftRecipe* Kit = FarmRecipes::Find(TEXT("mixing_pot_kit"));
+	TestNotNull(TEXT("mixing pot kit recipe"), Kit);
+	TestFalse(TEXT("kit does not need a pot"), Kit->bNeedsMixingPot);
+	return true;
+}
+
 #endif

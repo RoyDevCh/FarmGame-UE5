@@ -257,7 +257,8 @@ void AFarmPlayerController::UpdateGhost()
 			Ghost->Configure(BuildModeIndex == 0 ? EBuildingType::Fence
 			: BuildModeIndex == 1 ? EBuildingType::Furnace
 			: BuildModeIndex == 2 ? EBuildingType::Chest
-			: EBuildingType::Sprinkler);
+			: BuildModeIndex == 3 ? EBuildingType::Sprinkler
+			: EBuildingType::MixingPot);
 			Ghost->SetActorEnableCollision(false);
 			Ghost->SetActorTickEnabled(false);
 		}
@@ -433,7 +434,7 @@ void AFarmPlayerController::Attack()
 
 void AFarmPlayerController::ToggleBuildMode()
 {
-	BuildModeIndex = (BuildModeIndex + 2) % 5 - 1; // -1 -> 0 -> 1 -> 2 -> 3 -> -1
+	BuildModeIndex = (BuildModeIndex + 2) % 6 - 1; // -1 -> 0 -> 1 -> 2 -> 3 -> 4 -> -1
 	if (BuildModeIndex < 0)
 	{
 		ExitBuildMode();
@@ -461,6 +462,7 @@ FString AFarmPlayerController::GetBuildLabel() const
 	if (BuildModeIndex == 1) return TEXT("Furnace");
 	if (BuildModeIndex == 2) return TEXT("Chest");
 	if (BuildModeIndex == 3) return TEXT("Sprinkler");
+	if (BuildModeIndex == 4) return TEXT("MixingPot");
 	return TEXT("none");
 }
 
@@ -473,7 +475,8 @@ void AFarmPlayerController::PlaceBuilding()
 	const FName KitItem = BuildModeIndex == 0 ? FName(TEXT("fence_kit"))
 		: BuildModeIndex == 1 ? FName(TEXT("furnace_kit"))
 		: BuildModeIndex == 2 ? FName(TEXT("chest_kit"))
-		: FName(TEXT("sprinkler_kit"));
+		: BuildModeIndex == 3 ? FName(TEXT("sprinkler_kit"))
+		: FName(TEXT("mixing_pot_kit"));
 	if (Farmer->GetInventory()->GetCount(KitItem) <= 0)
 	{
 		ShowToast(FString::Printf(TEXT("Need %s (craft it with C)"), *FarmItems::LabelOf(KitItem)));
@@ -491,7 +494,8 @@ void AFarmPlayerController::PlaceBuilding()
 	const EBuildingType Type = BuildModeIndex == 0 ? EBuildingType::Fence
 		: BuildModeIndex == 1 ? EBuildingType::Furnace
 		: BuildModeIndex == 2 ? EBuildingType::Chest
-		: EBuildingType::Sprinkler;
+		: BuildModeIndex == 3 ? EBuildingType::Sprinkler
+		: EBuildingType::MixingPot;
 	GM->SpawnBuilding(Type, Location);
 	FarmAudio::Play(this, TEXT("/Game/Art/Audio/build.build"));
 	ShowToast(FString::Printf(TEXT("Placed %s"), *GetBuildLabel()));
@@ -798,7 +802,7 @@ void AFarmPlayerController::EatFood()
 	UFarmInventoryComponent* Inventory = Farmer->GetInventory();
 
 	struct FFood { FName Id; int32 Heal; };
-	const FFood Foods[] = { { TEXT("bread"), 20 }, { TEXT("apple"), 10 }, { TEXT("meat"), 15 }, { TEXT("milk"), 8 }, { TEXT("egg"), 5 } };
+	const FFood Foods[] = { { TEXT("soup"), 25 }, { TEXT("bread"), 20 }, { TEXT("cheese"), 15 }, { TEXT("apple"), 10 }, { TEXT("meat"), 15 }, { TEXT("milk"), 8 }, { TEXT("egg"), 5 } };
 	for (const FFood& Food : Foods)
 	{
 		if (Inventory->GetCount(Food.Id) > 0)
@@ -978,6 +982,22 @@ void AFarmPlayerController::CancelMode()
 	}
 }
 
+bool AFarmPlayerController::IsNearMixingPot() const
+{
+	APawn* MyPawn = GetPawn();
+	AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr;
+	if (!MyPawn || !GM) return false;
+	for (const AFarmBuilding* Building : GM->Buildings)
+	{
+		if (Building && Building->GetBuildingType() == EBuildingType::MixingPot &&
+			FVector::Dist2D(MyPawn->GetActorLocation(), Building->GetActorLocation()) < 320.f)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 bool AFarmPlayerController::IsNearFurnace() const
 {
 	APawn* MyPawn = GetPawn();
@@ -1000,6 +1020,7 @@ bool AFarmPlayerController::CanCraftRecipe(int32 Index) const
 	const TArray<FCraftRecipe>& Recipes = FarmRecipes::All();
 	if (!Farmer || !Recipes.IsValidIndex(Index)) return false;
 	if (Recipes[Index].bNeedsFurnace && !IsNearFurnace()) return false;
+	if (Recipes[Index].bNeedsMixingPot && !IsNearMixingPot()) return false;
 	return Farmer->GetInventory()->CanCraft(Recipes[Index]);
 }
 
@@ -1010,6 +1031,11 @@ void AFarmPlayerController::CraftRecipe(int32 Index)
 	if (!Farmer || !Recipes.IsValidIndex(Index)) return;
 
 	const FCraftRecipe& Recipe = Recipes[Index];
+	if (Recipe.bNeedsMixingPot && !IsNearMixingPot())
+	{
+		ShowToast(TEXT("Need a mixing pot nearby"));
+		return;
+	}
 	if (Recipe.bNeedsFurnace && !IsNearFurnace())
 	{
 		ShowToast(TEXT("Stand next to a furnace to smelt"));

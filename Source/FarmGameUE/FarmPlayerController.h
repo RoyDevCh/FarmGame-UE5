@@ -103,6 +103,7 @@ public:
 	int32 GetBuildModeIndex() const { return BuildModeIndex; }
 	FString GetBuildLabel() const;
 	bool IsNearFurnace() const;
+	bool IsNearMixingPot() const;
 	bool CanCraftRecipe(int32 Index) const;
 
 protected:

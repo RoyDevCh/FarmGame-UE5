@@ -47,7 +47,7 @@
 | 陷阱 Trap | 无 | ❌ |
 | 塔防 TowerAttack | 无 | ❌ |
 | 篝火 Firepit | 无 | ❌ |
-| 混合锅 MixingPot / 烹饪 Cook | 无 | ❌ |
+| 混合锅 MixingPot / 烹饪 Cook | `EBuildingType::MixingPot` + 3 配方（面包/奶酪/汤），需靠近锅 | ✅（单步配方，无烹饪进度条） |
 | 储物箱 UI（格子/拖拽） | `SFarmStorageWidget`：列表 + 存入全部/取出全部 | ✅（无拖拽/分格） |
 | 门 / 出口区域（Door / ExitZone） | AFarmSceneDoor：农场 ↔ House 跨关卡 | ✅ |
 | 床 / 睡觉（SleepDay） | AFarmBed：E 睡到次日 +20 HP | ✅ |
@@ -87,7 +87,7 @@
 
 ## 汇总
 
-- ✅ 已实现：约 24 项（新增 House 场景、Door、Bed、洒水器、储物面板）
+- ✅ 已实现：约 25 项（新增 House、Door、Bed、洒水器、储物面板、混合锅/烹饪）
 - 🟡 部分：约 10 项
 - ❌ 未实现：约 15 项（陷阱、塔防、篝火、混合锅/烹饪、钓鱼、宠物、骑乘、攀爬/游泳、装备栏、属性/XP/体力、储物面板、装备/混合面板、Tooltip、小地图、手柄/触屏、音乐）
 

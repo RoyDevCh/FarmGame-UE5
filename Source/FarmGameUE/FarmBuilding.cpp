@@ -41,8 +41,9 @@ void AFarmBuilding::ApplyVisual()
 	const TCHAR* ArtPath = Type == EBuildingType::Fence ? TEXT("/Game/Art/Buildings/fence_long.fence_long")
 		: Type == EBuildingType::Furnace ? TEXT("/Game/Art/Buildings/furnace.furnace")
 		: Type == EBuildingType::Chest ? TEXT("/Game/Art/Buildings/Chest_stone.Chest_stone")
-		: TEXT("/Game/Art/Props/sprinkler.sprinkler");
-	const float ArtHeight = Type == EBuildingType::Fence ? 110.f : Type == EBuildingType::Furnace ? 170.f : Type == EBuildingType::Chest ? 95.f : 80.f;
+		: Type == EBuildingType::Sprinkler ? TEXT("/Game/Art/Props/sprinkler.sprinkler")
+		: TEXT("/Game/Art/Props/Pot.Pot");
+	const float ArtHeight = Type == EBuildingType::Fence ? 110.f : Type == EBuildingType::Furnace ? 170.f : Type == EBuildingType::Chest ? 95.f : Type == EBuildingType::Sprinkler ? 80.f : 70.f;
 	const bool bArtApplied = Type == EBuildingType::Fence ? FarmArt::Apply(Mesh, ArtPath, ArtHeight) : FarmArt::ApplyHeight(Mesh, ArtPath, ArtHeight);
 	if (bArtApplied)
 	{
@@ -119,6 +120,10 @@ FString AFarmBuilding::GetPrompt(const AFarmPlayerController* PC) const
 	{
 		return TEXT("Sprinkler: waters nearby plots every morning");
 	}
+	if (Type == EBuildingType::MixingPot)
+	{
+		return TEXT("E: Cook (bread / cheese / soup)");
+	}
 	if (Type == EBuildingType::Chest)
 	{
 		return GetStoredTotal() > 0
@@ -146,6 +151,11 @@ void AFarmBuilding::Interact(AFarmCharacter* Character)
 	if (Type == EBuildingType::Chest)
 	{
 		if (PC) PC->OpenStorage(this);
+		return;
+	}
+	if (Type == EBuildingType::MixingPot)
+	{
+		if (PC) PC->ToggleCraftMenu();
 		return;
 	}
 
