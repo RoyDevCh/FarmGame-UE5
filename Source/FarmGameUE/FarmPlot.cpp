@@ -114,7 +114,7 @@ void AFarmPlot::RefreshVisuals()
 	const int32 MaxStage = CropDef ? FMath::Max(1, CropDef->Stages) - 1 : 1;
 	const float StageAlpha = MaxStage > 0 ? static_cast<float>(Stage) / static_cast<float>(MaxStage) : 0.f;
 
-	const TCHAR* ArtPath = FarmArt::CropMeshPath(CropId);
+	const TCHAR* ArtPath = FarmArt::CropMeshPath(CropId, Stage, MaxStage);
 	const float ArtHeight = FMath::Lerp(16.f, 72.f, StageAlpha);
 	if (ArtPath && FarmArt::ApplyHeight(CropMesh, ArtPath, ArtHeight))
 	{

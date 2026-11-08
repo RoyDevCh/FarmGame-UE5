@@ -20,6 +20,6 @@ namespace FarmArt
 	/** Same, but scales by the mesh's Z size (upright props). */
 	bool ApplyHeight(UStaticMeshComponent* Component, const TCHAR* Path, float TargetHeight);
 
-	/** Imported mesh for a crop id, or nullptr. */
-	const TCHAR* CropMeshPath(FName CropId);
+	/** Imported mesh for a crop id at a growth stage (0..MaxStage), or nullptr. */
+	const TCHAR* CropMeshPath(FName CropId, int32 Stage = 0, int32 MaxStage = 2);
 }
