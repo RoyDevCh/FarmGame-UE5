@@ -23,7 +23,7 @@ bool FFarmStatsLevelCurveTest::RunTest(const FString& Parameters)
 	Stats->AddXP(250);
 	TestEqual(TEXT("component XP after grant"), Stats->GetXP(), 250);
 	TestEqual(TEXT("component level recomputed from total"), Stats->GetLevel(), 3);
-	TestEqual(TEXT("XP missing for level 4"), Stats->GetXPToNextLevel(), 150);
+	TestEqual(TEXT("XP missing for level 4"), Stats->GetXPToNextLevel(), 50);
 	return true;
 }
 

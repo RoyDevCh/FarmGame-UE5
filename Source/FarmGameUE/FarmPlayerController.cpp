@@ -13,6 +13,8 @@
 #include "FarmSceneDoor.h"
 #include "FarmBed.h"
 #include "FarmFishingSpot.h"
+#include "FarmCampfire.h"
+#include "FarmPet.h"
 #include "EngineUtils.h"
 #include "FarmSettingsWidget.h"
 #include "FarmStorageWidget.h"
@@ -241,6 +243,24 @@ void AFarmPlayerController::UpdateTarget()
 			CurrentTarget = *It;
 		}
 	}
+	for (TActorIterator<AFarmCampfire> It(GetWorld()); It; ++It)
+	{
+		const float Dist = FVector::Dist2D(PawnLocation, It->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = *It;
+		}
+	}
+	for (TActorIterator<AFarmPet> It(GetWorld()); It; ++It)
+	{
+		const float Dist = FVector::Dist2D(PawnLocation, It->GetActorLocation());
+		if (Dist < BestDistance)
+		{
+			BestDistance = Dist;
+			CurrentTarget = *It;
+		}
+	}
 }
 
 void AFarmPlayerController::UpdateGhost()
@@ -345,6 +365,14 @@ FString AFarmPlayerController::GetPromptText() const
 	{
 		return Fishing->GetPrompt(this);
 	}
+	if (const AFarmCampfire* Campfire = Cast<AFarmCampfire>(CurrentTarget.Get()))
+	{
+		return Campfire->GetPrompt(this);
+	}
+	if (const AFarmPet* Pet = Cast<AFarmPet>(CurrentTarget.Get()))
+	{
+		return Pet->GetPrompt(this);
+	}
 	return FString();
 }
 
@@ -416,6 +444,14 @@ void AFarmPlayerController::Interact()
 	else if (AFarmFishingSpot* Fishing = Cast<AFarmFishingSpot>(Target))
 	{
 		Fishing->Interact(Farmer);
+	}
+	else if (AFarmCampfire* Campfire = Cast<AFarmCampfire>(Target))
+	{
+		Campfire->Interact(Farmer);
+	}
+	else if (AFarmPet* Pet = Cast<AFarmPet>(Target))
+	{
+		Pet->Interact(Farmer);
 	}
 }
 
@@ -827,6 +863,7 @@ void AFarmPlayerController::EatFood()
 		{
 			Inventory->RemoveItem(Food.Id, 1);
 			Farmer->Heal(Food.Heal);
+			if (Farmer->GetStats()) Farmer->GetStats()->Feed(25.f);
 			FarmAudio::Play(this, TEXT("/Game/Art/Audio/pop.pop"), 0.8f);
 			ShowToast(FString::Printf(TEXT("Ate %s (+%d HP)"), *FarmItems::LabelOf(Food.Id), Food.Heal));
 			return;

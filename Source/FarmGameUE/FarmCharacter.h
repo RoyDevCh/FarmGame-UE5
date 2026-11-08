@@ -8,6 +8,7 @@ class USpringArmComponent;
 class UCameraComponent;
 class UStaticMeshComponent;
 class UFarmInventoryComponent;
+class UFarmStatsComponent;
 
 /** Top-down farmer pawn. */
 UCLASS()
@@ -22,6 +23,7 @@ public:
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 
 	UFarmInventoryComponent* GetInventory() const { return Inventory; }
+	UFarmStatsComponent* GetStats() const { return Stats; }
 
 	void ApplyDamage(int32 Amount, AActor* Source);
 	void Heal(int32 Amount);
@@ -40,6 +42,7 @@ protected:
 	UPROPERTY(VisibleAnywhere, Category = "Farm") UStaticMeshComponent* BodyMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Farm") UStaticMeshComponent* ToolMesh;
 	UPROPERTY(VisibleAnywhere, Category = "Farm") UFarmInventoryComponent* Inventory;
+	UPROPERTY(VisibleAnywhere, Category = "Farm") UFarmStatsComponent* Stats;
 
 	UPROPERTY(VisibleAnywhere, Category = "Farm") int32 Health = 100;
 	UPROPERTY(VisibleAnywhere, Category = "Farm") int32 MaxHealth = 100;

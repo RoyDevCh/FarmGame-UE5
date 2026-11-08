@@ -89,6 +89,7 @@ protected:
 	bool bGamePaused = false;
 	UPROPERTY() AFarmBin* Bin = nullptr;
 	UPROPERTY() AFarmShop* Shop = nullptr;
+	UPROPERTY() class AFarmAmbience* Ambience = nullptr;
 	UPROPERTY() class ADirectionalLight* SunLight = nullptr;
 	bool bRaining = false;
 	float TotalGameMinutes = 0.f;

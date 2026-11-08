@@ -14,6 +14,10 @@
 #include "FarmPlayerController.h"
 #include "FarmBed.h"
 #include "FarmFishingSpot.h"
+#include "FarmCampfire.h"
+#include "FarmAmbience.h"
+#include "FarmDefense.h"
+#include "FarmPet.h"
 #include "FarmResourceNode.h"
 #include "FarmSaveGame.h"
 
@@ -161,6 +165,14 @@ void AFarmGameMode::Tick(float DeltaSeconds)
 		SunLight->GetLightComponent()->SetIntensity(Intensity);
 		SunLight->GetLightComponent()->SetLightColor(bRaining ? FLinearColor(0.65f, 0.72f, 0.85f) : FLinearColor(1.f, 0.95f, 0.86f));
 	}
+	if (!Ambience && GetWorld())
+	{
+		Ambience = GetWorld()->SpawnActor<AFarmAmbience>(AFarmAmbience::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+	}
+	if (Ambience)
+	{
+		Ambience->UpdateAmbience(GetDayProgress(), bRaining);
+	}
 }
 
 void AFarmGameMode::AdvanceDay()
@@ -290,6 +302,7 @@ void AFarmGameMode::NotifyProduced(FName ItemId, int32 Amount)
 				if (AFarmCharacter* Farmer = Cast<AFarmCharacter>(PC->GetPawn()))
 				{
 					if (Farmer->GetInventory()) Farmer->GetInventory()->AddGold(Quest.Reward);
+					if (Farmer->GetStats()) Farmer->GetStats()->AddXP(25);
 				}
 			}
 		}
@@ -345,6 +358,7 @@ void AFarmGameMode::BuildHouseWorld()
 	}
 
 	World->SpawnActor<AFarmBed>(AFarmBed::StaticClass(), FVector(300.f, 0.f, 0.f), FRotator::ZeroRotator);
+	World->SpawnActor<AFarmCampfire>(AFarmCampfire::StaticClass(), FVector(700.f, -200.f, 0.f), FRotator::ZeroRotator);
 
 	AFarmSceneDoor* Exit = World->SpawnActor<AFarmSceneDoor>(AFarmSceneDoor::StaticClass(), FVector(-520.f, 0.f, 0.f), FRotator::ZeroRotator);
 	if (Exit)
@@ -553,6 +567,10 @@ void AFarmGameMode::BuildWorld()
 	SpawnProp(TEXT("/Game/Art/Props/Fountain.Fountain"), FVector(1420.f, 1250.f, 0.f), 420.f);
 	SpawnProp(TEXT("/Game/Art/Environment/Pond.Pond"), FVector(-1050.f, 1450.f, 0.f), 720.f);
 	World->SpawnActor<AFarmFishingSpot>(AFarmFishingSpot::StaticClass(), FVector(-850.f, 1250.f, 0.f), FRotator::ZeroRotator);
+	World->SpawnActor<AFarmCampfire>(AFarmCampfire::StaticClass(), FVector(-300.f, -200.f, 0.f), FRotator::ZeroRotator);
+	World->SpawnActor<AFarmTrap>(AFarmTrap::StaticClass(), FVector(700.f, 300.f, 0.f), FRotator::ZeroRotator);
+	World->SpawnActor<AFarmTower>(AFarmTower::StaticClass(), FVector(900.f, -200.f, 0.f), FRotator::ZeroRotator);
+	World->SpawnActor<AFarmPet>(AFarmPet::StaticClass(), FVector(-420.f, -620.f, 0.f), FRotator::ZeroRotator);
 	SpawnProp(TEXT("/Game/Art/Props/WoodenCrate.WoodenCrate"), FVector(-1280.f, 980.f, 0.f), 90.f, 12.f);
 	SpawnProp(TEXT("/Game/Art/Props/WoodenCrate.WoodenCrate"), FVector(-1210.f, 1030.f, 0.f), 80.f, -20.f);
 	SpawnProp(TEXT("/Game/Art/Props/trough.trough"), FVector(1500.f, -380.f, 0.f), 130.f);

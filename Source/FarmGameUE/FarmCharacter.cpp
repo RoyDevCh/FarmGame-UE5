@@ -5,6 +5,7 @@
 #include "FarmArt.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
+#include "FarmStatsComponent.h"
 #include "FarmPlayerController.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
@@ -51,6 +52,7 @@ AFarmCharacter::AFarmCharacter()
 	Camera->bUsePawnControlRotation = false;
 
 	Inventory = CreateDefaultSubobject<UFarmInventoryComponent>(TEXT("Inventory"));
+	Stats = CreateDefaultSubobject<UFarmStatsComponent>(TEXT("Stats"));
 }
 
 void AFarmCharacter::BeginPlay()
@@ -87,6 +89,7 @@ void AFarmCharacter::BeginPlay()
 			BodyMesh->SetRelativeLocation(FVector(0.f, 0.f, -88.f));
 		}
 	}
+	if (Stats) Stats->ResetForNewGame();
 	UE_LOG(LogTemp, Log, TEXT("FarmGame: player spawned at %s"), *HomeLocation.ToCompactString());
 
 	if (AFarmGameMode* GM = GetWorld() ? GetWorld()->GetAuthGameMode<AFarmGameMode>() : nullptr)

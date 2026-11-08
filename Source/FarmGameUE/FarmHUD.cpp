@@ -1,6 +1,7 @@
 #include "FarmHUD.h"
 #include "FarmBuilding.h"
 #include "FarmCharacter.h"
+#include "FarmStatsComponent.h"
 #include "FarmGameMode.h"
 #include "FarmInventoryComponent.h"
 #include "FarmItems.h"
@@ -38,6 +39,18 @@ void AFarmHUD::DrawHUD()
 	DrawRect(FLinearColor(0.25f, 0.85f, 0.35f), Margin, H - Margin - 58.f, 240.f * HealthPercent, 16.f);
 	DrawText(FString::Printf(TEXT("HP %d / %d"), Character->GetHealth(), Character->GetMaxHealth()),
 		FLinearColor(0.95f, 0.95f, 0.95f), Margin, H - Margin - 84.f, Small, 1.05f);
+
+	if (const UFarmStatsComponent* Stats = Character->GetStats())
+	{
+		const float StaminaPercent = Stats->GetMaxStamina() > 0 ? Stats->GetStamina() / Stats->GetMaxStamina() : 0.f;
+		const float HungerPercent = Stats->GetMaxHunger() > 0 ? Stats->GetHunger() / Stats->GetMaxHunger() : 0.f;
+		DrawRect(FLinearColor(0.08f, 0.12f, 0.2f), Margin, H - Margin - 40.f, 240.f, 12.f);
+		DrawRect(FLinearColor(0.3f, 0.6f, 1.f), Margin, H - Margin - 40.f, 240.f * StaminaPercent, 12.f);
+		DrawRect(FLinearColor(0.2f, 0.12f, 0.05f), Margin + 250.f, H - Margin - 40.f, 160.f, 12.f);
+		DrawRect(FLinearColor(1.f, 0.65f, 0.25f), Margin + 250.f, H - Margin - 40.f, 160.f * HungerPercent, 12.f);
+		DrawText(FString::Printf(TEXT("Stamina %d   Hunger %d   Lv %d  (XP %d)"), FMath::RoundToInt(Stats->GetStamina()), FMath::RoundToInt(Stats->GetHunger()), Stats->GetLevel(), Stats->GetXP()),
+			FLinearColor(0.85f, 0.9f, 1.f), Margin, H - Margin - 64.f + 12.f, Small, 1.0f);
+	}
 
 	float Y = Margin + 48.f;
 	DrawText(FString::Printf(TEXT("Selected seed: %s  (Q to change)"), *PC->GetSelectedCropLabel()), FLinearColor(0.85f, 0.95f, 1.f), Margin, Y, Small, 1.15f);
